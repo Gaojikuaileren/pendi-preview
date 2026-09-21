@@ -1,0 +1,33 @@
+/* Stage 2: fit real-length copy without changing the five-scene composition. */
+.hero-intro { font-size: 14px; line-height: 1.7; max-width: 29ch; margin-top: 16px; }
+.editorial-content { display: none; max-width: 760px; margin-top: 36px; }
+.page-drinks .editorial-drinks, .page-about .editorial-about, .page-contact .editorial-contact { display: block; }
+.editorial-section { padding-block: 28px; border-bottom: 1px solid var(--line); }
+.editorial-section h2 { font: 500 clamp(30px, 5vw, 44px)/1.15 var(--serif); margin-bottom: 18px; overflow-wrap: anywhere; }
+.editorial-section p { font-size: 16px; line-height: 1.8; overflow-wrap: anywhere; }
+.menu-item { margin-top: 28px; }
+.menu-item h3 { font-size: 18px; line-height: 1.55; font-weight: 600; margin: 0 0 10px; overflow-wrap: anywhere; hyphens: auto; }
+.menu-item .menu-price { font-size: 14px; font-weight: 600; margin-top: 10px; }
+.media-feedback { position: absolute; z-index: 3; top: max(110px, calc(var(--safe-top) + 90px)); left: var(--edge-left); right: var(--edge-right); padding: 10px 12px; border: 1px solid #8c765c; background: var(--night); color: var(--cream); font-size: 12px; line-height: 1.5; pointer-events: none; }
+.prototype .field-help { font-weight: 400; font-size: 13px; line-height: 1.65; }
+.prototype .field-error { color: #792b1e; font-weight: 600; font-size: 14px; line-height: 1.65; }
+.prototype .error-summary { border: 2px solid #792b1e; padding: 16px; margin-block: 20px; line-height: 1.65; }
+.prototype [aria-invalid=true] { border: 2px solid #792b1e; }
+.prototype .review-fields { padding: 16px; border: 1px solid #bbaa94; border-radius: 10px; margin-top: 20px; }
+.prototype .review-fields p { margin-bottom: 8px; }
+.prototype .fields { align-items: start; }
+.prototype .result-copy { font-size: 16px; line-height: 1.8; }
+.prototype .capacity-impact { line-height: 1.8; }
+@media (max-width: 499px) { .prototype .fields { grid-template-columns: 1fr; } }
+@media (min-width: 360px) and (max-width: 499px) and (min-height: 801px) {
+ .hero-intro { max-width: 24ch; }
+}
+/* Content regression at 320×568: give the longer copy room, not smaller type. */
+@media (max-width: 359px) and (min-height: 521px) and (max-height: 650px) {
+ .scene-home .hero-content { top: max(calc(var(--safe-top) + 112px), calc(var(--art-height) * .26)); max-height: calc(var(--art-height) - max(calc(var(--safe-top) + 112px), calc(var(--art-height) * .26)) - 12px); }
+ .scene-drinks .scene-note { --copy-top: calc(var(--art-height) * .61); }
+}
+@media (min-width: 600px) and (min-aspect-ratio: 1/1) and (max-height: 800px) {
+ .media-feedback { left: 57%; right: 16px; }
+ .hero-intro { max-width: 38ch; }
+}

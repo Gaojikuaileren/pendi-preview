@@ -1,0 +1,198 @@
+.specimen-menu { display:none; }
+.page-drinks .detail-page > :not(.specimen-menu) { display:none; }
+.page-drinks { background:var(--cream); }
+.page-drinks .detail-page { padding:86px 24px 48px; max-width:760px; }
+.page-drinks .specimen-menu { display:block; }
+body.page-drinks .site-header { position:fixed; inset:0 0 auto; z-index:10; height:78px; padding:12px 24px; align-items:flex-start; background:var(--cream); color:var(--ink); }
+.page-drinks .site-header .wordmark { filter:brightness(.28); }
+.page-drinks .site-header .language-switch { border-color:#94816a; background:transparent; color:var(--ink); }
+.page-drinks .site-header .language-switch a { color:var(--ink); }
+.page-drinks .site-header .mobile-menu { display:none; }
+.page-drinks .site-header .header-actions { margin-left:auto; }
+.specimen-back { display:inline-flex; align-items:center; gap:12px; min-height:44px; font-size:12px; text-decoration:none; }
+.specimen-back > span:first-child { font-size:22px; }
+.specimen-intro { padding:12px 0 20px; }
+.specimen-intro .eyebrow { font-size:9px; margin:0 0 12px; letter-spacing:.17em; }
+.page-drinks .specimen-intro h1 { font-size:64px; margin:0 0 10px; line-height:1; }
+.specimen-intro h1:focus { outline:none; }
+.specimen-whisper { font:italic 21px/1.35 'Pendi Sensory',var(--serif); max-width:25ch; margin:0; }
+.specimen-count { display:flex; align-items:center; justify-content:space-between; margin:18px 0 0; padding-top:12px; border-top:1px solid #ad9980; font-size:11px; }
+.specimen-count > span:last-child { font-size:20px; }
+.specimen-slots { display:grid; gap:26px; }
+.specimen-card { position:relative; color:#ded3bb; background:#302e28; border:1px solid #6c614e; border-radius:3px 20px 3px 3px; padding:18px 22px 12px; box-shadow:0 5px 0 -2px #b5a58c,0 7px 0 -2px #8f7c61; overflow:hidden; isolation:isolate; }
+.specimen-card::before { content:''; position:absolute; inset:8px; border:1px solid #c0a78024; border-radius:0 13px 0 0; pointer-events:none; z-index:-1; }
+.specimen-index { display:flex; justify-content:space-between; font:10px/1.5 var(--sans); letter-spacing:.18em; color:#b7a084; }
+.specimen-index > span:last-child { font-size:19px; line-height:1; }
+.specimen-plate { position:relative; height:146px; margin:6px -8px 2px; color:#c6b699; }
+.specimen-plate > svg { width:100%; height:100%; display:block; }
+.specimen-seal { position:absolute; right:10px; bottom:8px; font-size:8px; letter-spacing:.18em; color:#b7a084; }
+.page-drinks .specimen-card h2 { font:400 46px/1.05 var(--serif); letter-spacing:-.025em; margin:0 0 9px; white-space:normal; overflow-wrap:anywhere; }
+.specimen-notes { font-size:11px; letter-spacing:.09em; line-height:1.7; color:#c8b895; margin:0 0 13px; }
+.specimen-thought { font:italic 22px/1.35 'Pendi Sensory',var(--serif); margin:0; max-width:24ch; }
+.specimen-terrain { width:100%; height:37px; margin:18px 0 0; fill:none; stroke:#aa936c; stroke-width:.65; opacity:.65; }
+.specimen-clues { border-top:1px dotted #aa936c70; margin-top:10px; }
+.specimen-clues summary { display:flex; align-items:center; justify-content:space-between; gap:12px; list-style:none; cursor:pointer; min-height:44px; font-size:12px; }
+.specimen-clues summary::-webkit-details-marker { display:none; }
+.specimen-plus { font-size:23px; font-weight:200; }
+.specimen-clues[open] .specimen-plus { transform:rotate(45deg); }
+.specimen-clues p { font-size:14px; line-height:1.8; padding:2px 0 12px; margin:0; }
+.specimen-end { font-size:12px; line-height:1.7; margin:36px 0 8px; }
+.specimen-back-bottom { margin-bottom:20px; }
+.page-drinks .site-footer { padding:28px 24px; }
+.page-drinks .footer-top { display:none; }
+.page-drinks .footer-bottom { border:0; padding:0; font-size:10px; }
+.card-route-veil { position:fixed; z-index:8000; inset:0; pointer-events:none; }
+.card-route-flight { position:absolute; color:#ded3bb; background:#302e28; border:1px solid #6c614e; border-radius:3px 20px 3px 3px; overflow:hidden; box-shadow:0 24px 60px #140e0955; transform-origin:center; }
+.card-route-flight .route-ink { position:absolute; inset:0; display:grid; place-content:center; padding:24px; }
+.route-ink svg { width:230px; height:190px; }
+.route-ink p { text-align:center; font:400 42px/1 var(--serif); margin:0; }
+html[data-card-arrival]::after { content:''; position:fixed; inset:0; z-index:7999; background:#302e28; pointer-events:none; }
+@media (min-width:700px) { .specimen-slots { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (prefers-reduced-motion:reduce) { .card-route-veil { display:none; } html[data-card-arrival]::after { display:none; } }
+
+/* Loose sheets: overlap consumes trailing blank paper, not reading controls. */
+.page-drinks .detail-page { padding-inline:28px; }
+.specimen-intro { padding:10px 0 16px; }
+.specimen-intro .eyebrow { letter-spacing:.15em; }
+.specimen-count { gap:12px; margin-top:12px; padding:0; border:0; }
+.specimen-slots { display:flex; flex-direction:column; gap:0; padding:10px 4px 0; }
+.specimen-card { --turn:-1.6deg; --shift:-4px; --paper:#eee5d3; --pigment:#805f3f;
+ color:var(--ink); background:var(--paper); border:1px solid #9c805a55; border-radius:1px;
+ padding:22px 22px 84px; overflow:visible;
+ box-shadow:0 12px 22px -12px #3d28165c,0 2px 3px #42291618;
+ transform:translateX(var(--shift)) rotate(var(--turn)); transform-origin:50% 45%;
+ transition:transform 350ms cubic-bezier(.22,1,.36,1),box-shadow 350ms; }
+.specimen-card::before { content:none; }
+.specimen-card + .specimen-card { margin-top:-64px; }
+.specimen-card:nth-child(3n+2) { --turn:2deg; --shift:5px; --paper:#d7c2a3; --pigment:#76543e; }
+.specimen-card:nth-child(3n) { --turn:-.7deg; --shift:-2px; --paper:#e7dac3; --pigment:#766849; }
+.specimen-card:nth-child(5n) { --turn:1.1deg; --paper:#cdb798; }
+.specimen-card:focus-within,.specimen-card:has(details[open]) { transform:translateX(var(--shift)) rotate(0deg); }
+.specimen-index { align-items:center; color:#72583e; }
+.specimen-index > span:last-child { font-size:21px; }
+.specimen-plate { height:90px; margin:6px -5px 0; color:var(--pigment); }
+.specimen-notes { letter-spacing:.065em; color:#6c5038; margin-bottom:12px; }
+.specimen-thought { font-size:21px; }
+.flavour-landscape { margin:20px -10px 10px; }
+.specimen-terrain { display:block; height:82px; margin:0; stroke:var(--pigment); stroke-width:.8; opacity:1; }
+.specimen-terrain .terrain-fill { fill:var(--pigment); fill-opacity:.11; stroke:none; }
+.specimen-terrain circle { fill:var(--pigment); stroke:none; }
+.specimen-terrain .terrain-pending { stroke-dasharray:3 5; }
+.flavour-axes { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:2px; text-align:center; font:9px/1.4 var(--sans); color:#604a36; }
+.flavour-axes span { overflow-wrap:anywhere; }
+.specimen-clues { border-color:#83674d80; margin-top:18px; }
+.specimen-clues p { overflow-wrap:anywhere; }
+.specimen-empty { font-size:18px; line-height:1.6; padding:30px 0; }
+.card-route-flight { color:#805f3f; background:#eee5d3; border:1px solid #9c805a55; border-radius:1px; }
+html[data-card-arrival]::after { background:#eee5d3; }
+@media (min-width:700px) { .specimen-slots { max-width:480px; margin-inline:auto; } }
+@media (max-width:350px) { .specimen-card { --turn:0deg!important; --shift:0px!important; padding-inline:16px; } .page-drinks .detail-page { padding-inline:20px; } }
+@media (prefers-reduced-motion:reduce) { .specimen-card { transition:none; } }
+
+/* Physical-menu palette, fixed reading window and picked-up loose cards. */
+.page-drinks { --ink:#e6dac3; background:#211f1b; color:#e6dac3; }
+body.page-drinks .site-header { background:#211f1b; color:#e6dac3; }
+.page-drinks .site-header .wordmark { filter:none; }
+.page-drinks .site-header .language-switch,
+.page-drinks .site-header .language-switch a { color:#e6dac3; border-color:#8a795e; }
+.page-drinks .specimen-intro .eyebrow,.specimen-count,.specimen-end { color:#c1ae8f; }
+.page-drinks .site-footer { background:#211f1b; color:#c1ae8f; }
+.specimen-card { --paper:#34312b; --pigment:#b5a17e; --story-top:49px; --story-height:144px;
+ color:#e6dac3; border-color:#8e785547; padding-bottom:84px;
+ box-shadow:0 14px 24px -10px #000a,0 1px 2px #0008;
+ transition:transform 380ms cubic-bezier(.22,1,.36,1),box-shadow 380ms; }
+.specimen-card:nth-child(3n+2) { --paper:#3b342c; --pigment:#c1a485; }
+.specimen-card:nth-child(3n) { --paper:#302f28; --pigment:#aaa484; }
+.specimen-card:nth-child(5n) { --paper:#39312a; }
+.specimen-card:focus { outline:1px solid #c8ae7a; outline-offset:3px; }
+.specimen-card:focus:not(:focus-visible) { outline:none; }
+.specimen-card:focus-within,.specimen-card:has(details[open]) { z-index:3; transform:translate(var(--shift),-8px) rotate(0deg); }
+.cards-interactive .specimen-card { z-index:0; }
+.cards-interactive .specimen-card:not(.is-active) { transform:translateX(var(--shift)) rotate(var(--turn)); }
+.cards-interactive .specimen-card.is-settling { z-index:2; }
+.cards-interactive .specimen-card.is-active { z-index:4; transform:translate(0,-10px) rotate(0deg); box-shadow:0 24px 38px -12px #000c,0 0 0 1px #b2976a55; }
+.specimen-index { color:#bda785; padding-inline:14px; gap:12px; }
+.specimen-index > span:first-child { min-width:0; overflow-wrap:anywhere; }
+.specimen-index > span:last-child { flex:none; }
+.specimen-plate { height:144px; transition:opacity 220ms; }
+.specimen-card:has(details[open]) .specimen-plate { opacity:0; visibility:hidden; }
+.specimen-notes,.flavour-axes { color:#cdbb9e; }
+.specimen-foot { display:flex; gap:16px; align-items:center; border-top:1px dotted #aa936c80; margin-top:18px; }
+.specimen-foot .specimen-clues { flex:1; min-width:0; border:0; margin:0; }
+.specimen-foot .specimen-clues summary { min-height:48px; }
+.specimen-foot .specimen-price { flex:none; font:400 26px/1.2 var(--serif); margin:0; white-space:nowrap; color:#e6dac3; }
+.specimen-story { position:absolute; top:var(--story-top); left:22px; right:22px; height:var(--story-height); overflow:auto;
+ overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#a68e69 transparent;
+ background:var(--paper); padding:5px 8px 8px 0; box-sizing:border-box; }
+.specimen-story:focus-visible { outline:1px solid #bda785; outline-offset:2px; }
+.specimen-clues .specimen-thought { font:italic 21px/1.4 'Pendi Sensory',var(--serif); padding:0; margin:0 0 12px; max-width:none; color:#e6dac3; }
+.specimen-clues .specimen-ingredients { font:14px/1.7 var(--sans); padding:0 0 6px; margin:0; color:#cdbb9e; }
+.specimen-clues[open] .specimen-story { animation:specimen-story-in 240ms ease both; }
+@keyframes specimen-story-in { from { opacity:0; translate:0 5px; } to { opacity:1; translate:0 0; } }
+.card-route-flight { color:#b5a17e; background:#34312b; border-color:#8e785547; }
+html[data-card-arrival]::after { background:#34312b; }
+@media (prefers-reduced-motion:reduce) { .specimen-plate { transition:none; } .specimen-clues[open] .specimen-story { animation:none; } }
+
+/* Denser pile; preserve the title band and overlap only trailing paper. */
+.specimen-card { padding:18px 20px 104px; --story-top:45px; --story-height:100px; }
+.specimen-card + .specimen-card { margin-top:-100px; }
+.specimen-plate { height:100px; }
+.page-drinks .specimen-card h2 { font-size:40px; margin-bottom:7px; }
+.specimen-notes { margin-bottom:8px; }
+.flavour-landscape { margin-top:12px; margin-bottom:8px; }
+.specimen-terrain { height:70px; }
+.specimen-foot { margin-top:12px; }
+.specimen-story { left:20px; right:20px; }
+.specimen-card:has(details[open]) .specimen-plate { opacity:1; visibility:visible; }
+.specimen-story { top:auto; bottom:12px; height:84px; background:transparent; padding:2px 6px 4px 0; }
+.specimen-clues .specimen-thought { font-size:18px; line-height:1.45; margin-bottom:8px; }
+.specimen-clues[open] .specimen-story { animation:specimen-story-in 340ms 70ms ease both; }
+@media (prefers-reduced-motion:reduce) { .specimen-clues[open] .specimen-story { animation:none; } }
+.specimen-card::before { content:''; position:absolute; inset:7px; z-index:-1; border:0; border-radius:0; background:url('/pendi-preview/assets/images/menu-tarot-frame.svg') center / 100% 100% no-repeat; opacity:.65; pointer-events:none; }
+.specimen-card.is-active::before { opacity:.9; }
+.specimen-story { bottom:18px; height:80px; }
+.specimen-story { bottom:13px; height:90px; padding:2px 4px 2px 0; scrollbar-width:none; }
+.specimen-story::-webkit-scrollbar { display:none; }
+.specimen-clues .specimen-thought { font-size:16px; line-height:1.35; margin-bottom:4px; }
+.specimen-clues .specimen-ingredients { font-size:12.5px; line-height:1.4; padding-bottom:0; }
+.specimen-plus { display:inline-block; transform:rotate(0deg); transform-origin:50% 50%; transition:transform 280ms cubic-bezier(.4,0,.2,1); }
+.card-route-flight.has-flip { perspective:1200px; background:transparent; overflow:visible; border:0; box-shadow:none; }
+.card-route-flipper { position:absolute; inset:0; transform-style:preserve-3d; }
+.card-route-back,.card-route-front { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:#34312b; border:1px solid #8e785570; box-shadow:0 14px 24px #0005; overflow:hidden; }
+.card-route-front { transform:rotateY(180deg); border:0; }
+.card-route-front .specimen-card { transform:none!important; margin:0; width:100%; height:100%; box-sizing:border-box; box-shadow:none; transition:none; }
+.page-drinks { padding-bottom:0; }
+.page-drinks .detail-page { padding-top:calc(var(--menu-header-height,78px) + var(--menu-category-height,54px) + 12px); }
+.menu-category-bar { position:fixed; z-index:10; left:0; right:0; top:var(--menu-header-height,78px); display:flex; justify-content:flex-start; align-items:center; gap:10px; padding:3px 24px 14px; background:#211f1b; color:#e6dac3; isolation:isolate; }
+.menu-category-bar::before { content:''; position:absolute; left:24px; right:24px; bottom:0; height:1px; background:linear-gradient(90deg,#b49a7045,#b49a7018 62%,transparent); pointer-events:none; }
+.menu-category-bar::after { content:''; position:absolute; right:24px; top:12px; width:112px; height:26px; background:url('/pendi-preview/assets/images/strip-contours.svg') center/100% 100% no-repeat; filter:brightness(1.5); opacity:.45; pointer-events:none; z-index:-1; }
+.menu-category-bar a { position:relative; display:flex; align-items:center; justify-content:center; gap:11px; min-width:104px; min-height:40px; padding:7px 20px 7px 15px; font:13px/1.4 var(--sans); letter-spacing:.08em; border:1px solid #b49a7059; border-radius:5px 19px 19px 5px; background:linear-gradient(120deg,#393229,#2b2721); box-shadow:inset 0 1px 0 #e6dac30a,0 3px 8px #100d0926; color:#e6dac3; text-decoration:none; transition:background-color 180ms,border-color 180ms; }
+.menu-category-bar a::before { content:''; width:5px; height:5px; flex:none; transform:rotate(45deg); background:#bda37b; box-shadow:0 0 0 3px #bda37b12; }
+.menu-category-bar a:hover { border-color:#c4aa808c; }
+.menu-category-bar a:focus-visible { outline:2px solid #cfb990; outline-offset:3px; }
+#specimen-title { scroll-margin-top:calc(var(--menu-header-height,78px) + var(--menu-category-height,54px) + 12px); }
+.menu-legal-banner { display:none; }
+body:not(.page-drinks) > .menu-legal-banner { display:none!important; }
+.page-drinks > .site-footer { display:none; }
+.page-drinks > .menu-legal-banner { --ink:#c1ae8f; position:relative; inset:auto; display:grid; grid-template-rows:auto; grid-template-columns:minmax(0,1fr) auto; height:auto; min-height:80px; padding:10px 24px calc(10px + env(safe-area-inset-bottom,0px)); background:#211f1b; color:var(--ink); }
+.page-drinks .menu-legal-banner .basin-location img { filter:brightness(0) saturate(100%) invert(76%) sepia(15%) saturate(588%) hue-rotate(357deg) brightness(91%) contrast(88%); }
+.page-drinks .menu-legal-banner::before,.page-drinks .menu-legal-banner .basin-location > div::before { filter:brightness(1.6); opacity:.65; }
+.page-drinks .menu-legal-banner .strip-legal a { text-decoration-color:#b49a7066; }
+/* Menu document only: a slim thumb with no painted track or arrow buttons. */
+html:has(> body.page-drinks) { scrollbar-width:thin!important; scrollbar-color:#aa9675 transparent; }
+@supports selector(::-webkit-scrollbar) {
+ html:has(> body.page-drinks) { scrollbar-width:auto!important; scrollbar-color:auto; }
+ html:has(> body.page-drinks)::-webkit-scrollbar { display:block!important; width:3px!important; height:3px!important; background:transparent; }
+ html:has(> body.page-drinks)::-webkit-scrollbar-thumb { background:#aa9675; border-radius:3px; }
+ html:has(> body.page-drinks)::-webkit-scrollbar-track,
+ html:has(> body.page-drinks)::-webkit-scrollbar-corner { background:transparent; }
+ html:has(> body.page-drinks)::-webkit-scrollbar-button { display:none; width:0; height:0; }
+}
+@media (prefers-reduced-motion:reduce) { .specimen-plus { transition:none; } }
+/* Independent translation preserves the table projection and card pickup. */
+.page-home #drinks:not(.depth-large-type) .menu-ink-plane { translate:var(--device-text-x,0px) 0; }
+.page-home #home .button { translate:var(--device-home-x,0px) 0; }
+.page-drinks .specimen-slots > .specimen-card[data-tilt-visible] { translate:var(--device-card-x,0px) 0; }
+@media (prefers-reduced-motion:reduce) {
+ .page-home #home .button,.page-home #drinks .menu-ink-plane,.page-drinks .specimen-slots > .specimen-card[data-tilt-visible] { translate:none; }
+}

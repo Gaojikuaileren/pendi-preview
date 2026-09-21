@@ -1,0 +1,116 @@
+/* Phase 1 right-side navigation and quieter scene chrome. */
+body, body * { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+body[data-scene-active=contact], body[data-scene-active=contact] *, .scene-contact, .scene-contact *, input, textarea, [contenteditable=true] { -webkit-user-select:text; user-select:text; -webkit-touch-callout:default; }
+body img, body video { -webkit-user-drag:none; }
+.experience-strip { border-top:0; }
+.experience-strip::before { content:''; position:absolute; inset:-18px 0 auto; height:26px; background:url('/pendi-preview/assets/images/strip-contours.svg') center/100% 100% no-repeat; pointer-events:none; }
+.experience-strip .basin-location > div { position:relative; border-left:0; }
+.experience-strip .basin-location > div::before { content:''; position:absolute; left:-4px; top:-4px; bottom:-4px; width:12px; background:url('/pendi-preview/assets/images/strip-contours-vertical.svg') center/100% 100% no-repeat; pointer-events:none; }
+.page-home { --strip-base: 80px; }
+.page-home:is([data-scene-active=drinks],[data-scene-active=about],[data-scene-active=reservation]) { --strip-base: 0px; }
+/* No banner means no reserved safe-area strip below the wave either. Content
+   still uses --safe-bottom independently to clear the home indicator. */
+.page-home:is([data-scene-active=drinks],[data-scene-active=about],[data-scene-active=reservation]) { --strip-height: 0px; }
+.experience-strip { grid-template-rows: minmax(0,1fr); padding-block: 10px; }
+.page-home:is([data-scene-active=drinks],[data-scene-active=about],[data-scene-active=reservation]) .experience-strip { display: none; }
+/* The paper stays opaque beneath the departing strip, while the wave expands
+   into its space. Fading the old cream card alone would expose a black footer. */
+.page-home.strip-transition-ready .experience::after { content:''; position:absolute; z-index:0; inset:auto 0 0; height:calc(80px + var(--safe-bottom)); background:var(--cream); pointer-events:none; }
+.page-home.strip-transition-ready .experience-strip { display:grid; height:calc(80px + var(--safe-bottom)); background:transparent; will-change:opacity,transform; }
+.desktop-nav { display:none !important; }
+.site-header .mobile-menu { display: block; }
+.site-header .header-actions { gap: 6px; }
+.site-header .language-switch { gap: 2px; }
+.site-header .language-switch a { min-width: 32px; }
+.site-header .language-switch:has(.language-flip) { padding:0; }
+.site-header .language-switch .language-flip { display:grid; place-items:center; min-width:44px; min-height:44px; text-decoration:none; border-radius:50%; }
+.site-header .language-flip:active { transform:scale(.94); }
+.site-header .motion-toggle { position: static; flex: none; width: 44px; height: 44px; border: 0; background: transparent; color: var(--cream); }
+.site-header .motion-toggle svg { width: 22px; height: 22px; }
+.site-header .menu-panel.scene-pagination { position: fixed; inset: 100px max(env(safe-area-inset-right),12px) auto auto; width: 112px; max-height: calc(var(--view-height) - 120px); overflow-y: auto; display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0 0 8px; border: 0; border-radius: 0; box-shadow: none; background: transparent; scrollbar-width: none; }
+.site-header .menu-panel.scene-pagination a { flex: 0 0 auto; width: 100%; min-height: 52px; height: auto; display: grid; justify-content:end; align-content:center; text-align: right; gap: 4px; border: 0; border-right:1px solid #f4ead83d; padding: 8px 12px 8px 4px; font-size: 11px; color: var(--cream); text-shadow: 0 1px 4px #19130f,0 0 8px #19130f; opacity: .85; }
+.site-header .menu-panel.scene-pagination a small { font-size: 8px; }
+.page-home .site-header .menu-panel.scene-pagination a { grid-template-columns:minmax(0,1fr); justify-items:end; text-align:right; text-shadow:0 1px 3px #100c09e6,0 2px 9px #100c0999; }
+.page-home .site-header .menu-panel.scene-pagination a > span,.page-home .site-header .menu-panel.scene-pagination a > small { width:100%; text-align:right; }
+.page-home .site-header .language-switch a { text-shadow:0 1px 3px #100c09e6,0 2px 8px #100c0999; }
+.page-home .site-header .motion-toggle svg,.page-home .site-header .menu-lines { filter:drop-shadow(0 1px 2px #100c09e6) drop-shadow(0 2px 5px #100c0980); }
+.site-header .menu-panel.scene-pagination a[aria-current] { opacity: 1; border-right:2px solid currentColor; padding-right:11px; }
+.site-header .menu-panel.scene-pagination a.over-paper { color: var(--ink); text-shadow: 0 1px 3px var(--cream); }
+.site-header .menu-panel.scene-pagination a::after { display:none; }
+.site-header .menu-panel.scene-pagination a:focus-visible { outline-offset:-3px; }
+.site-header .menu-panel.scene-pagination { width:max-content; min-width:112px; max-width:calc(100vw - 24px); }
+.site-header .mobile-menu:not([open]) .menu-panel { display: none; }
+.careers-placeholder { display: inline-flex; align-items: center; gap: 26px; min-height: 44px; padding: 9px 18px; border: 1px solid #a28d74; border-radius: 30px; margin-top: 18px; background: transparent; color: var(--ink); font: 500 14px var(--sans); }
+.careers-placeholder:disabled { opacity: .65; cursor: default; }
+.contact-lines .contact-icon { flex: none; display: inline-grid; place-items: center; min-width: 44px; width: 44px; height: 44px; padding: 10px; border: 1px solid #ae9c85; border-radius: 50%; color: var(--ink); background: transparent; }
+.contact-lines .contact-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+.contact-lines .contact-icon:disabled { opacity: .65; border-style: solid; }
+.contact-lines dd { flex-wrap: nowrap; }
+.contact-lines dd > span { min-width: 0; overflow-wrap: anywhere; }
+.contact-lines > div { grid-template-columns: 94px minmax(0,1fr); }
+.scene-contact .in-place-copy > h2 { margin-bottom: 8px; }
+.scene-contact .in-place-copy > .eyebrow { margin-bottom: 6px; }
+.scene-drinks .scene-note { padding: 9px 9px 10px 0; }
+.menu-cover { position: relative; display: grid; grid-template-columns: 1fr; gap: 7px; min-height: 132px; padding: 17px 22px 17px 28px; border: 1px solid #a98d6e; border-radius: 3px 20px 20px 3px; background: #e7dcc9; isolation: isolate; transition: transform .2s; }
+.menu-cover::before, .menu-cover::after { content: ''; position: absolute; pointer-events: none; border: 1px solid #bda787; border-radius: inherit; }
+.menu-cover::before { inset: -5px -5px 5px 5px; z-index: -2; }
+.menu-cover::after { inset: 0 auto 0 9px; width: 4px; border-block: 0; border-radius: 0; opacity: .6; }
+.menu-cover-index { font-size: 9px; letter-spacing: .18em; }
+.menu-cover-title { font: 400 40px/1 var(--serif); }
+.menu-cover-bottom { display: flex; gap: 12px; align-items: center; justify-content: space-between; font-size: 13px; }
+.menu-cover-arrow { display: grid; place-items: center; border: 1px solid #aa8e70; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; }
+@media (hover:hover) { .menu-cover:hover { transform: translateY(-3px); } }
+@media (min-width:900px) { .site-header .menu-panel.scene-pagination { width: 104px; } .experience-strip { padding-block: 12px; } }
+@media (max-width:359px) { .site-header { gap: 8px; } .site-header .wordmark { width: 80px; } .site-header .header-actions { gap: 0; } .site-header .language-switch { font-size: 10px; padding: 0; } .site-header .language-switch a { min-width: 27px; } .contact-lines > div { grid-template-columns: 80px minmax(0,1fr); } }
+@media (max-height:520px) { .site-header .menu-panel.scene-pagination { top: 85px; max-height: calc(var(--view-height) - 95px); gap: 2px; } .site-header .menu-panel.scene-pagination a { min-height: 44px; } .menu-cover { min-height: 110px; } }
+@media (prefers-reduced-motion:reduce) { .menu-cover { transition: none; } }
+
+/* Basin contour dials: one compact step at a time, no visible scrollbars. */
+.scene-reservation .in-place-copy { scrollbar-width: none; }
+.scene-reservation .in-place-copy::-webkit-scrollbar { display: none; }
+.dial-booking .demo-banner { border: 0; border-radius: 0; background: transparent; padding: 0 !important; font-size: 12px !important; }
+.dial-booking .steps { padding-bottom: 10px; border-bottom: 1px solid #c3b39c; }
+.booking-dials { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 24px; }
+.dial-label { display: block; text-align: center; font-size: 14px; margin-bottom: 12px; }
+.basin-dial { position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; color: var(--ink); cursor: grab; user-select: none; }
+.basin-dial, .basin-dial * { touch-action: pinch-zoom; }
+.basin-dial.is-turning { cursor: grabbing; }
+.basin-dial svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.dial-contour { stroke: #977b59; stroke-width: .9; opacity: .55; fill: none; }
+.dial-contour:nth-child(2n) { opacity: .3; }
+.dial-needle { transform: rotate(var(--dial-angle)); transform-origin: 80px 80px; fill: #704d31; }
+.dial-value { position: absolute; left: 0; right: 0; top: 35%; text-align: center; font: 600 20px/1.2 var(--sans); pointer-events: none; }
+.dial-unit { position: absolute; left: 0; right: 0; top: 60%; text-align: center; font-size: 10px; pointer-events: none; }
+.dial-adjust { display: flex; justify-content: space-between; gap: 1px; margin-top: 10px; }
+.prototype .dial-adjust button { width: 44px; min-width: 44px; min-height: 44px; padding: 0; border-color: #b5a086; font-size: 22px; }
+.dial-help { text-align: center; font-size: 12px; color: #655345; margin: 18px 0 12px; }
+.dial-selection { text-align: center; font-size: 15px; padding: 12px 0; border-block: 1px solid #c3b39c; margin: 0 0 16px; }
+.dial-booking .booking-rules-link { display: block; text-align: center; text-decoration: underline; text-underline-offset: 4px; min-height: 44px; padding: 14px 8px 6px; font-size: 14px; }
+.dial-booking .compact-summary { font-size: 14px; padding: 12px; }
+.dial-booking .compact-summary p { margin: 4px 0 0; font-size: 12px; }
+.dial-booking .result .meta { font-size: 11px; }
+.dial-booking .result-copy { font-size: 15px; line-height: 1.7; }
+.dial-booking .result { padding-left: 0 !important; border-left: 0; }
+.dial-booking .result .actions > [data-action^="choose-"] { flex: 1 1 25%; padding-inline: 8px; }
+.dial-booking .result .actions > [data-action=edit], .dial-booking .result .actions > .proto-link { flex: 1 1 40%; }
+.dial-value { white-space: nowrap; }
+/* Browser-reported cutouts, never guessed from a device name. */
+.site-header { padding-top:max(24px,calc(var(--safe-top) + 12px)); }
+.site-header .menu-panel.scene-pagination { top:max(calc(var(--safe-top) + 88px),var(--header-controls-bottom,100px)); max-height:calc(var(--view-height) - max(calc(var(--safe-top) + 88px),var(--header-controls-bottom,100px)) - var(--safe-bottom) - 12px); right:max(var(--safe-right),12px); }
+@media (orientation:landscape) { .page-home .site-header { padding-top:max(14px,calc(var(--safe-top) + 8px)); } }
+/* Phase 1 reference: 402 × 874. Reserve the centre for the island instead
+   of moving the whole header beneath it. Other viewport polish is Phase 4. */
+@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
+ .page-home .site-header { height:116px; padding-top:12px; padding-bottom:0; align-items:flex-start; }
+ .page-home .site-header .wordmark { width:96px; }
+ .page-home .site-header .header-actions { display:contents; }
+ .page-home .site-header .language-switch { position:absolute; top:12px; right:calc(var(--edge-right) + 50px); }
+ .page-home .site-header .motion-toggle { position:absolute; top:72px; left:var(--edge-left); }
+ .page-home .site-header .mobile-menu { position:absolute; top:12px; right:var(--edge-right); }
+ .page-home .site-header .menu-panel.scene-pagination { top:max(68px,var(--header-controls-bottom,74px)); max-height:calc(var(--view-height) - max(68px,var(--header-controls-bottom,74px)) - var(--safe-bottom) - 12px); }
+}
+.large-dials .booking-dials { grid-template-columns: 1fr; width: min(100%,240px); margin-inline: auto; gap: 24px; }
+.large-dials .dial-adjust { flex-direction: row; }
+body:not(.page-home) .site-header .menu-panel.scene-pagination a { color: var(--ink); text-shadow: 0 1px 3px var(--cream); }
+.dial-booking[data-step=review] .steps, .dial-booking[data-step=result] .steps { margin-bottom: 6px; }
+@media (max-width:359px) { .booking-dials { gap: 4px; } .dial-adjust { flex-direction: column; align-items: center; gap: 4px; } .dial-value { font-size: 18px; } }

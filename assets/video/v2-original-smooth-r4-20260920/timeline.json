@@ -1,0 +1,37 @@
+{
+  "version": 6,
+  "release": "v2-original-smooth-r4-20260920",
+  "source": "User MP4 with original anchors and motion-compensated local repairs, re-encoded H.264",
+  "sourceSha256": "5daef6d12eef13f9050de0904cac00ae438bffb223631fb9978c6fc797a13af0",
+  "videoSha256": "81224f8fee6241bd200f91a755cd9e2c9ba0b2f43adbc9fffd819325bcf44f01",
+  "width": 512,
+  "height": 768,
+  "fps": 24,
+  "frameCount": 192,
+  "duration": 8,
+  "anchorFrames": [
+    0,
+    48,
+    96,
+    144,
+    191
+  ],
+  "anchors": [
+    0.0,
+    2.0,
+    4.0,
+    6.0,
+    7.958333333333333
+  ],
+  "seekFrameOffsetSeconds": 0.020833333333333332,
+  "scenes": [
+    "home",
+    "drinks",
+    "about",
+    "reservation",
+    "contact"
+  ],
+  "holdsInSource": false,
+  "presentation": "One MP4 for transitions and stationary originals; no external station images",
+  "repairRadiusFrames": 6
+}

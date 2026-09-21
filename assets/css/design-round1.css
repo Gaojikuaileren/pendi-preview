@@ -1,0 +1,51 @@
+/* Stage 1 proposal: retain the film, wave profiles and responsive fallbacks. */
+.scene-pagination a { line-height: 1.1; align-content: center; gap: 3px; }
+.scene-pagination small { font-size: 8px; font-weight: 500; letter-spacing: 0; }
+.scene-pagination a::after { bottom: 1px; }
+@media (min-width: 360px) and (max-width: 499px) and (min-height: 801px) {
+  .scene-copy .eyebrow, .scene-note .eyebrow { font-size: 10px; letter-spacing: .12em; }
+  .scene-about .scene-copy .body-copy { line-height: 1.7; }
+  .scene-about .scene-copy h2 { font-size: 38px; }
+  .scene .text-link { min-height: 50px; font-size: 14px; margin-top: 18px; }
+  .scene-drinks .scene-note { --copy-top: calc(var(--art-height) - 193px); }
+  .scene-reservation .scene-status { border-left: 2px solid #8c653e; padding-left: 10px; font-size: 12px; color: var(--ink); }
+  .scene-contact .scene-copy { padding-top: 12px; }
+}
+.prototype { color-scheme: light; margin-top: 28px; max-width: 880px; }
+.prototype * { overflow-wrap: anywhere; }
+.prototype .demo-banner { background: #eee5d5; border: 1px solid #b5a389; border-radius: 12px; padding: 16px; font-size: 13px; line-height: 1.65; }
+.prototype h2 { font: 500 34px/1.1 var(--serif); margin: 22px 0 14px; }
+.prototype h3 { font-size: 17px; margin: 0 0 12px; }
+.prototype p { line-height: 1.65; margin-bottom: 14px; }
+.prototype label { display: grid; gap: 8px; font-size: 13px; font-weight: 600; }
+.prototype input, .prototype select { width: 100%; min-width: 0; min-height: 48px; border: 1px solid #9b8770; border-radius: 9px; padding: 10px 12px; font: 400 16px var(--sans); color: var(--ink); background: #f6f0e6; }
+.prototype input:focus-visible, .prototype select:focus-visible { outline: 2px solid #744923; outline-offset: 3px; }
+.prototype .fields { display: grid; gap: 18px; grid-template-columns: repeat(2,minmax(0,1fr)); }
+.prototype .full { grid-column: 1/-1; }
+.prototype button, .prototype .proto-link { display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border: 1px solid #8e7b66; border-radius: 24px; padding: 11px 18px; color: var(--ink); background: transparent; font: 500 14px var(--sans); text-align: center; }
+.prototype button.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.prototype button:disabled { opacity: .55; cursor: not-allowed; }
+.prototype .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.prototype .panel { padding: 24px; background: #eee5d5; border: 1px solid #bbaa94; border-radius: 16px; margin-block: 22px; }
+.prototype .result { border-left: 3px solid #8c653e; padding-left: 18px; margin: 24px 0; }
+.prototype .result:focus { outline: none; }
+.prototype .result h2 { margin-top: 0; }
+.prototype .scenario { margin-block: 22px; border-top: 1px solid #bbaa94; padding-top: 18px; }
+.prototype .scenario summary { padding: 12px 0; font-size: 13px; }
+.prototype .scenario label { margin-block: 14px; }
+.prototype .meta { font-size: 12px; color: #655345; }
+.prototype .steps { font-size: 12px; letter-spacing: .03em; margin: 24px 0 16px; }
+.prototype .summary { padding: 14px; border-radius: 9px; background: #f5eddf; font-size: 14px; }
+.prototype .list-row { display: grid; gap: 8px; border-top: 1px solid #bbaa94; padding-block: 18px; }
+.prototype .team-layout { display: grid; gap: 20px; }
+.prototype .team-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.prototype [aria-pressed=true] { background: var(--ink); color: var(--cream); }
+.page-design_review .detail-page { max-width: 1120px; }
+.detail-page.prototype-ready { padding-top: 142px; }
+.detail-page.prototype-ready > .notice, .detail-page.prototype-ready > .body-copy { display: none; }
+.detail-page.prototype-ready > h1 { margin-bottom: 20px; }
+.prototype-ready .prototype { margin-top: 20px; }
+.prototype .team-layout { margin-top: 20px; }
+.page-design_review .detail-page > h1, .page-reservation .detail-page > h1 { font-size: clamp(40px, 7vw, 64px); }
+@media (min-width: 900px) { .prototype .team-layout { grid-template-columns: 180px 1fr; } .prototype .team-nav { flex-direction: column; align-self: start; } }
+@media (max-width: 420px) { .prototype .panel { padding: 18px; } .prototype .actions > * { flex: 1 1 100%; } }

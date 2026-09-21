@@ -1,0 +1,6 @@
+/* Temporary first-load layers only; settled composition retains its own styles. */
+html:is([data-home-entry=pending],[data-home-entry=running]) .page-home { background:var(--night); }
+html[data-home-entry=pending] :is(.site-header,.experience) { opacity:0 !important; }
+@media (prefers-reduced-motion:reduce) {
+ html[data-home-entry=pending] :is(.site-header,.experience) { opacity:1 !important; }
+}

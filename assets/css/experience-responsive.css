@@ -1,0 +1,167 @@
+/* Viewport-based composition, never a device/UA whitelist. Keep native zoom.
+   These tokens are also the contract with wave.js and the responsive audit. */
+:root {
+  --view-height: 100svh;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --edge-left: max(var(--gutter), var(--safe-left));
+  --edge-right: max(var(--gutter), var(--safe-right));
+}
+@supports (height: 100dvh) { :root { --view-height: 100dvh; } }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+.page-home {
+  --strip-base: 124px;
+  --strip-height: calc(var(--strip-base) + var(--safe-bottom));
+  --art-height: calc(var(--view-height) - var(--strip-height));
+  --edge-left: max(var(--gutter), var(--safe-left));
+  --edge-right: max(var(--gutter), var(--safe-right));
+  --wave-layout: portrait;
+}
+.site-header { padding-left: var(--edge-left); padding-right: var(--edge-right); padding-top: max(24px, calc(var(--safe-top) + 10px)); }
+.language-switch a { min-width: 44px; }
+.page-home .language-switch { padding-inline: 3px; border: 1px solid rgb(222 211 192 / 14%); border-radius: 28px; background: rgb(25 19 15 / 55%); }
+.header-actions { gap: 12px; }
+.menu-panel { left: var(--edge-left); right: var(--edge-right); max-height: calc(var(--view-height) - var(--safe-top) - var(--safe-bottom) - 115px); overflow-y: auto; overscroll-behavior: contain; }
+.experience, .scene-deck { height: var(--view-height); }
+.scene { height: var(--view-height); min-height: var(--view-height); }
+.scene-copy, .scene-note { left: var(--edge-left); right: var(--edge-right); max-height: calc(var(--view-height) - var(--copy-top, 31svh) - var(--strip-height) - 12px); }
+.scene-home .hero-content { max-height: calc(var(--view-height) - var(--strip-height) - 300px); overflow-y: auto; }
+.scene-stack { display: contents; }
+.scene-about { --copy-top: min(calc(var(--view-height) * .515), calc(var(--art-height) - 288px)); }
+.scene-drinks { --copy-top: calc(var(--view-height) * .37); }
+.scene-drinks .scene-copy { max-height: calc(var(--view-height) * .26); }
+.scene-drinks .scene-copy h2 { padding-bottom: .08em; }
+.scene-drinks .scene-note { --copy-top: min(calc(var(--view-height) * .625), calc(var(--art-height) - 175px)); left: var(--edge-left); }
+.scene-reservation { --copy-top: min(calc(var(--view-height) * .47), calc(var(--art-height) - 332px)); }
+.scene-contact { --copy-top: min(calc(var(--view-height) * .47), calc(var(--art-height) - 270px)); }
+.experience-strip { grid-template-rows: minmax(0, 1fr) 44px; padding-left: var(--edge-left); padding-right: var(--edge-right); padding-bottom: calc(6px + var(--safe-bottom)); }
+.experience-strip .motion-toggle { right: var(--edge-right); bottom: calc(6px + var(--safe-bottom)); }
+.scene-home .scroll-cue { left: var(--edge-left); }
+.strip-legal a { min-height: 20px; display: inline-flex; align-items: center; }
+/* No-JS retains all five chapters and readable text without any extra images. */
+.page-home:not(.experience-ready) .scene:not(.scene-home) { background: var(--cream); }
+.page-home:not(.experience-ready) .scene-drinks .scene-copy { color: var(--ink); }
+.page-home:not(.experience-ready) .site-header::before { background: var(--night); bottom: 0; }
+@media (max-width: 359px) {
+  :root { --gutter: 16px; }
+  .site-header { gap: 12px; }
+  .header-actions { gap: 6px; }
+  .language-switch { gap: 4px; }
+  .experience-strip { column-gap: 8px; }
+  .experience-strip .basin-location { gap: 8px; }
+  .experience-strip .basin-location > div { padding-left: 8px; font-size: 9px; }
+  .strip-meta .basin-motto { font-size: 7.5px; }
+}
+@media (min-width: 900px) {
+  .page-home { --strip-base: 110px; }
+  .scroll-video { width: calc(var(--art-height) * 2 / 3); }
+  .scene-home .hero-content { max-height: calc(var(--view-height) - var(--strip-height) - 345px); }
+  .scene-about, .scene-reservation { --copy-top: calc(var(--view-height) * .49); }
+  .scene-drinks { --copy-top: calc(var(--view-height) * .17); }
+  .scene-drinks .scene-copy { max-height: calc(var(--view-height) * .38); }
+  .scene-drinks .scene-note { --copy-top: calc(var(--view-height) * .64); left: 68%; }
+  .scene-contact { --copy-top: calc(var(--view-height) * .42); }
+  .experience-strip { padding-bottom: calc(18px + var(--safe-bottom)); }
+  .experience-strip .motion-toggle { bottom: auto; }
+}
+@media (min-width: 500px) and (max-width: 899px) and (max-aspect-ratio: 1/1) {
+  .scroll-video { object-position: 50% 0%; }
+}
+/* Short portrait: move the paper up, not just the text over the photograph. */
+@media (max-width: 899px) and (max-height: 800px) and (max-aspect-ratio: 1/1) {
+  .page-home { --wave-layout: compact; }
+  .scene-home .hero-content { top: max(calc(var(--safe-top) + 90px), calc(var(--art-height) * .30)); bottom: auto; max-height: calc(var(--art-height) - max(calc(var(--safe-top) + 90px), calc(var(--art-height) * .30)) - 45px); overflow-y: auto; }
+  .scene-home h1 { font-size: clamp(44px, 12vw, 60px); }
+  .scene-home .hero-subline { margin-top: 14px; font-size: 10px; }
+  .scene-home .short-rule { margin-block: 14px; }
+  .scene-home .scroll-cue { display: none; }
+  .scene-about, .scene-contact { --copy-top: min(calc(var(--art-height) * .46), calc(var(--art-height) - 260px)); }
+  .scene-reservation { --copy-top: min(calc(var(--art-height) * .46), calc(var(--art-height) - 280px)); }
+  .scene .scene-copy h2 { font-size: clamp(30px, 8.6vw, 38px); line-height: 1.04; }
+  .scene .scene-copy .eyebrow { margin-bottom: 10px; }
+  .scene .scene-copy .body-copy, .scene-note .body-copy { margin-top: 12px; font-size: 13px; line-height: 1.65; }
+  .scene-reservation .scene-status { font-size: 10px; margin-top: 8px; }
+  .scene .text-link { min-height: 44px; padding-block: 9px; margin-top: 12px; }
+  .scene-drinks { --copy-top: calc(var(--art-height) * .29); }
+  .scene-drinks .scene-note { --copy-top: calc(var(--art-height) * .63); }
+  .scene-reservation .scene-copy h2 { white-space: normal; }
+}
+/* Landscape / opened display: the complete portrait film lives on the right,
+   the paper rises on the left. Small height does not imply a small type scale. */
+@media (min-width: 600px) and (min-aspect-ratio: 1/1) and (max-height: 800px) {
+  .page-home { --wave-layout: wide; --strip-base: 74px; --gutter: clamp(24px, 4vw, 52px); }
+  .page-home .site-header { padding-top: max(14px, calc(var(--safe-top) + 8px)); padding-bottom: 12px; }
+  .page-home .wordmark { width: 80px; }
+  .page-home .desktop-nav { display: none; }
+  .page-home .mobile-menu { display: block; }
+  .scroll-video { left: auto; right: 0; width: calc(var(--art-height) * 2 / 3); max-width: 52%; object-position: 50% 0%; mask-image: linear-gradient(90deg, transparent, #000 18%); }
+  .experience-backdrop .hero-shade { background: linear-gradient(90deg, var(--night) 15%, transparent 70%); }
+  .scene { --copy-top: max(calc(var(--safe-top) + 80px), calc(var(--art-height) * .29)); }
+  .scene .scene-copy, .scene .scene-note { left: var(--edge-left); right: 43%; max-height: calc(var(--art-height) - var(--copy-top) - 12px); }
+  .scene .scene-copy h2 { font-size: clamp(32px, 4.6vw, 56px); line-height: 1.03; }
+  .scene .scene-copy .eyebrow { font-size: 9px; margin-bottom: 10px; }
+  .scene .scene-copy .body-copy, .scene-note .body-copy { font-size: 13px; line-height: 1.7; margin-top: 12px; }
+  .scene .text-link { min-height: 44px; margin-top: 12px; padding: 9px 20px; font-size: 13px; }
+  .scene-reservation .scene-status { font-size: 10px; margin-top: 8px; }
+  .scene-home .hero-content { --copy-top: max(calc(var(--safe-top) + 80px), calc(var(--art-height) * .24)); top: var(--copy-top); bottom: auto; overflow-y: auto; }
+  .scene-home h1 { font-size: clamp(48px, 7vw, 82px); }
+  .scene-home .hero-subline { flex-direction: column; font-size: 10px; margin-top: 14px; }
+  .scene-home .short-rule { margin-block: 14px; }
+  .scene-home .button { min-height: 46px; min-width: 218px; padding: 10px 22px; font-size: 14px; }
+  .scene-home .scroll-cue { display: none; }
+  .scene-drinks .scene-copy { color: var(--ink); max-height: 100px; }
+  .scene-drinks .scene-copy h2 { font-size: clamp(32px, 4.6vw, 44px); white-space: normal; }
+  .scene-drinks .scene-note { --copy-top: max(calc(var(--safe-top) + 180px), calc(var(--art-height) * .29 + 100px)); }
+  .scene-drinks .scene-note .eyebrow { display: none; }
+  .experience-strip { display: flex; align-items: center; gap: 12px; padding-top: 8px; padding-bottom: calc(8px + var(--safe-bottom)); }
+  .experience-strip .basin-location { gap: 8px; flex: 0 1 auto; }
+  .experience-strip .basin-location img { width: 28px; height: 28px; }
+  .experience-strip .basin-location > div { padding-left: 8px; font-size: 8px; gap: 0; }
+  .experience-strip .opening, .strip-meta .basin-motto { display: none; }
+  .scene-pagination { padding: 0; margin: 0 auto 0 0; gap: 0; flex: 0 0 220px; }
+  .scene-pagination a { flex: 1 0 44px; }
+  .strip-legal { flex-direction: column; gap: 0; margin: 0; font-size: 9px; }
+  .experience-strip .motion-toggle { position: static; width: 44px; height: 44px; }
+}
+@media (min-width: 600px) and (min-aspect-ratio: 1/1) and (max-height: 480px) {
+  .page-home { --strip-base: 64px; }
+  .scene .scene-copy h2 { font-size: 32px; }
+  .scene-reservation .scene-copy h2 { white-space: normal; }
+  .scene-home h1 { font-size: 46px; }
+  .scene-home .hero-subline { flex-direction: row; flex-wrap: wrap; font-size: 9px; gap: 5px; margin-top: 10px; }
+  .scene-home .short-rule { margin-block: 10px; }
+  .scene .scene-copy .eyebrow { margin-bottom: 6px; }
+  .scene .scene-copy .body-copy { margin-top: 8px; font-size: 12px; line-height: 1.6; }
+  .scene .text-link { margin-top: 10px; }
+  .scene-drinks .scene-copy { max-height: 75px; }
+  .scene-drinks .scene-note { --copy-top: max(calc(var(--safe-top) + 155px), calc(var(--art-height) * .29 + 75px)); }
+}
+/* PiP / split windows can be both narrow and short. Keep one scrollable
+   reading area, not separate tiny heading and action scrollports. */
+@media (max-width: 599px) and (max-height: 520px) {
+  .page-home { --wave-layout: compact; }
+  .scene { --copy-top: calc(var(--safe-top) + 112px); }
+  .scene .scene-copy, .scene .scene-stack { top: var(--copy-top); bottom: auto; max-height: calc(var(--art-height) - var(--copy-top) - 8px); overflow-y: auto; overscroll-behavior-y: contain; }
+  .scene:not(.scene-home) > .scene-copy, .scene .scene-stack { background: var(--cream); border-radius: 14px; padding: 12px 16px; }
+  .scene .scene-stack { display: block; position: absolute; left: var(--edge-left); right: var(--edge-right); }
+  .experience-ready .scene-stack { transform: translateY(calc(var(--scene-counter, 0px) + var(--scene-drift, 0px))); opacity: var(--scene-opacity, 1); }
+  .scene-drinks .scene-stack > div { position: static; padding: 0; max-height: none; overflow: visible; transform: none; opacity: 1; color: var(--ink); }
+  .scene-drinks .scene-note { margin-top: 12px; }
+  .scene-drinks .scene-note .eyebrow { display: none; }
+  .scene .scene-copy h2 { font-size: 30px; }
+  .scene-home h1 { font-size: 44px; }
+  .scene-home .hero-subline { font-size: 10px; margin-top: 12px; }
+  .scene-home .short-rule { margin-block: 12px; }
+  .scene-home .scroll-cue { display: none; }
+}
+@media (max-height: 360px) {
+  .scene .text-link, .scene .button { position: sticky; bottom: 0; z-index: 1; display: flex; width: 100%; justify-content: space-between; }
+  .scene .text-link { background: var(--cream); box-shadow: 0 -8px 12px var(--cream); }
+  .scene-reservation .text-link { background: var(--ink); }
+  .scene-home .button { box-shadow: 0 -8px 12px var(--night); }
+}
+@media (max-width: 599px) and (max-height: 360px) {
+  .scene-drinks .scene-stack > .scene-note { display: contents; }
+}

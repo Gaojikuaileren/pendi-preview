@@ -1,0 +1,102 @@
+/* Phase 1 menu-only refinement. The approved home composition stays untouched. */
+.menu-card-pile { display:none; pointer-events:none; }
+.menu-pile-entry { position:absolute; inset:0; z-index:2; pointer-events:auto; cursor:pointer; }
+.menu-book-entry { position:absolute; z-index:2; display:none; cursor:pointer; transform:translate(var(--menu-type-x,0px),calc(var(--scene-counter,0px) + var(--menu-type-y,0px))); }
+.experience-ready .scene-drinks:not(.depth-large-type) .menu-book-entry { display:block; }
+.menu-book-entry:focus-visible { background:#e8d7ae22; box-shadow:inset 0 0 0 3px #d5b88b; }
+.menu-pile-entry:focus-visible { outline:2px solid #8b6844; outline-offset:-4px; }
+.menu-cover-title-row { display:flex; align-items:center; gap:18px; }
+.menu-cover-title-row .menu-cover-title { min-width:0; }
+.menu-cover-title-row .menu-cover-arrow { flex:none; width:34px; height:34px; }
+#drinks-heading:focus { outline:none; }
+.menu-pile-card { position:absolute; width:152px; height:174px; padding:12px; box-sizing:border-box; background:#34312b; color:#b5a17e; border:1px solid #8e785570; box-shadow:0 9px 18px #21170d55; }
+.menu-pile-card:nth-child(1) { left:12px; top:32px; transform:rotate(-19deg); background:#302f28; }
+.menu-pile-card:nth-child(2) { right:4px; top:24px; transform:rotate(16deg); background:#3b342c; }
+.menu-pile-card:nth-child(3),.menu-pile-card[data-pile-front] { left:calc(50% - 76px); top:4px; transform:rotate(-5deg); }
+.menu-pile-card:nth-child(1) { left:-22px; top:70px; transform:rotate(-28deg); }
+.menu-pile-card:nth-child(2) { right:-22px; top:62px; transform:rotate(25deg); }
+.menu-pile-card:nth-child(3) { left:25px; top:32px; transform:rotate(-14deg); }
+.menu-pile-card:nth-child(4) { right:25px; top:30px; transform:rotate(18deg); background:#302f28; }
+.menu-pile-card:nth-child(5) { left:calc(50% - 94px); top:17px; transform:rotate(8deg); background:#40372d; }
+.menu-pile-card[data-pile-front] { left:calc(50% - 76px); right:auto; top:4px; transform:rotate(-5deg); }
+.menu-pile-card { transition:background-color 360ms ease-in-out,color 360ms ease-in-out,border-color 360ms ease-in-out,box-shadow 360ms ease-in-out; }
+.menu-card-pile:not(.is-opening) .menu-pile-card { background:#bcb19e; color:#99876b; border-color:#a89a8266; box-shadow:0 6px 12px #55462d22; }
+@media (prefers-reduced-motion:reduce) { .menu-pile-card { transition:none; } }
+.menu-pile-card .pile-number { font:8px/1.4 var(--sans); letter-spacing:.1em; }
+.menu-pile-card > svg { display:block; width:100%; height:50px; }
+.menu-pile-card .pile-name { font:26px/1 var(--serif); margin:4px 0; color:#e6dac3; }
+.menu-pile-card .pile-terrain { height:28px; fill:none; stroke:currentColor; stroke-width:1; }
+.pile-terrain .terrain-fill { fill:currentColor; fill-opacity:.12; stroke:none; }
+.menu-pile-card { overflow:hidden; }
+.menu-pile-card > .pile-back-pattern { position:absolute; inset:0; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:.7; opacity:.45; }
+.route-ink > .pile-back-pattern { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:.7; opacity:.45; }
+@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
+ .scene-drinks:not(.depth-large-type) > .menu-card-pile { display:block; position:absolute; z-index:1; left:16px; right:16px; bottom:-64px; height:180px;
+ transform:translate(var(--menu-pile-x,0px),calc(var(--scene-counter,0px) + var(--menu-pile-y,0px))); opacity:var(--menu-type-opacity,0); }
+}
+@font-face { font-family:'Pendi Sensory'; src:url('/pendi-preview/assets/fonts/cormorant-garamond-italic.ttf') format('truetype'); font-style:italic; font-weight:300 700; font-display:swap; }
+[data-subject-scene=drinks] { visibility:hidden; }
+.scene-drinks :is(.scene-copy,.scene-note,.scene-stack) { scrollbar-width:none; }
+.scene-drinks :is(.scene-copy,.scene-note,.scene-stack)::-webkit-scrollbar { display:none; }
+
+/* Flat menu entrance: no tilted cover, spine, stacked pages or cast shadow. */
+.scene-drinks.menu-depth-preview .menu-cover,
+.scene-drinks.menu-depth-preview .menu-cover:hover {
+ transform:none; box-shadow:none; text-shadow:none;
+ border:0; border-radius:0;
+ background:transparent; padding:18px 0; transition:background-color .2s ease;
+}
+.scene-drinks.menu-depth-preview .menu-cover::before,
+.scene-drinks.menu-depth-preview .menu-cover::after { display:none; }
+.scene-drinks.menu-depth-preview .menu-cover:hover { background:transparent; }
+.scene-drinks.menu-depth-preview .menu-cover-title { margin:0; font-size:68px; line-height:1.06; font-weight:400; letter-spacing:-.035em; }
+.scene-drinks.menu-depth-preview .menu-cover { gap:14px; }
+.scene-drinks.menu-depth-preview .menu-cover-bottom { border-top:0; padding-top:2px; }
+.scene-drinks .menu-typewriter { min-height:1.12em; }
+.scene-drinks .menu-descriptor { margin:0; font:400 italic 34px/1.12 'Pendi Sensory',var(--serif); letter-spacing:.01em; }
+.scene-drinks .menu-type-ink { display:inline; }
+
+/* The four-corner projection shares the photographed cover's vanishing lines.
+   Normal compositing keeps the dark cast shadow visible on the wood. */
+@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .scene-copy {
+  left:56%; top:calc(var(--view-height) * .295); padding:0 0 32px; max-height:none; overflow:visible;
+  transform:translate(var(--menu-type-x,0px),calc(var(--scene-counter,0px) + var(--menu-type-y,0px)));
+  opacity:var(--menu-type-opacity,0);
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .menu-ink-plane {
+  transform:var(--menu-table-transform,none);
+  transform-origin:0 0; color:#e7d7be; opacity:1; mix-blend-mode:normal;
+  text-shadow:none;
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .menu-ink-plane :is(.menu-descriptor,.eyebrow) {
+  text-shadow:5px var(--menu-shadow-y,28px) 4px rgb(5 3 1 / 85%),5px var(--menu-shadow-y,28px) 7px rgb(5 3 1 / 100%),9px calc(var(--menu-shadow-y,28px) + 8px) 14px rgb(5 3 1 / 85%);
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .menu-ink-plane .menu-descriptor {
+  font-size:34px; line-height:1.12; font-weight:400; padding:0;
+  letter-spacing:.01em; overflow-wrap:normal; hyphens:none;
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .menu-ink-plane .eyebrow {
+  margin-bottom:12px; font-size:11px; letter-spacing:.18em;
+  /* Small capitals need a denser core: title-sized blur erased their shadow. */
+  text-shadow:3px max(8px,var(--menu-shadow-y,8px)) 2px rgb(5 3 1 / 95%),4px max(8px,var(--menu-shadow-y,8px)) 5px #050301,6px calc(max(8px,var(--menu-shadow-y,8px)) + 4px) 8px rgb(5 3 1 / 85%);
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .scene-note {
+  top:auto; bottom:calc(var(--safe-bottom) + 36px + var(--view-height) * .1); padding:0; max-height:none; overflow:visible;
+ }
+ .scene-drinks.menu-depth-preview:not(.depth-large-type) .scene-stack { overflow:visible; }
+ /* At enlarged text sizes, keep every word and action in one readable area.
+    This accessibility fallback must not clip the heading behind the wave. */
+ .scene-drinks.menu-depth-preview.depth-large-type .scene-stack {
+  display:block; position:absolute; z-index:2; left:var(--edge-left); right:var(--edge-right);
+  top:max(150px,calc(var(--safe-top) + 100px)); bottom:calc(var(--safe-bottom) + 24px);
+  max-height:none; padding:18px; border-radius:18px; background:var(--cream);
+  overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain;
+  transform:translateY(calc(var(--scene-counter,0px) + var(--scene-drift,0px))); opacity:var(--scene-opacity,1);
+ }
+ .scene-drinks.menu-depth-preview.depth-large-type :is(.scene-copy,.scene-note) {
+  position:static; padding:0; max-height:none; overflow:visible; transform:none; opacity:1;
+ }
+ .scene-drinks.menu-depth-preview.depth-large-type .scene-note { margin-top:24px; }
+ .scene-drinks.menu-depth-preview.depth-large-type .menu-ink-plane { transform:none; color:var(--ink); opacity:1; mix-blend-mode:normal; text-shadow:none; }
+}
