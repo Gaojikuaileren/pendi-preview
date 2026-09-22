@@ -1,7 +1,7 @@
-import {mountScrollVideo} from './scroll-video.js?v=a136df70d0b0';
-import {syncMenuTableMotion} from './menu-table-plane.js?v=a136df70d0b0';
-import {mountStripTransition} from './strip-transition.js?v=a136df70d0b0';
-// One paging owner: scripted transitions. Reading areas and no-JS keep native scrolling.
+import {mountScrollVideo} from './scroll-video.js?v=52358739f485';
+import {syncMenuTableMotion} from './menu-table-plane.js?v=52358739f485';
+import {mountStripTransition} from './strip-transition.js?v=52358739f485';
+// One paging owner: scripted transitions. No-JS keeps native scrolling; enhanced scenes use explicit reading controls.
 export function mountDeck(deck, wave) {
   const scenes = [...deck.querySelectorAll('[data-scene]')];
   const links = [...document.querySelectorAll('.scene-pagination a')];
@@ -54,7 +54,7 @@ export function mountDeck(deck, wave) {
       scene.style.setProperty('--scene-drift',`${isReduced?0:-distance*35}px`);
       scene.style.setProperty('--scene-opacity',String(Math.max(0,1-Math.abs(distance)*2.4)));
     });
-    links.forEach((link, i) => i === index ? link.setAttribute('aria-current','step') : link.removeAttribute('aria-current'));
+    links.forEach((link, i) => {link.style.setProperty('--nav-focus',String(Math.max(0,1-Math.abs(from+mix-i))));i === index ? link.setAttribute('aria-current','step') : link.removeAttribute('aria-current');});
     film?.setProgress(from+mix);
     clearTimeout(settleTimer);
     settleTimer = setTimeout(() => {
@@ -67,15 +67,10 @@ export function mountDeck(deck, wave) {
   deck.addEventListener('scroll', () => {
     if (!updateFrame) updateFrame = requestAnimationFrame(update);
   }, {passive:true});
-  const canScrollInside = (target, delta) => {
-    const copy = target.closest('.scene-copy,.scene-note');
-    const stack = target.closest('.scene-stack');
-    return [copy, stack].some(el => el && getComputedStyle(el).overflowY === 'auto' && el.scrollHeight > el.clientHeight + 8 && ((delta > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 2) || (delta < 0 && el.scrollTop > 0)));
-  };
   const showPosition=()=>document.dispatchEvent(new CustomEvent('pendi:page-gesture'));
   deck.addEventListener('wheel', (event) => {
-    if(document.querySelector('dialog[open]')||event.target.closest('[data-inline-booking],[data-contact-info]'))return;
-    if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || canScrollInside(event.target, event.deltaY)) return;
+    if(document.querySelector('dialog[open]'))return;
+    if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
     event.preventDefault();
     showPosition();
     const now = performance.now();
@@ -91,14 +86,13 @@ export function mountDeck(deck, wave) {
   }, {passive:false});
   let swipe=null,suppressClickUntil=0;
   deck.addEventListener('touchstart',event=>{
-    if(event.touches.length!==1||(window.visualViewport?.scale||1)>1.01||document.querySelector('dialog[open]')||event.target.closest('input,textarea,select,[contenteditable="true"],[data-inline-booking]')){swipe=null;return;}
-    swipe={x:event.touches[0].clientX,y:event.touches[0].clientY,delta:0,captured:false,target:event.target,blocked:transitionFrame!==null,reading:false};
+    if(event.touches.length!==1||(window.visualViewport?.scale||1)>1.01||document.querySelector('dialog[open]')){swipe=null;return;}
+    swipe={x:event.touches[0].clientX,y:event.touches[0].clientY,delta:0,captured:false,target:event.target,blocked:transitionFrame!==null};
   },{passive:true});
   deck.addEventListener('touchmove',event=>{
     if(!swipe||event.touches.length!==1){swipe=null;return;}
     const dx=event.touches[0].clientX-swipe.x,dy=swipe.y-event.touches[0].clientY;
-    // Once a gesture starts in overflowing accessible text, do not steal it at its edge.
-    if(!swipe.blocked&&(swipe.reading||(!swipe.captured&&canScrollInside(swipe.target,dy)))){swipe.reading=true;return;}
+    if(swipe.target.closest('.basin-dial')?.dataset.dialGesture==='rotate'){if(event.cancelable)event.preventDefault();return;}
     // Cancel from the first move, before Safari starts native pan / rubber-banding.
     if(event.cancelable)event.preventDefault();
     if(Math.abs(dy)>=12&&Math.abs(dy)>Math.abs(dx)){swipe.captured=true;swipe.delta=dy;showPosition();}
@@ -120,7 +114,6 @@ export function mountDeck(deck, wave) {
     if (event.target.closest('input,textarea,select,[contenteditable="true"]') || document.querySelector('.mobile-menu[open]:not([data-menu-auto=true])')) return;
     if (['ArrowDown','PageDown','ArrowUp','PageUp','Home','End'].includes(event.key)) {
       const delta = ['ArrowDown','PageDown','End'].includes(event.key) ? 1 : -1;
-      if (canScrollInside(event.target, delta)) return;
       event.preventDefault();
       go(event.key === 'Home' ? 0 : event.key === 'End' ? scenes.length - 1 : index + delta);
     }

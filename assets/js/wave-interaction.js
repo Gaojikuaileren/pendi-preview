@@ -1,4 +1,4 @@
-import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=a136df70d0b0';
+import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=52358739f485';
 export function mountIntegratedWave(container,button){
  const svg=container.querySelector('svg'),front=container.querySelector('[data-wave-front]'),back=container.querySelector('[data-wave-back]');
  if(!svg||!front||!back||!button)return null;

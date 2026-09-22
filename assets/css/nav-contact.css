@@ -34,9 +34,6 @@ body img, body video { -webkit-user-drag:none; }
 .page-home .site-header .menu-panel.scene-pagination a > span,.page-home .site-header .menu-panel.scene-pagination a > small { width:100%; text-align:right; }
 .page-home .site-header .language-switch a { text-shadow:0 1px 3px #100c09e6,0 2px 8px #100c0999; }
 .page-home .site-header .motion-toggle svg,.page-home .site-header .menu-lines { filter:drop-shadow(0 1px 2px #100c09e6) drop-shadow(0 2px 5px #100c0980); }
-.site-header .menu-panel.scene-pagination a[aria-current] { opacity: 1; border-right:2px solid currentColor; padding-right:11px; }
-.page-home .site-header .menu-panel.scene-pagination a:not([aria-current]) { opacity:.62; }
-.page-home .site-header .menu-panel.scene-pagination a[aria-current] small { font-weight:700; }
 .site-header .menu-panel.scene-pagination a.over-paper { color: var(--ink); text-shadow: 0 1px 3px var(--cream); }
 .site-header .menu-panel.scene-pagination a::after { display:none; }
 .site-header .menu-panel.scene-pagination a:focus-visible { outline-offset:-3px; }
@@ -115,6 +112,43 @@ body img, body video { -webkit-user-drag:none; }
  .page-home .site-header .menu-panel.scene-pagination { top:var(--header-controls-bottom,90px); max-height:calc(var(--view-height) - var(--header-controls-bottom,90px) - var(--safe-bottom) - 12px); }
 }
 .large-dials .booking-dials { grid-template-columns: 1fr; width: min(100%,240px); margin-inline: auto; gap: 24px; }
+
+/* Passive hints reveal content, while only a deliberate menu opening shows X. */
+.mobile-menu[data-menu-manual=false] .menu-lines { background:currentColor; }
+.mobile-menu[data-menu-manual=false] .menu-lines::before,.mobile-menu[data-menu-manual=false] .menu-lines::after { transform:none; }
+.page-home .site-header .menu-panel.scene-pagination a { transition:none; font-weight:400; position:relative; opacity:calc(.52 + .48 * var(--nav-focus,0)); border-right:1px solid #f4ead83d; padding-right:12px; }
+.page-home .site-header .menu-panel.scene-pagination a small { font-weight:calc(400 + 300 * var(--nav-focus,0)); }
+.page-home .site-header .menu-panel.scene-pagination a::before { content:''; position:absolute; right:-1px; top:0; bottom:0; width:2px; background:currentColor; opacity:var(--nav-focus,0); transform:scaleY(calc(.2 + .8 * var(--nav-focus,0))); }
+/* No rectangular focus/tap artifacts. Keyboard feedback uses ink instead. */
+body :focus,body :focus-visible { outline:none!important; }
+a,button,summary,[role=slider] { -webkit-tap-highlight-color:transparent; }
+a:focus-visible,button:focus-visible,summary:focus-visible { text-decoration:underline; text-underline-offset:4px; }
+.site-header summary:focus-visible .menu-lines { color:#c9a471; }
+.basin-dial:focus-visible { background:#ad8b6226; }
+.specimen-star { width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:1; stroke-linecap:round; }
+
+/* The five-scene deck never delegates vertical panning to its text surfaces. */
+.experience-ready .scene :is(.scene-copy,.scene-note,.scene-stack) { overflow-y:hidden!important; scroll-behavior:auto; }
+.experience-ready .scene-drinks:not(.depth-large-type) :is(.scene-copy,.scene-note) { overflow:visible!important; }
+.scene-reservation .in-place-copy { padding:12px 16px; }
+.scene-reservation .in-place-copy > h2 { margin-bottom:8px; }
+.dial-booking .steps { margin:8px 0; padding-bottom:6px; }
+.dial-booking .booking-dials { margin-top:12px; }
+.dial-booking .dial-label { margin-bottom:6px; }
+.dial-booking .dial-adjust { margin-top:4px; }
+.dial-booking .dial-help { margin:8px 0; }
+.dial-booking .dial-selection { padding:8px 0; margin-bottom:8px; }
+.dial-booking form > .actions { margin-top:8px; }
+.dial-booking .booking-rules-link { padding-top:8px; }
+.scene-reading-controls { position:absolute; z-index:4; display:flex; justify-content:space-between; align-items:center; gap:8px; height:44px; color:var(--ink); background:var(--cream); border-radius:22px; padding:0 6px; transform:translateY(var(--scene-counter,0px)); opacity:var(--scene-opacity,1); }
+.scene-reading-controls[hidden] { display:none; }
+.scene-reading-controls button { min-width:44px; min-height:44px; border:0; background:transparent; color:inherit; font:12px var(--sans); }
+.scene-reading-controls span { font:11px var(--sans); }
+/* Browser-controlled toolbar tint is advisory; these are real page edge colours. */
+html { background-color:var(--cream); }
+html:has(body.page-drinks) { background-color:#211f1b; }
+.page-home.experience-ready::before { content:''; position:fixed; z-index:3; inset:0 0 auto; height:40px; background:linear-gradient(var(--night) 0 4px,transparent); pointer-events:none; }
+.page-home.experience-ready::after { content:''; position:fixed; z-index:3; inset:auto 0 0; height:2px; background-color:var(--cream); pointer-events:none; }
 .large-dials .dial-adjust { flex-direction: row; }
 body:not(.page-home) .site-header .menu-panel.scene-pagination a { color: var(--ink); text-shadow: 0 1px 3px var(--cream); }
 .dial-booking[data-step=review] .steps, .dial-booking[data-step=result] .steps { margin-bottom: 6px; }

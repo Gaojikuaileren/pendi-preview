@@ -1,21 +1,22 @@
-import { mountIntegratedWave } from './wave-interaction.js?v=a136df70d0b0';
-import { mountDeck } from './deck.js?v=a136df70d0b0';
-import { mountMenuMotion } from './menu-motion.js?v=a136df70d0b0';
-import { mountLanguageSwitch } from './language.js?v=a136df70d0b0';
-import { mountHomeEntrance } from './home-entry.js?v=a136df70d0b0';
-import { mountCardRoute } from './card-route.js?v=a136df70d0b0';
-import { mountMenuCards } from './menu-cards.js?v=a136df70d0b0';
-import { mountDeviceTilt } from './device-tilt.js?v=a136df70d0b0';
-import './same-page.js?v=a136df70d0b0';
+import { mountIntegratedWave } from './wave-interaction.js?v=52358739f485';
+import { mountDeck } from './deck.js?v=52358739f485';
+import { mountMenuMotion } from './menu-motion.js?v=52358739f485';
+import { mountLanguageSwitch } from './language.js?v=52358739f485';
+import { mountHomeEntrance } from './home-entry.js?v=52358739f485';
+import { mountCardRoute } from './card-route.js?v=52358739f485';
+import { mountMenuCards } from './menu-cards.js?v=52358739f485';
+import { mountDeviceTilt } from './device-tilt.js?v=52358739f485';
+import {mountSceneReading} from './scene-reading.js?v=52358739f485';
+import './same-page.js?v=52358739f485';
 
 const wave = document.querySelector('[data-wave]');
 const controller = wave ? mountIntegratedWave(wave, document.querySelector('[data-motion-toggle]')) : null;
 const deck = document.querySelector('[data-deck]');
-if (deck) mountDeck(deck, controller);
+if (deck) {mountDeck(deck, controller);mountSceneReading(deck);}
 
 // Approved Phase 1 design is the default. Comparison controls stay opt-in.
 if(deck) {
-  const designReady=import('./menu-depth-preview.js?v=a136df70d0b0').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
+  const designReady=import('./menu-depth-preview.js?v=52358739f485').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
   mountHomeEntrance(designReady);
 }
 

@@ -1,83 +1,32 @@
-// Keep native details as the no-JS fallback; defer closing until the panel retracts.
+// Manual navigation and passive swipe hints have independent state.
 export function mountMenuMotion(menu) {
-  const summary = menu.querySelector('summary');
-  const panel = menu.querySelector('.menu-panel');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let expanded = menu.open;
-  let animation = null;
-  let automatic=false,hideTimer=null;
-  const manual=()=>{clearTimeout(hideTimer);automatic=false;delete menu.dataset.menuAuto;};
-  const scheduleHide=()=>{clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(automatic){setExpanded(false);automatic=false;}},1800);};
-  menu.dataset.menuState = expanded ? 'open' : 'closed';
-  summary.setAttribute('aria-expanded', String(expanded));
-
-  function finish() {
-    menu.dataset.menuState = expanded ? 'open' : 'closed';
-    menu.open = expanded;
-    if (!expanded && animation) {
-      animation.cancel();
-      animation = null;
-    }
-    if(!expanded)delete menu.dataset.menuAuto;
-  }
-
-  function setExpanded(next) {
-    expanded = next;
-    summary.setAttribute('aria-expanded', String(next));
-    if (!next && panel.contains(document.activeElement)) summary.focus({preventScroll:true});
-    panel.inert = !next;
-    if (reduced.matches || !panel.animate) {
-      animation?.cancel();
-      animation = null;
-      finish();
-      return;
-    }
-    // A single reversible timeline prevents a jump on repeated quick clicks.
-    if (!animation) {
-      menu.open = true;
-      animation = panel.animate([
-        {opacity:0, transform:'translateY(-18px)', clipPath:'inset(0 0 100% 0)'},
-        {opacity:1, transform:'translateY(0)', clipPath:'inset(0 0 0% 0)'}
-      ], {duration:460, easing:'cubic-bezier(.4, 0, .2, 1)', fill:'both'});
-      animation.pause();
-      animation.currentTime = next ? 0 : 460;
-      animation.onfinish = finish;
-    }
-    menu.dataset.menuState = next ? 'opening' : 'closing';
-    animation.updatePlaybackRate(next ? 1 : -460 / 300);
-    animation.play();
-  }
-
-  summary.addEventListener('click', event => {
-    event.preventDefault();
-    // Clicking the button during a hint pins it open instead of dismissing it.
-    if(automatic){manual();setExpanded(true);return;}
-    manual();
-    setExpanded(!expanded);
-  });
-  document.addEventListener('pendi:page-gesture',()=>{
-    if(!document.body.classList.contains('page-home')||document.querySelector('dialog[open]')||(expanded&&!automatic))return;
-    automatic=true;menu.dataset.menuAuto='true';
-    if(!expanded)setExpanded(true);
-    scheduleHide();
-  });
-  panel.addEventListener('pointerenter',()=>{if(automatic)clearTimeout(hideTimer);});
-  panel.addEventListener('pointerleave',()=>{if(automatic)scheduleHide();});
-  panel.addEventListener('focusin',manual);
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && menu.open) {
-      manual();
-      setExpanded(false);
-      summary.focus({preventScroll:true});
-    }
-  });
-  document.addEventListener('click', event => {
-    if (expanded && !menu.contains(event.target)) {manual();setExpanded(false);}
-  });
-  panel.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-    manual();
-    setExpanded(false);
-    summary.focus({preventScroll:true});
-  }));
-  reduced.addEventListener('change', () => { if (reduced.matches) setExpanded(expanded); });
+ const summary=menu.querySelector('summary'),panel=menu.querySelector('.menu-panel');
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let manualOpen=menu.open,hintVisible=false,visible=menu.open,animation=null,timer=null;
+ function finish(){menu.dataset.menuState=visible?'open':'closed';menu.open=visible;if(!visible){animation?.cancel();animation=null;}}
+ function render(){
+  const next=manualOpen||hintVisible;
+  menu.dataset.menuManual=String(manualOpen);
+  if(hintVisible&&!manualOpen)menu.dataset.menuAuto='true';else delete menu.dataset.menuAuto;
+  summary.setAttribute('aria-expanded',String(manualOpen));panel.inert=!next;
+  if(!menu.dataset.menuState){visible=next;finish();return;}
+  if(next===visible&&menu.dataset.menuState)return;
+  visible=next;
+  if(reduced.matches||!panel.animate){animation?.cancel();animation=null;finish();return;}
+  if(!animation){menu.open=true;animation=panel.animate([{opacity:0,transform:'translateY(-18px)',clipPath:'inset(0 0 100% 0)'},{opacity:1,transform:'translateY(0)',clipPath:'inset(0 0 0% 0)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)',fill:'both'});animation.pause();animation.currentTime=next?0:460;animation.onfinish=finish;}
+  menu.dataset.menuState=next?'opening':'closing';animation.updatePlaybackRate(next?1:-460/300);animation.play();
+ }
+ function close(){clearTimeout(timer);manualOpen=false;hintVisible=false;render();}
+ function openManual(){clearTimeout(timer);hintVisible=false;manualOpen=true;render();}
+ summary.addEventListener('click',e=>{e.preventDefault();if(manualOpen)close();else openManual();});
+ document.addEventListener('pendi:page-gesture',()=>{
+  if(manualOpen||!document.body.classList.contains('page-home')||document.querySelector('dialog[open]'))return;
+  clearTimeout(timer);hintVisible=true;render();timer=setTimeout(()=>{hintVisible=false;render();},1800);
+ });
+ panel.addEventListener('focusin',openManual);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&visible){const returnFocus=manualOpen;close();if(returnFocus)summary.focus({preventScroll:true});}});
+ document.addEventListener('click',e=>{if(visible&&!menu.contains(e.target))close();});
+ panel.querySelectorAll('a').forEach(link=>link.addEventListener('click',e=>{close();if(e.detail===0)summary.focus({preventScroll:true});else if(menu.contains(document.activeElement))document.activeElement.blur();}));
+ reduced.addEventListener('change',()=>{if(reduced.matches){animation?.cancel();animation=null;finish();}});
+ render();
 }
