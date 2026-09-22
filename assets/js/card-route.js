@@ -72,15 +72,24 @@ async function arrive(){
  }
  await Promise.all([animate(card,[{opacity:1},{opacity:0}],{duration:170}),...(flip?[dock(card,target,170,true)]:[])]);
  await Promise.all(running.map(a=>a.finished.catch(()=>{})));veil?.remove();veil=null;
- clear();document.querySelector(handoff.kind==='open'?'#specimen-title':'#drinks-heading')?.focus({preventScroll:true});
+ clear();
+ // Touch/pointer arrivals should never focus a heading and invite scroll jumps.
+ if(handoff.kind!=='open'||handoff.keyboard){
+  const x=scrollX,y=scrollY;
+  document.querySelector(handoff.kind==='open'?'#specimen-title':'#drinks-heading')?.focus({preventScroll:true});
+  if(scrollX!==x||scrollY!==y)scrollTo({left:x,top:y,behavior:'instant'});
+ }
 }
 export function mountCardRoute(){
  arrive();
  document.addEventListener('click',async event=>{
   const link=event.target.closest('.menu-cover,[data-menu-entry],[data-card-return]');
   if(!link||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey||link.target==='_blank')return;
-  if(reduced.matches||document.querySelector('[data-motion-toggle]')?.classList.contains('is-paused'))return;
   const url=new URL(link.href);if(url.origin!==location.origin)return;
+  if(link.matches('.menu-cover,[data-menu-entry]')){
+   try{sessionStorage.setItem('pendi-menu-entry',JSON.stringify({path:url.pathname,time:Date.now()}));}catch{}
+  }
+  if(reduced.matches||document.querySelector('[data-motion-toggle]')?.classList.contains('is-paused'))return;
   event.preventDefault();if(busy)return;busy=true;link.setAttribute('aria-busy','true');
   const kind=link.matches('.menu-cover,[data-menu-entry]')?'open':'return';
   const pileFront=document.querySelector('#drinks [data-pile-front]');
@@ -112,13 +121,13 @@ export function mountCardRoute(){
    animate(ink,[{opacity:1},{opacity:0}],{duration:240});
    const [response]=await Promise.all([ready,animate(card,[{offset:0},{...full(),opacity:1}],{duration:420})]);
    if(response?.error)throw response.error;
-   const handoff={kind,path:url.pathname,time:Date.now(),from:location.pathname+location.search+'#drinks'};
+   const handoff={kind,path:url.pathname,time:Date.now(),keyboard:event.detail===0,from:location.pathname+location.search+'#drinks'};
    try{sessionStorage.setItem('pendi-card-arrival',JSON.stringify(handoff));}catch{}
    location.assign(url.href);
    // Restore the source if navigation is cancelled or blocked by the browser.
    recoveryTimer=setTimeout(()=>{link.removeAttribute('aria-busy');clear();},2500);
   }catch{
-   clear();link.removeAttribute('aria-busy');
+   clear();link.removeAttribute('aria-busy');try{sessionStorage.removeItem('pendi-menu-entry');}catch{}
    let status=document.querySelector('[data-card-status]');if(!status){status=document.createElement('p');status.dataset.cardStatus='';status.setAttribute('role','status');status.style.fontSize='12px';link.after(status);}
    status.textContent=document.documentElement.lang==='en'?'The menu could not be loaded. Please try again.':'Die Karte konnte nicht geladen werden. Bitte erneut versuchen.';
   }finally{clearTimeout(timeout);}

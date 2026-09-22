@@ -107,7 +107,7 @@ body.page-drinks .site-header { background:#211f1b; color:#e6dac3; }
 .specimen-card:focus { outline:1px solid #c8ae7a; outline-offset:3px; }
 .specimen-card:focus:not(:focus-visible) { outline:none; }
 .specimen-card:focus-within,.specimen-card:has(details[open]) { z-index:3; transform:translate(var(--shift),-8px) rotate(0deg); }
-.cards-interactive .specimen-card { z-index:0; }
+.cards-interactive .specimen-card { z-index:0; transition:box-shadow 1000ms cubic-bezier(.4,0,.2,1),z-index 1000ms linear; }
 .cards-interactive .specimen-card:not(.is-active) { transform:translateX(var(--shift)) rotate(var(--turn)); }
 .cards-interactive .specimen-card.is-active { z-index:4; transform:translate(0,-6px) rotate(0deg); box-shadow:0 20px 32px -12px #000b,0 0 0 1px #b2976a36; }
 .specimen-index { color:#bda785; padding-inline:14px; gap:12px; }
@@ -187,7 +187,7 @@ html:has(> body.page-drinks) { scrollbar-width:thin!important; scrollbar-color:#
  html:has(> body.page-drinks)::-webkit-scrollbar-corner { background:transparent; }
  html:has(> body.page-drinks)::-webkit-scrollbar-button { display:none; width:0; height:0; }
 }
-@media (prefers-reduced-motion:reduce) { .specimen-plus,.specimen-card,.specimen-card::before { transition:none; } }
+@media (prefers-reduced-motion:reduce) { .specimen-plus,.specimen-card,.specimen-card::before,.cards-interactive .specimen-card { transition:none; } }
 /* Independent translation preserves the table projection and card pickup. */
 .page-home #drinks:not(.depth-large-type) .menu-ink-plane { translate:var(--device-text-x,0px) 0; }
 .page-home #home .button { translate:var(--device-home-x,0px) 0; }

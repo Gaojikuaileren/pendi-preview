@@ -1,4 +1,4 @@
-import {mountFlavourMotion} from './flavour-motion.js?v=22b6a14700d9';
+import {mountFlavourMotion} from './flavour-motion.js?v=4b9c965ff64e';
 export function mountMenuCards(){
  if(!document.body.classList.contains('page-drinks'))return;
  const stack=document.querySelector('.specimen-slots');if(!stack)return;
@@ -6,13 +6,28 @@ export function mountMenuCards(){
  const measure=()=>{document.body.style.setProperty('--menu-header-height',header.getBoundingClientRect().height+'px');document.body.style.setProperty('--menu-category-height',categories.getBoundingClientRect().height+'px');};
  const navigationSize=new ResizeObserver(measure);navigationSize.observe(header);navigationSize.observe(categories);measure();
  const focusTerrain=mountFlavourMotion();
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)'),motions=new Map();
+ function move(card,picked){
+  if(!card)return;
+  const start=getComputedStyle(card).transform;
+  motions.get(card)?.cancel();motions.delete(card);
+  card.classList.toggle('is-active',picked);
+  if(reduced.matches||!card.animate)return;
+  const end=getComputedStyle(card).transform;
+  const frames=[{transform:start,easing:'cubic-bezier(.4,0,.2,1)'},{transform:end}];
+  if(picked){
+   const room=Math.max(0,innerWidth-card.getBoundingClientRect().right-7),pull=Math.min(22,room);
+   frames.splice(1,0,{offset:.45,transform:`translate(${pull}px,-4px) rotate(.7deg)`,easing:'cubic-bezier(.4,0,.2,1)'});
+  }
+  const animation=card.animate(frames,{duration:1000,fill:'none'});motions.set(card,animation);
+  animation.onfinish=()=>{if(motions.get(card)===animation)motions.delete(card);};
+ }
+ reduced.addEventListener('change',()=>{if(reduced.matches){motions.forEach(a=>a.cancel());motions.clear();}});
  let active=null;
  function select(card){
   if(card===active)return;
-  // CSS carries the whole handoff, including depth. No delayed cleanup can
-  // interrupt a card that becomes active again during a reversed scroll.
-  active?.classList.remove('is-active');
-  active=card;active?.classList.add('is-active');
+  // Retarget from the visible frame if scrolling reverses during extraction.
+  move(active,false);active=card;move(active,true);
   focusTerrain(active);
  }
  stack.classList.add('cards-interactive');
