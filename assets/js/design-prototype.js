@@ -1,5 +1,5 @@
-import {mountBookingDials} from './booking-dials.js?v=009beca07823';
-import {t} from './language.js?v=009beca07823';
+import {mountBookingDials} from './booking-dials.js?v=22b6a14700d9';
+import {t} from './language.js?v=22b6a14700d9';
 // Stage 2 content on the approved Stage 1 flow. Local-only; no service or storage.
 const isBooking = document.body.classList.contains('page-reservation');
 

@@ -100,7 +100,7 @@ body.page-drinks .site-header { background:#211f1b; color:#e6dac3; }
 .specimen-card { --paper:#34312b; --pigment:#b5a17e; --story-top:49px; --story-height:144px;
  color:#e6dac3; border-color:#8e785547; padding-bottom:84px;
  box-shadow:0 14px 24px -10px #000a,0 1px 2px #0008;
- transition:transform 380ms cubic-bezier(.22,1,.36,1),box-shadow 380ms; }
+ transition:transform 850ms cubic-bezier(.4,0,.2,1),box-shadow 850ms cubic-bezier(.4,0,.2,1),z-index 850ms linear; }
 .specimen-card:nth-child(3n+2) { --paper:#3b342c; --pigment:#c1a485; }
 .specimen-card:nth-child(3n) { --paper:#302f28; --pigment:#aaa484; }
 .specimen-card:nth-child(5n) { --paper:#39312a; }
@@ -109,8 +109,7 @@ body.page-drinks .site-header { background:#211f1b; color:#e6dac3; }
 .specimen-card:focus-within,.specimen-card:has(details[open]) { z-index:3; transform:translate(var(--shift),-8px) rotate(0deg); }
 .cards-interactive .specimen-card { z-index:0; }
 .cards-interactive .specimen-card:not(.is-active) { transform:translateX(var(--shift)) rotate(var(--turn)); }
-.cards-interactive .specimen-card.is-settling { z-index:2; }
-.cards-interactive .specimen-card.is-active { z-index:4; transform:translate(0,-10px) rotate(0deg); box-shadow:0 24px 38px -12px #000c,0 0 0 1px #b2976a55; }
+.cards-interactive .specimen-card.is-active { z-index:4; transform:translate(0,-6px) rotate(0deg); box-shadow:0 20px 32px -12px #000b,0 0 0 1px #b2976a36; }
 .specimen-index { color:#bda785; padding-inline:14px; gap:12px; }
 .specimen-index > span:first-child { min-width:0; overflow-wrap:anywhere; }
 .specimen-index > span:last-child { flex:none; }
@@ -149,7 +148,8 @@ html[data-card-arrival]::after { background:#34312b; }
 .specimen-clues[open] .specimen-story { animation:specimen-story-in 340ms 70ms ease both; }
 @media (prefers-reduced-motion:reduce) { .specimen-clues[open] .specimen-story { animation:none; } }
 .specimen-card::before { content:''; position:absolute; inset:7px; z-index:-1; border:0; border-radius:0; background:url('/pendi-preview/assets/images/menu-tarot-frame.svg') center / 100% 100% no-repeat; opacity:.65; pointer-events:none; }
-.specimen-card.is-active::before { opacity:.9; }
+.specimen-card::before { transition:opacity 850ms cubic-bezier(.4,0,.2,1); }
+.specimen-card.is-active::before { opacity:.82; }
 .specimen-story { bottom:18px; height:80px; }
 .specimen-story { bottom:13px; height:90px; padding:2px 4px 2px 0; scrollbar-width:none; }
 .specimen-story::-webkit-scrollbar { display:none; }
@@ -163,13 +163,12 @@ html[data-card-arrival]::after { background:#34312b; }
 .card-route-front .specimen-card { transform:none!important; margin:0; width:100%; height:100%; box-sizing:border-box; box-shadow:none; transition:none; }
 .page-drinks { padding-bottom:0; }
 .page-drinks .detail-page { padding-top:calc(var(--menu-header-height,78px) + var(--menu-category-height,54px) + 12px); }
-.menu-category-bar { position:fixed; z-index:10; left:0; right:0; top:var(--menu-header-height,78px); display:flex; justify-content:flex-start; align-items:center; gap:10px; padding:3px 24px 14px; background:#211f1b; color:#e6dac3; isolation:isolate; }
-.menu-category-bar::before { content:''; position:absolute; left:24px; right:24px; bottom:0; height:1px; background:linear-gradient(90deg,#b49a7045,#b49a7018 62%,transparent); pointer-events:none; }
-.menu-category-bar::after { content:''; position:absolute; right:24px; top:12px; width:112px; height:26px; background:url('/pendi-preview/assets/images/strip-contours.svg') center/100% 100% no-repeat; filter:brightness(1.5); opacity:.45; pointer-events:none; z-index:-1; }
-.menu-category-bar a { position:relative; display:flex; align-items:center; justify-content:center; gap:11px; min-width:104px; min-height:40px; padding:7px 20px 7px 15px; font:13px/1.4 var(--sans); letter-spacing:.08em; border:1px solid #b49a7059; border-radius:5px 19px 19px 5px; background:linear-gradient(120deg,#393229,#2b2721); box-shadow:inset 0 1px 0 #e6dac30a,0 3px 8px #100d0926; color:#e6dac3; text-decoration:none; transition:background-color 180ms,border-color 180ms; }
-.menu-category-bar a::before { content:''; width:5px; height:5px; flex:none; transform:rotate(45deg); background:#bda37b; box-shadow:0 0 0 3px #bda37b12; }
-.menu-category-bar a:hover { border-color:#c4aa808c; }
-.menu-category-bar a:focus-visible { outline:2px solid #cfb990; outline-offset:3px; }
+.menu-category-bar { position:fixed; z-index:10; left:0; right:0; top:var(--menu-header-height,78px); display:flex; justify-content:flex-start; align-items:center; gap:24px; padding:0 24px 5px; background:#211f1b; color:#e6dac3; }
+.menu-category-bar::before { content:''; position:absolute; left:24px; right:24px; bottom:0; height:1px; background:#b49a7026; pointer-events:none; }
+.menu-category-bar a { position:relative; display:flex; align-items:center; justify-content:flex-start; min-width:44px; min-height:44px; padding:0 2px; font:12px/1.4 var(--sans); letter-spacing:.06em; border:0; border-radius:0; background:transparent; box-shadow:none; color:#c1ae8f; text-decoration:none; transition:color 180ms; }
+.menu-category-bar a[aria-current] { color:#e6dac3; }
+.menu-category-bar a[aria-current]::after { content:''; position:absolute; left:2px; right:2px; bottom:-5px; height:1px; background:#bca786; }
+.menu-category-bar a:hover,.menu-category-bar a:focus-visible { color:#fff0d8; }
 #specimen-title { scroll-margin-top:calc(var(--menu-header-height,78px) + var(--menu-category-height,54px) + 12px); }
 .menu-legal-banner { display:none; }
 body:not(.page-drinks) > .menu-legal-banner { display:none!important; }
@@ -188,7 +187,7 @@ html:has(> body.page-drinks) { scrollbar-width:thin!important; scrollbar-color:#
  html:has(> body.page-drinks)::-webkit-scrollbar-corner { background:transparent; }
  html:has(> body.page-drinks)::-webkit-scrollbar-button { display:none; width:0; height:0; }
 }
-@media (prefers-reduced-motion:reduce) { .specimen-plus { transition:none; } }
+@media (prefers-reduced-motion:reduce) { .specimen-plus,.specimen-card,.specimen-card::before { transition:none; } }
 /* Independent translation preserves the table projection and card pickup. */
 .page-home #drinks:not(.depth-large-type) .menu-ink-plane { translate:var(--device-text-x,0px) 0; }
 .page-home #home .button { translate:var(--device-home-x,0px) 0; }

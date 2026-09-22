@@ -1,4 +1,4 @@
-import {mountFlavourMotion} from './flavour-motion.js?v=009beca07823';
+import {mountFlavourMotion} from './flavour-motion.js?v=22b6a14700d9';
 export function mountMenuCards(){
  if(!document.body.classList.contains('page-drinks'))return;
  const stack=document.querySelector('.specimen-slots');if(!stack)return;
@@ -9,8 +9,10 @@ export function mountMenuCards(){
  let active=null;
  function select(card){
   if(card===active)return;
-  if(active){const old=active;old.classList.remove('is-active');old.classList.add('is-settling');setTimeout(()=>old.classList.remove('is-settling'),380);}
-  active=card;active?.classList.remove('is-settling');active?.classList.add('is-active');
+  // CSS carries the whole handoff, including depth. No delayed cleanup can
+  // interrupt a card that becomes active again during a reversed scroll.
+  active?.classList.remove('is-active');
+  active=card;active?.classList.add('is-active');
   focusTerrain(active);
  }
  stack.classList.add('cards-interactive');
