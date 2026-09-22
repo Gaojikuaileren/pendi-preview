@@ -1,7 +1,7 @@
-import {mountHomeCupPreview} from './home-cup-rings.js?v=4b9c965ff64e';
-import {t} from './language.js?v=4b9c965ff64e';
-import {projectMenuType} from './menu-table-plane.js?v=4b9c965ff64e';
-import {mountMenuTypewriter} from './menu-typewriter.js?v=4b9c965ff64e';
+import {mountHomeCupPreview} from './home-cup-rings.js?v=dd1931f9b3a7';
+import {t} from './language.js?v=dd1931f9b3a7';
+import {projectMenuType} from './menu-table-plane.js?v=dd1931f9b3a7';
+import {mountMenuTypewriter} from './menu-typewriter.js?v=dd1931f9b3a7';
 // Mainline visual treatment; optional local comparison, no service integration.
 export function mountMenuDepthPreview(){
  const scene=document.getElementById('drinks'),copy=scene?.querySelector('.scene-copy'),cover=scene?.querySelector('.menu-cover');

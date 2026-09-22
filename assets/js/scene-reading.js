@@ -1,4 +1,4 @@
-import {t} from './language.js?v=4b9c965ff64e';
+import {t} from './language.js?v=dd1931f9b3a7';
 // Overflow is read with explicit buttons; a vertical gesture always belongs to the deck.
 export function mountSceneReading(deck){
  const regions=[...deck.querySelectorAll('.scene-copy,.scene-note,.scene-stack')].filter(n=>!n.matches('#drinks .scene-copy,#drinks .scene-note'));

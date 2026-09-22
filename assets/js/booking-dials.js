@@ -1,12 +1,16 @@
 // Local interaction sample only. The production server must enforce its own clock/window.
 export function mountBookingDials(root,{t}) {
  const form=root.querySelector('form'),fields=form.querySelector('.fields');
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  root.classList.add('dial-booking');root.dataset.step='choose';
  const design=new URLSearchParams(location.search).get('design')==='1';
  root.querySelector('.scenario').hidden=!design;root.querySelector(':scope > .proto-link')?.remove();
  root.querySelector('.scenario [data-action=overnight]')?.remove();
  root.querySelector('.demo-banner').innerHTML=`${t('Vorschau · keine echte Buchung','Preview · no real booking')}`;
- root.querySelector('.steps').textContent=t('01 Wählen  ·  02 Prüfen  ·  03 Fertig','01 Choose  ·  02 Review  ·  03 Result');
+ const steps=root.querySelector('.steps');
+ steps.innerHTML=[['choose',t('Wählen','Choose')],['review',t('Prüfen','Review')],['result',t('Ergebnis','Result')]].map(([id,label],i)=>`<span data-booking-step="${id}"><span class="booking-step-number">0${i+1}</span> ${label}</span>`).join('');
+ const updateStep=()=>steps.querySelectorAll('[data-booking-step]').forEach(n=>{if(n.dataset.bookingStep===root.dataset.step)n.setAttribute('aria-current','step');else n.removeAttribute('aria-current');});
+ new MutationObserver(updateStep).observe(root,{attributes:true,attributeFilter:['data-step']});updateStep();
  fields.hidden=true;form.querySelector('.meta').hidden=true;
  const dateInput=form.elements.date,timeInput=form.elements.time,guestInput=form.elements.guests;
  guestInput.innerHTML=Array.from({length:8},(_,i)=>`<option>${i+1}</option>`).join('');guestInput.value='2';
@@ -22,8 +26,8 @@ export function mountBookingDials(root,{t}) {
  const ui=document.createElement('div');ui.className='booking-dials';fields.before(ui);
  const contour=Array.from({length:5},(_,n)=>{let d='';for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,r=(70-n*7)*(1+.025*Math.sin(a*3+n*.18)+.022*Math.cos(a*5));d+=`${i?'L':'M'}${(80+Math.cos(a)*r).toFixed(2)} ${(80+Math.sin(a)*r).toFixed(2)}`;}return`<path class="dial-contour" d="${d}Z"/>`;}).join('');
  const configs=[['date',t('Datum','Date'),t('Vorheriger Tag','Previous day'),t('Nächster Tag','Next day')],['time',t('Uhrzeit','Time'),t('Früher','Earlier'),t('Später','Later')],['guests',t('Personen','Guests'),t('Weniger Personen','Fewer guests'),t('Mehr Personen','More guests')]];
- ui.innerHTML=configs.map(([id,label,minus,plus])=>`<div class="dial-field"><span class="dial-label" id="dial-label-${id}">${label}</span><div class="basin-dial" data-dial="${id}" role="slider" tabindex="0" aria-labelledby="dial-label-${id}" aria-describedby="dial-help"><svg viewBox="0 0 160 160" aria-hidden="true">${contour}<g class="dial-needle"><circle cx="80" cy="10" r="5"/></g></svg><span class="dial-value" data-dial-value></span><span class="dial-unit" data-dial-unit></span></div><div class="dial-adjust"><button type="button" data-adjust="${id}:-1" aria-label="${minus}">−</button><button type="button" data-adjust="${id}:1" aria-label="${plus}">+</button></div></div>`).join('');
- const hint=document.createElement('p');hint.id='dial-help';hint.className='dial-help';hint.textContent=t('Drehen oder + / − tippen · nächste 3 Tage','Turn or tap + / − · next 3 days');ui.after(hint);
+ ui.innerHTML=configs.map(([id,label,minus,plus])=>`<div class="dial-field" data-dial-field="${id}"><span class="dial-label" id="dial-label-${id}">${label}</span><div class="basin-dial" data-dial="${id}" role="slider" tabindex="0" aria-labelledby="dial-label-${id}" aria-describedby="dial-help"><svg viewBox="0 0 160 160" aria-hidden="true">${contour}<g class="dial-needle"><circle cx="80" cy="10" r="5"/></g></svg><span class="dial-value" data-dial-value></span><span class="dial-unit" data-dial-unit></span></div><div class="dial-adjust"><button type="button" data-adjust="${id}:-1" aria-label="${minus}">−</button><button type="button" data-adjust="${id}:1" aria-label="${plus}">+</button></div></div>`).join('');
+ const hint=document.createElement('p');hint.id='dial-help';hint.className='dial-help';hint.textContent=t('Seitlich drehen oder + / − · nächste 3 Tage','Turn sideways or + / − · next 3 days');ui.after(hint);
  const summary=document.createElement('p');summary.className='dial-selection';summary.setAttribute('aria-live','polite');summary.setAttribute('aria-atomic','true');hint.after(summary);
  const rules=document.createElement('a');rules.className='booking-rules-link';rules.dataset.policy='reservation-rules';rules.href=(document.documentElement.lang==='de'?'/rechtliches/':'/en/legal/')+'#reservation-rules';rules.textContent=t('Reservierungsregeln','Reservation rules');root.querySelector('[data-result]').after(rules);
  form.querySelector('[type=submit]').textContent=t('Auswahl prüfen','Review selection');
@@ -32,7 +36,10 @@ export function mountBookingDials(root,{t}) {
  const timeText=()=>`${String(Math.floor(selectedTime/2)).padStart(2,'0')}:${selectedTime%2?'30':'00'}`;
  const dateLabel=()=>new Intl.DateTimeFormat(document.documentElement.lang,{day:'2-digit',month:'2-digit',timeZone:'UTC'}).format(new Date(selectedDate+'T12:00:00Z'));
  function render(){const limit=window.limits(selectedDate);selectedTime=Math.max(limit.min,Math.min(limit.max,selectedTime));dateInput.min=window.first;dateInput.max=window.last;dateInput.value=selectedDate;timeInput.value=timeText();timeInput.min=`${String(Math.floor(limit.min/2)).padStart(2,'0')}:${limit.min%2?'30':'00'}`;timeInput.max=`${String(Math.floor(limit.max/2)).padStart(2,'0')}:${limit.max%2?'30':'00'}`;guestInput.value=guests;
-  for(const [id] of configs){const dial=ui.querySelector(`[data-dial=${id}]`),r=range(id),v=value(id),text=id==='date'?dateLabel():id==='time'?timeText():String(guests);dial.setAttribute('aria-valuemin',r.min);dial.setAttribute('aria-valuemax',r.max);dial.setAttribute('aria-valuenow',v);dial.setAttribute('aria-valuetext',id==='date'?selectedDate:id==='time'?text:`${guests} ${t('Personen','guests')}`);dial.querySelector('[data-dial-value]').textContent=text;dial.querySelector('[data-dial-unit]').textContent=id==='date'?(selectedDate===window.first?t('heute','today'):t('Tag','day')):id==='time'?t('Uhr','Berlin'):t('Gäste','guests');dial.style.setProperty('--dial-angle',`${(v-r.min)/Math.max(1,r.max-r.min+1)*360}deg`);for(const sign of [-1,1])ui.querySelector(`[data-adjust="${id}:${sign}"]`).disabled=sign<0?v<=r.min:v>=r.max;}
+  for(const [id] of configs){const dial=ui.querySelector(`[data-dial=${id}]`),r=range(id),v=value(id),text=id==='date'?dateLabel():id==='time'?timeText():String(guests);dial.setAttribute('aria-valuemin',r.min);dial.setAttribute('aria-valuemax',r.max);dial.setAttribute('aria-valuenow',v);dial.setAttribute('aria-valuetext',id==='date'?selectedDate:id==='time'?text:`${guests} ${t('Personen','guests')}`);
+   const valueNode=dial.querySelector('[data-dial-value]'),changed=valueNode.textContent&&valueNode.textContent!==text;valueNode.textContent=text;
+   if(changed&&!reduced.matches){valueNode.getAnimations().forEach(a=>a.cancel());valueNode.animate([{opacity:.35,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:260,easing:'ease-out'});}
+   dial.querySelector('[data-dial-unit]').textContent=id==='date'?(selectedDate===window.first?t('heute','today'):selectedDate===addDay(window.first,1)?t('morgen','tomorrow'):selectedDate===addDay(window.first,2)?t('übermorgen','in two days'):dateLabel()):id==='time'?t('Uhr','Berlin'):t('Gäste','guests');dial.style.setProperty('--dial-angle',`${(v-r.min)/Math.max(1,r.max-r.min+1)*360}deg`);for(const sign of [-1,1])ui.querySelector(`[data-adjust="${id}:${sign}"]`).disabled=sign<0?v<=r.min:v>=r.max;}
   summary.textContent=`${dateLabel()} · ${timeText()} · ${guests} ${t('Personen','guests')}`;
  }
  function set(id,next){const r=range(id),v=Math.max(r.min,Math.min(r.max,next));if(id==='date')selectedDate=window.days[v];else if(id==='time')selectedTime=v;else guests=v;render();}
@@ -46,6 +53,7 @@ export function mountBookingDials(root,{t}) {
  });
  form.addEventListener('submit',()=>{window=windowAt();dateInput.min=window.first;dateInput.max=window.last;const limits=window.limits(selectedDate);timeInput.setCustomValidity(selectedTime<limits.min||selectedTime>limits.max?t('Bitte eine zukünftige Uhrzeit wählen.','Choose a future time.'): '');},true);
  render();
+ reduced.addEventListener('change',()=>{if(reduced.matches)ui.querySelectorAll('[data-dial-value]').forEach(n=>n.getAnimations().forEach(a=>a.cancel()));});
  document.addEventListener('pendi:language',()=>{render();rules.href=(document.documentElement.lang==='de'?'/rechtliches/':'/en/legal/')+'#reservation-rules';});
  const largeType=()=>root.classList.toggle('large-dials',parseFloat(getComputedStyle(ui.querySelector('.dial-value')).fontSize)>26||parseFloat(getComputedStyle(ui.querySelector('.dial-label')).fontSize)>20);
  const typeObserver=new ResizeObserver(largeType);typeObserver.observe(ui.querySelector('.dial-value'));typeObserver.observe(ui.querySelector('.dial-label'));largeType();

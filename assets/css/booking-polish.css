@@ -1,0 +1,31 @@
+/* Phase 1 reservation polish only: leave the approved home and menu untouched. */
+.scene-reservation .dial-booking .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:10px 0; margin:12px 0 18px; border-bottom:1px solid #b5a08666; font-size:12px; }
+.dial-booking .steps > span { color:#75634f; transition:color 240ms; }
+.dial-booking .steps > [aria-current] { color:var(--ink); }
+.booking-step-number { display:inline-block; margin-right:3px; color:#91734e; font-variant-numeric:tabular-nums; }
+.dial-booking .steps > [aria-current] .booking-step-number { color:var(--ink); text-decoration:underline; text-underline-offset:6px; }
+.scene-reservation .dial-booking .booking-dials { gap:10px; align-items:end; margin-top:16px; }
+.scene-reservation .dial-label { margin-bottom:12px; color:#655345; }
+.scene-reservation .basin-dial { background:radial-gradient(ellipse at center,#f0e7d43d 35%,transparent 70%); }
+.scene-reservation [data-dial=time] { background:radial-gradient(ellipse at center,#c8a26b33,transparent 71%); }
+.scene-reservation [data-dial=time] .dial-contour { stroke:#8b6743; stroke-width:1.1; }
+.scene-reservation [data-dial=time] .dial-value { font:500 31px/1.05 var(--serif); top:32%; }
+.scene-reservation [data-dial=time] .dial-unit { top:64%; }
+.scene-reservation .dial-needle { transition:transform 260ms cubic-bezier(.2,.7,.3,1); }
+.scene-reservation .basin-dial.is-turning .dial-contour { stroke:#715036; opacity:.8; }
+.scene-reservation .dial-contour { transition:stroke 220ms,opacity 220ms; }
+.scene-reservation .dial-adjust { margin-top:8px; gap:0; border-bottom:1px solid #a48a6559; }
+.scene-reservation .prototype .dial-adjust button { border:0; border-radius:0; background:transparent; font-size:22px; box-shadow:none; transition:color 180ms,background-color 180ms; }
+.scene-reservation .prototype .dial-adjust button:active { background:#ad8b6226; }
+.scene-reservation .dial-help { margin:14px 0 10px; }
+.scene-reservation .dial-selection { padding:12px 0; border:0; margin:0 0 10px; font-size:15px; font-variant-numeric:tabular-nums; }
+.scene-reservation .booking-rules-link { color:#655345; text-decoration-color:#9b8564; }
+@media (max-height:720px) {
+ .scene-reservation .dial-booking .steps { margin:8px 0 10px; padding:8px 0; }
+ .scene-reservation .dial-booking .booking-dials { margin-top:10px; }
+ .scene-reservation .dial-label { margin-bottom:6px; }
+ .scene-reservation .dial-help { margin:8px 0; }
+ .scene-reservation .dial-selection { padding:8px 0; margin-bottom:6px; }
+ .scene-reservation .dial-adjust { margin-top:4px; }
+}
+@media (prefers-reduced-motion:reduce) { .scene-reservation .dial-needle,.scene-reservation .dial-contour,.scene-reservation .dial-adjust button,.dial-booking .steps > span { transition:none; } }
