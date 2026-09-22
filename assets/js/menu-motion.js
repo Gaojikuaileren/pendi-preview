@@ -5,6 +5,9 @@ export function mountMenuMotion(menu) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let expanded = menu.open;
   let animation = null;
+  let automatic=false,hideTimer=null;
+  const manual=()=>{clearTimeout(hideTimer);automatic=false;delete menu.dataset.menuAuto;};
+  const scheduleHide=()=>{clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(automatic){setExpanded(false);automatic=false;}},1800);};
   menu.dataset.menuState = expanded ? 'open' : 'closed';
   summary.setAttribute('aria-expanded', String(expanded));
 
@@ -15,6 +18,7 @@ export function mountMenuMotion(menu) {
       animation.cancel();
       animation = null;
     }
+    if(!expanded)delete menu.dataset.menuAuto;
   }
 
   function setExpanded(next) {
@@ -46,18 +50,32 @@ export function mountMenuMotion(menu) {
 
   summary.addEventListener('click', event => {
     event.preventDefault();
+    // Clicking the button during a hint pins it open instead of dismissing it.
+    if(automatic){manual();setExpanded(true);return;}
+    manual();
     setExpanded(!expanded);
   });
+  document.addEventListener('pendi:page-gesture',()=>{
+    if(!document.body.classList.contains('page-home')||document.querySelector('dialog[open]')||(expanded&&!automatic))return;
+    automatic=true;menu.dataset.menuAuto='true';
+    if(!expanded)setExpanded(true);
+    scheduleHide();
+  });
+  panel.addEventListener('pointerenter',()=>{if(automatic)clearTimeout(hideTimer);});
+  panel.addEventListener('pointerleave',()=>{if(automatic)scheduleHide();});
+  panel.addEventListener('focusin',manual);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && menu.open) {
+      manual();
       setExpanded(false);
       summary.focus({preventScroll:true});
     }
   });
   document.addEventListener('click', event => {
-    if (expanded && !menu.contains(event.target)) setExpanded(false);
+    if (expanded && !menu.contains(event.target)) {manual();setExpanded(false);}
   });
   panel.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+    manual();
     setExpanded(false);
     summary.focus({preventScroll:true});
   }));

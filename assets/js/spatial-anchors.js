@@ -9,10 +9,10 @@ export const HOME_GLASS_ANCHORS={
 // CSS viewport groups, not hardware identities. Offsets are source pixels.
 const textRingGeometry={radius:.57,depth:.18,rows:[.44]};
 export const GLASS_LAYOUT_PRESETS={
- 'phone-pro':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:116},
- 'phone-compact':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:116},
+ 'phone-pro':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:108},
+ 'phone-compact':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:108},
  'portrait-large':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:128},
- 'landscape':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:116},
+ 'landscape':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:108},
  'desktop':{offsetX:0,offsetY:0,rings:{...textRingGeometry},minBodyWidth:128},
 };
 export function projectHomeGlass(video){

@@ -1,7 +1,7 @@
-import {mountScrollVideo} from './scroll-video.js';
-import {syncMenuTableMotion} from './menu-table-plane.js';
-import {mountStripTransition} from './strip-transition.js';
-// Native scrolling remains available for touch, keyboard and no-JS browsers.
+import {mountScrollVideo} from './scroll-video.js?v=a136df70d0b0';
+import {syncMenuTableMotion} from './menu-table-plane.js?v=a136df70d0b0';
+import {mountStripTransition} from './strip-transition.js?v=a136df70d0b0';
+// One paging owner: scripted transitions. Reading areas and no-JS keep native scrolling.
 export function mountDeck(deck, wave) {
   const scenes = [...deck.querySelectorAll('[data-scene]')];
   const links = [...document.querySelectorAll('.scene-pagination a')];
@@ -19,12 +19,14 @@ export function mountDeck(deck, wave) {
   let transitionFrame=null;
   const stopTransition=()=>{if(transitionFrame!==null)cancelAnimationFrame(transitionFrame);transitionFrame=null;delete deck.dataset.transitioning;};
   const go = (next) => {
+    // Repeated flicks must not restart easing or change the destination mid-flight.
+    if(transitionFrame!==null)return;
     stopTransition();
     index = Math.max(0, Math.min(scenes.length - 1, next));
-    const start=deck.scrollTop,target=scenes[index].offsetTop;
+    const start=deck.scrollTop/layoutHeight,destination=index,target=scenes[index].offsetTop;
     if(isReduced){deck.scrollTo({top:target,behavior:'instant'});return;}
     deck.dataset.transitioning='true';const began=performance.now(),duration=1200;
-    const animate=now=>{const p=Math.min(1,(now-began)/duration),ease=p*p*(3-2*p);deck.scrollTo({top:start+(target-start)*ease,behavior:'instant'});if(p<1)transitionFrame=requestAnimationFrame(animate);else stopTransition();};
+    const animate=now=>{const p=Math.min(1,(now-began)/duration),ease=p*p*(3-2*p);deck.scrollTo({top:(start+(destination-start)*ease)*deck.clientHeight,behavior:'instant'});if(p<1)transitionFrame=requestAnimationFrame(animate);else stopTransition();};
     transitionFrame=requestAnimationFrame(animate);
   };
   const update = () => {
@@ -32,9 +34,9 @@ export function mountDeck(deck, wave) {
     // Read the previous station before interpreting a scroll offset against a
     // new height. Safari's toolbar, rotation and a fold can resize mid-scroll.
     if (deck.clientHeight !== layoutHeight) {
-      stopTransition();
+      const progress=deck.scrollTop/layoutHeight;
       layoutHeight = deck.clientHeight;
-      deck.scrollTo({top: scenes[index].offsetTop, behavior:'instant'});
+      deck.scrollTo({top: transitionFrame!==null?progress*layoutHeight:scenes[index].offsetTop, behavior:'instant'});
     }
     let from = 0;
     while (from < scenes.length - 1 && deck.scrollTop >= scenes[from + 1].offsetTop) from += 1;
@@ -68,12 +70,14 @@ export function mountDeck(deck, wave) {
   const canScrollInside = (target, delta) => {
     const copy = target.closest('.scene-copy,.scene-note');
     const stack = target.closest('.scene-stack');
-    return [copy, stack].some(el => el && getComputedStyle(el).overflowY === 'auto' && el.scrollHeight > el.clientHeight + 2 && ((delta > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 2) || (delta < 0 && el.scrollTop > 0)));
+    return [copy, stack].some(el => el && getComputedStyle(el).overflowY === 'auto' && el.scrollHeight > el.clientHeight + 8 && ((delta > 0 && el.scrollTop + el.clientHeight < el.scrollHeight - 2) || (delta < 0 && el.scrollTop > 0)));
   };
+  const showPosition=()=>document.dispatchEvent(new CustomEvent('pendi:page-gesture'));
   deck.addEventListener('wheel', (event) => {
     if(document.querySelector('dialog[open]')||event.target.closest('[data-inline-booking],[data-contact-info]'))return;
     if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || canScrollInside(event.target, event.deltaY)) return;
     event.preventDefault();
+    showPosition();
     const now = performance.now();
     if (now < wheelUntil) return;
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? deck.clientHeight : 1);
@@ -85,11 +89,22 @@ export function mountDeck(deck, wave) {
       wheelUntil = now + 1300;
     }
   }, {passive:false});
-  let swipe=null,suppressEntryClickUntil=0;
-  deck.addEventListener('touchstart',event=>{if(event.touches.length!==1||event.target.closest('input,select,button,a:not([data-menu-entry]),details,[data-inline-booking],[data-contact-info]')){swipe=null;return;}swipe={x:event.touches[0].clientX,y:event.touches[0].clientY,delta:0,captured:false,target:event.target};},{passive:true});
-  deck.addEventListener('touchmove',event=>{if(!swipe||event.touches.length!==1){swipe=null;return;}const dx=event.touches[0].clientX-swipe.x,dy=swipe.y-event.touches[0].clientY;if(Math.abs(dy)<12||Math.abs(dx)>Math.abs(dy)||canScrollInside(swipe.target,dy))return;event.preventDefault();swipe.captured=true;swipe.delta=dy;},{passive:false});
-  deck.addEventListener('touchend',()=>{if(swipe?.captured){if(swipe.target.closest('[data-menu-entry]'))suppressEntryClickUntil=performance.now()+700;if(Math.abs(swipe.delta)>35)go(index+Math.sign(swipe.delta));}swipe=null;},{passive:true});
-  deck.addEventListener('click',event=>{if(event.target.closest('[data-menu-entry]')&&performance.now()<suppressEntryClickUntil){event.preventDefault();event.stopPropagation();}},true);
+  let swipe=null,suppressClickUntil=0;
+  deck.addEventListener('touchstart',event=>{
+    if(event.touches.length!==1||(window.visualViewport?.scale||1)>1.01||document.querySelector('dialog[open]')||event.target.closest('input,textarea,select,[contenteditable="true"],[data-inline-booking]')){swipe=null;return;}
+    swipe={x:event.touches[0].clientX,y:event.touches[0].clientY,delta:0,captured:false,target:event.target,blocked:transitionFrame!==null,reading:false};
+  },{passive:true});
+  deck.addEventListener('touchmove',event=>{
+    if(!swipe||event.touches.length!==1){swipe=null;return;}
+    const dx=event.touches[0].clientX-swipe.x,dy=swipe.y-event.touches[0].clientY;
+    // Once a gesture starts in overflowing accessible text, do not steal it at its edge.
+    if(!swipe.blocked&&(swipe.reading||(!swipe.captured&&canScrollInside(swipe.target,dy)))){swipe.reading=true;return;}
+    // Cancel from the first move, before Safari starts native pan / rubber-banding.
+    if(event.cancelable)event.preventDefault();
+    if(Math.abs(dy)>=12&&Math.abs(dy)>Math.abs(dx)){swipe.captured=true;swipe.delta=dy;showPosition();}
+  },{passive:false});
+  deck.addEventListener('touchend',()=>{if(swipe?.captured){suppressClickUntil=performance.now()+700;if(!swipe.blocked&&Math.abs(swipe.delta)>35)go(index+Math.sign(swipe.delta));}swipe=null;},{passive:true});
+  deck.addEventListener('click',event=>{if(performance.now()<suppressClickUntil){event.preventDefault();event.stopPropagation();}},true);
   deck.addEventListener('touchcancel',()=>{swipe=null;},{passive:true});
   document.addEventListener('click', (event) => {
     const link = event.target.closest('a[href^="#"]');
@@ -102,7 +117,7 @@ export function mountDeck(deck, wave) {
   });
   document.addEventListener('keydown', (event) => {
     if(document.querySelector('dialog[open]')||event.target.closest('[data-inline-booking],[data-contact-info]'))return;
-    if (event.target.closest('input,textarea,select,[contenteditable="true"]') || document.querySelector('.mobile-menu[open]')) return;
+    if (event.target.closest('input,textarea,select,[contenteditable="true"]') || document.querySelector('.mobile-menu[open]:not([data-menu-auto=true])')) return;
     if (['ArrowDown','PageDown','ArrowUp','PageUp','Home','End'].includes(event.key)) {
       const delta = ['ArrowDown','PageDown','End'].includes(event.key) ? 1 : -1;
       if (canScrollInside(event.target, delta)) return;

@@ -72,7 +72,7 @@ body:has(.mobile-menu[open]) .menu-depth-controls { visibility:hidden; }
  .home-cup-preview[data-cup-mode=space] .scroll-line { height:24px; }
 }
 /* Portrait composition: title above the glass, action below, clear centre. */
-@media (max-width:599px) and (min-height:701px) {
+@media (max-width:599px) and (min-height:601px) {
  .scene-home.home-cup-preview[data-cup-mode=space] .hero-content { top:max(calc(var(--art-height) * .21),calc(var(--safe-top) + 105px)); height:calc(var(--art-height) * .81 - max(var(--art-height) * .21,var(--safe-top) + 105px)); max-height:calc(var(--art-height) * .81 - max(var(--art-height) * .21,var(--safe-top) + 105px)); display:flex; flex-direction:column; align-items:flex-start; }
  .home-cup-preview[data-cup-mode=space] .hero-content > * { flex-shrink:0; }
  .home-cup-preview[data-cup-mode=space] .hero-content > .button { margin-top:auto; }

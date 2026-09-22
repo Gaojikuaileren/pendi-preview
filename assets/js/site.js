@@ -1,12 +1,12 @@
-import { mountIntegratedWave } from './wave-interaction.js';
-import { mountDeck } from './deck.js';
-import { mountMenuMotion } from './menu-motion.js';
-import { mountLanguageSwitch } from './language.js';
-import { mountHomeEntrance } from './home-entry.js';
-import { mountCardRoute } from './card-route.js';
-import { mountMenuCards } from './menu-cards.js';
-import { mountDeviceTilt } from './device-tilt.js';
-import './same-page.js';
+import { mountIntegratedWave } from './wave-interaction.js?v=a136df70d0b0';
+import { mountDeck } from './deck.js?v=a136df70d0b0';
+import { mountMenuMotion } from './menu-motion.js?v=a136df70d0b0';
+import { mountLanguageSwitch } from './language.js?v=a136df70d0b0';
+import { mountHomeEntrance } from './home-entry.js?v=a136df70d0b0';
+import { mountCardRoute } from './card-route.js?v=a136df70d0b0';
+import { mountMenuCards } from './menu-cards.js?v=a136df70d0b0';
+import { mountDeviceTilt } from './device-tilt.js?v=a136df70d0b0';
+import './same-page.js?v=a136df70d0b0';
 
 const wave = document.querySelector('[data-wave]');
 const controller = wave ? mountIntegratedWave(wave, document.querySelector('[data-motion-toggle]')) : null;
@@ -15,7 +15,7 @@ if (deck) mountDeck(deck, controller);
 
 // Approved Phase 1 design is the default. Comparison controls stay opt-in.
 if(deck) {
-  const designReady=import('./menu-depth-preview.js').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
+  const designReady=import('./menu-depth-preview.js?v=a136df70d0b0').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
   mountHomeEntrance(designReady);
 }
 

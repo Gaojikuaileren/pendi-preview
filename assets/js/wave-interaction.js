@@ -1,4 +1,4 @@
-import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js';
+import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=a136df70d0b0';
 export function mountIntegratedWave(container,button){
  const svg=container.querySelector('svg'),front=container.querySelector('[data-wave-front]'),back=container.querySelector('[data-wave-back]');
  if(!svg||!front||!back||!button)return null;
@@ -32,7 +32,7 @@ export function mountIntegratedWave(container,button){
  function resize(){const layout=getComputedStyle(document.body).getPropertyValue('--wave-layout').trim();profiles=layout==='wide'?WIDE_PROFILES:layout==='compact'?{...COMPACT_PROFILES,reservation:[220,250,260,230,210],contact:[265,285,300,275,250]}:portrait;
    // Reference canvas: book left, sensory text right, menu title left below.
    // Keep the other scenes and deferred screen-size compositions intact.
-   if(matchMedia('(min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait)').matches)profiles={...profiles,drinks:[550,450,485,565,505]};
+   if(matchMedia('(min-width:375px) and (max-width:430px) and (min-height:601px) and (orientation:portrait)').matches)profiles={...profiles,drinks:[550,450,485,565,505]};
    topLimit=layout==='wide'?72/Math.max(container.clientHeight,1)*1000:0;container.dataset.waveLayout=layout;
    const film=document.querySelector('[data-scroll-video]'),vr=film?.getBoundingClientRect(),wr=container.getBoundingClientRect();anchors=null;
    if(vr?.width&&wr.width){const scale=Math.max(vr.width/512,vr.height/768),ref=874/768;const point=(x,y)=>{const sx=(x+(512*ref-402)/2)/ref,sy=y/ref;return{x:(vr.left-wr.left+sx*scale-(512*scale-vr.width)/2)/wr.width*1440,y:(vr.top-wr.top+sy*scale-(768*scale-vr.height)*(layout==='wide'||innerWidth>=500?0:.5))/wr.height*1000,sx:scale/ref/wr.width*1440,sy:scale/ref/wr.height*1000};};anchors={home:point(330,520),drinks:point(98,296)};}

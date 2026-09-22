@@ -30,7 +30,7 @@
 .menu-pile-card { overflow:hidden; }
 .menu-pile-card > .pile-back-pattern { position:absolute; inset:0; width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:.7; opacity:.45; }
 .route-ink > .pile-back-pattern { width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:.7; opacity:.45; }
-@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
+@media (min-width:375px) and (max-width:430px) and (min-height:601px) and (orientation:portrait) {
  .scene-drinks:not(.depth-large-type) > .menu-card-pile { display:block; position:absolute; z-index:1; left:16px; right:16px; bottom:-64px; height:180px;
  transform:translate(var(--menu-pile-x,0px),calc(var(--scene-counter,0px) + var(--menu-pile-y,0px))); opacity:var(--menu-type-opacity,0); }
 }
@@ -58,7 +58,7 @@
 
 /* The four-corner projection shares the photographed cover's vanishing lines.
    Normal compositing keeps the dark cast shadow visible on the wood. */
-@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
+@media (min-width:375px) and (max-width:430px) and (min-height:601px) and (orientation:portrait) {
  .scene-drinks.menu-depth-preview:not(.depth-large-type) .scene-copy {
   left:56%; top:calc(var(--view-height) * .295); padding:0 0 32px; max-height:none; overflow:visible;
   transform:translate(var(--menu-type-x,0px),calc(var(--scene-counter,0px) + var(--menu-type-y,0px)));

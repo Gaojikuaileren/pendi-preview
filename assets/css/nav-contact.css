@@ -35,6 +35,8 @@ body img, body video { -webkit-user-drag:none; }
 .page-home .site-header .language-switch a { text-shadow:0 1px 3px #100c09e6,0 2px 8px #100c0999; }
 .page-home .site-header .motion-toggle svg,.page-home .site-header .menu-lines { filter:drop-shadow(0 1px 2px #100c09e6) drop-shadow(0 2px 5px #100c0980); }
 .site-header .menu-panel.scene-pagination a[aria-current] { opacity: 1; border-right:2px solid currentColor; padding-right:11px; }
+.page-home .site-header .menu-panel.scene-pagination a:not([aria-current]) { opacity:.62; }
+.page-home .site-header .menu-panel.scene-pagination a[aria-current] small { font-weight:700; }
 .site-header .menu-panel.scene-pagination a.over-paper { color: var(--ink); text-shadow: 0 1px 3px var(--cream); }
 .site-header .menu-panel.scene-pagination a::after { display:none; }
 .site-header .menu-panel.scene-pagination a:focus-visible { outline-offset:-3px; }
@@ -42,6 +44,10 @@ body img, body video { -webkit-user-drag:none; }
 .site-header .mobile-menu:not([open]) .menu-panel { display: none; }
 .careers-placeholder { display: inline-flex; align-items: center; gap: 26px; min-height: 44px; padding: 9px 18px; border: 1px solid #a28d74; border-radius: 30px; margin-top: 18px; background: transparent; color: var(--ink); font: 500 14px var(--sans); }
 .careers-placeholder:disabled { opacity: .65; cursor: default; }
+.scene-about .careers-placeholder { display:flex; width:fit-content; margin-top:8px; }
+.scene-about .scene-copy { padding-block:0; }
+.scene-about .scene-copy .body-copy { margin-bottom:0; }
+.experience-ready .scene-about .scene-copy,.experience-ready .scene-reservation .in-place-copy { max-height:calc(var(--view-height) - var(--copy-top) - var(--safe-bottom) - 12px); }
 .contact-lines .contact-icon { flex: none; display: inline-grid; place-items: center; min-width: 44px; width: 44px; height: 44px; padding: 10px; border: 1px solid #ae9c85; border-radius: 50%; color: var(--ink); background: transparent; }
 .contact-lines .contact-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
 .contact-lines .contact-icon:disabled { opacity: .65; border-style: solid; }
@@ -98,16 +104,15 @@ body img, body video { -webkit-user-drag:none; }
 .site-header { padding-top:max(24px,calc(var(--safe-top) + 12px)); }
 .site-header .menu-panel.scene-pagination { top:max(calc(var(--safe-top) + 88px),var(--header-controls-bottom,100px)); max-height:calc(var(--view-height) - max(calc(var(--safe-top) + 88px),var(--header-controls-bottom,100px)) - var(--safe-bottom) - 12px); right:max(var(--safe-right),12px); }
 @media (orientation:landscape) { .page-home .site-header { padding-top:max(14px,calc(var(--safe-top) + 8px)); } }
-/* Phase 1 reference: 402 × 874. Reserve the centre for the island instead
-   of moving the whole header beneath it. Other viewport polish is Phase 4. */
-@media (min-width:390px) and (max-width:430px) and (min-height:701px) and (orientation:portrait) {
- .page-home .site-header { height:116px; padding-top:12px; padding-bottom:0; align-items:flex-start; }
+/* All controls live BELOW the reported system safe area, never beside a cutout.
+   The row also applies to shorter browser viewports with visible toolbars. */
+@media (min-width:375px) and (max-width:430px) and (min-height:601px) and (orientation:portrait) {
+ .page-home .site-header { height:calc(var(--safe-top) + 80px); padding-top:calc(var(--safe-top) + 12px); padding-bottom:12px; align-items:center; }
  .page-home .site-header .wordmark { width:96px; }
- .page-home .site-header .header-actions { display:contents; }
- .page-home .site-header .language-switch { position:absolute; top:12px; right:calc(var(--edge-right) + 50px); }
- .page-home .site-header .motion-toggle { position:absolute; top:72px; left:var(--edge-left); }
- .page-home .site-header .mobile-menu { position:absolute; top:12px; right:var(--edge-right); }
- .page-home .site-header .menu-panel.scene-pagination { top:max(68px,var(--header-controls-bottom,74px)); max-height:calc(var(--view-height) - max(68px,var(--header-controls-bottom,74px)) - var(--safe-bottom) - 12px); }
+ .page-home .site-header .header-actions { display:flex; align-items:center; gap:6px; }
+ .page-home .site-header .language-switch,.page-home .site-header .motion-toggle,.page-home .site-header .mobile-menu { position:static; }
+ .page-home .site-header .motion-toggle { order:-1; }
+ .page-home .site-header .menu-panel.scene-pagination { top:var(--header-controls-bottom,90px); max-height:calc(var(--view-height) - var(--header-controls-bottom,90px) - var(--safe-bottom) - 12px); }
 }
 .large-dials .booking-dials { grid-template-columns: 1fr; width: min(100%,240px); margin-inline: auto; gap: 24px; }
 .large-dials .dial-adjust { flex-direction: row; }
