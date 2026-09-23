@@ -13,7 +13,7 @@ export function mountMenuMotion(menu) {
   if(next===visible&&menu.dataset.menuState)return;
   visible=next;
   if(reduced.matches||!panel.animate){animation?.cancel();animation=null;finish();return;}
-  if(!animation){menu.open=true;animation=panel.animate([{opacity:0,transform:'translateY(-18px)',clipPath:'inset(0 0 100% 0)'},{opacity:1,transform:'translateY(0)',clipPath:'inset(0 0 0% 0)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)',fill:'both'});animation.pause();animation.currentTime=next?0:460;animation.onfinish=finish;}
+  if(!animation){menu.open=true;const horizontal=getComputedStyle(panel).getPropertyValue('--nav-layout').trim()==='horizontal';animation=panel.animate([{opacity:0,transform:horizontal?'translateX(18px)':'translateY(-18px)',clipPath:horizontal?'inset(0 0 0 100%)':'inset(0 0 100% 0)'},{opacity:1,transform:'translate(0,0)',clipPath:'inset(0 0 0 0)'}],{duration:460,easing:'cubic-bezier(.4,0,.2,1)',fill:'both'});animation.pause();animation.currentTime=next?0:460;animation.onfinish=finish;}
   menu.dataset.menuState=next?'opening':'closing';animation.updatePlaybackRate(next?1:-460/300);animation.play();
  }
  function close(){clearTimeout(timer);manualOpen=false;hintVisible=false;render();}

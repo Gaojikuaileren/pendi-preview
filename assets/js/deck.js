@@ -1,6 +1,6 @@
-import {mountScrollVideo} from './scroll-video.js?v=dd1931f9b3a7';
-import {syncMenuTableMotion} from './menu-table-plane.js?v=dd1931f9b3a7';
-import {mountStripTransition} from './strip-transition.js?v=dd1931f9b3a7';
+import {mountScrollVideo} from './scroll-video.js?v=2dc20be597d9';
+import {syncMenuTableMotion} from './menu-table-plane.js?v=2dc20be597d9';
+import {mountStripTransition} from './strip-transition.js?v=2dc20be597d9';
 // One paging owner: scripted transitions. No-JS keeps native scrolling; enhanced scenes use explicit reading controls.
 export function mountDeck(deck, wave) {
   const scenes = [...deck.querySelectorAll('[data-scene]')];

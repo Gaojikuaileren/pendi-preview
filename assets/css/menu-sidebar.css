@@ -1,0 +1,43 @@
+/* Menu document only. The five-scene homepage keeps its existing top bar. */
+@media (min-width:1000px), (min-width:480px) and (orientation:landscape) {
+ .page-drinks { --menu-navigation-layout:side; --menu-rail-size:120px; --menu-rail-width:calc(var(--menu-rail-size) + var(--safe-left)); padding-left:var(--menu-rail-width); }
+ body.page-drinks .site-header { inset:0 auto 0 0; width:var(--menu-rail-width); height:var(--view-height); padding:calc(var(--safe-top) + 28px) 16px calc(var(--safe-bottom) + 24px) calc(var(--safe-left) + 16px); display:flex; flex-direction:column; align-items:center; justify-content:space-between; gap:20px; background:#211f1b; border-right:1px solid #b49a7026; }
+ .page-drinks .site-header .wordmark { width:88px; }
+ .page-drinks .site-header .header-actions { margin:0; flex-direction:column; gap:12px; }
+ .page-drinks .site-header .language-switch { border:1px solid #b49a7040; border-radius:50%; }
+ .page-drinks .menu-category-bar { top:calc(var(--safe-top) + 124px); left:calc(var(--safe-left) + 16px); right:auto; width:calc(var(--menu-rail-size) - 32px); max-height:calc(var(--view-height) - var(--safe-top) - var(--safe-bottom) - 220px); flex-direction:column; align-items:stretch; gap:8px; padding:0; overflow:auto; background:transparent; }
+ .page-drinks .menu-category-bar::before { display:none; }
+ .page-drinks .menu-category-bar a { justify-content:center; text-align:center; min-height:44px; padding:10px 6px; overflow-wrap:anywhere; }
+ .page-drinks .menu-category-bar a[aria-current]::after { left:24%; right:24%; bottom:0; }
+ .page-drinks .detail-page { width:100%; padding-top:calc(var(--safe-top) + 24px); padding-left:28px; padding-right:max(28px,var(--safe-right)); }
+ .page-drinks #specimen-title { scroll-margin-top:calc(var(--safe-top) + 24px); }
+ .page-drinks > .menu-legal-banner { padding-right:max(24px,var(--safe-right)); }
+}
+@media (min-width:480px) and (orientation:landscape) and (max-height:600px) {
+ .page-drinks { --menu-rail-size:88px; }
+ body.page-drinks .site-header { padding-top:calc(var(--safe-top) + 18px); padding-bottom:calc(var(--safe-bottom) + 18px); }
+ .page-drinks .site-header .wordmark { width:64px; max-width:none; }
+ .page-drinks .menu-category-bar { top:calc(var(--safe-top) + 90px); max-height:calc(var(--view-height) - var(--safe-top) - var(--safe-bottom) - 174px); }
+}
+/* Fixed 360 × 560 artwork, shared by template and complete-image cards. */
+.page-drinks .detail-page { max-width:900px; }
+.page-drinks .specimen-menu { container-type:inline-size; }
+.page-drinks .specimen-slots { display:grid; grid-template-columns:minmax(0,1fr); gap:0 32px; max-width:800px; margin-inline:auto; }
+.page-drinks .specimen-slots > .specimen-card { width:calc(360px * var(--card-scale,1)); height:calc(560px * var(--card-scale,1)); min-width:0; padding:0; margin-inline:auto; box-sizing:border-box; }
+.specimen-design { position:relative; width:360px; height:560px; padding:18px 20px 156px; box-sizing:border-box; transform:scale(var(--card-scale,1)); transform-origin:0 0; }
+.specimen-design .specimen-story { height:138px; bottom:18px; left:20px; right:20px; }
+.specimen-design .specimen-notes { min-height:38px; }
+.specimen-design .specimen-plate { height:100px; }
+.page-drinks .specimen-card + .specimen-card { margin-top:calc(-100px * var(--card-scale,1)); }
+.specimen-card-image { display:block; width:360px; height:560px; object-fit:contain; }
+.specimen-card[data-card-mode=image]::before { content:none; }
+.specimen-card[data-card-mode=image] .specimen-design { padding:0; }
+@container (min-width:780px) {
+ .page-drinks .specimen-slots { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .page-drinks .specimen-card:nth-child(2) { margin-top:18px; }
+ .page-drinks .specimen-card:nth-child(n+3) { margin-top:calc(-100px * var(--card-scale,1)); }
+}
+.page-drinks .specimen-category-break{grid-column:1/-1;height:clamp(56px,9vh,96px);pointer-events:none}
+.page-drinks .specimen-category-break + .specimen-card{margin-top:0}
+@container (min-width:780px){.page-drinks .specimen-category-break + .specimen-card + .specimen-card{margin-top:18px}}
+.specimen-card[data-card-color]:not([data-card-color=""]){color:var(--card-ink)}.specimen-card[data-card-color]:not([data-card-color=""]) :is(.specimen-index,.specimen-notes,.flavour-axes,.specimen-price,.specimen-thought,.specimen-ingredients,.specimen-clues summary){color:var(--card-ink)}

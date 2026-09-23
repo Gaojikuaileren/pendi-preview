@@ -11,7 +11,7 @@ export function mountMenuTypewriter(scene){
  const ink=document.createElement('span');ink.className='menu-type-ink';ink.setAttribute('aria-hidden','true');heading.replaceChildren(ink);
  let index=-1,ending='',bag=[],count=0,phase='typing',elapsed=0,last=null,frame=null,clock=0;
  const letters=[];
- const phrases=()=>thoughts[document.documentElement.lang==='en'?'en':'de'];
+ const phrases=()=>document.querySelector('[data-menu-words]')?.dataset.words?.split('\n').filter(Boolean)||thoughts[document.documentElement.lang==='en'?'en':'de'];
  const phrase=()=>phrases()[index]+ending;
  function nextThought(){
   // A fresh shuffled bag gives every adjective a turn, without a fixed cycle.
@@ -69,6 +69,6 @@ export function mountMenuTypewriter(scene){
  if(flip)new MutationObserver(sync).observe(flip,{attributes:true,attributeFilter:['aria-busy']});
  new MutationObserver(sync).observe(scene,{attributes:true,attributeFilter:['class']});
  document.addEventListener('visibilitychange',sync);reduced.addEventListener('change',sync);
- document.addEventListener('pendi:language',()=>{labels();count=[...phrase()].length;phase='hold';elapsed=0;ink.style.opacity='1';show(phrase());sync();});
+ document.addEventListener('pendi:language',()=>{bag=[];index=-1;nextThought();labels();count=[...phrase()].length;phase='hold';elapsed=0;ink.style.opacity='1';show(phrase());sync();});
  sync();
 }

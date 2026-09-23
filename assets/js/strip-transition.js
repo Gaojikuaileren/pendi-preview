@@ -9,7 +9,7 @@ export function mountStripTransition(deck,lastScene){
   const distance=Math.min(position,lastScene-position);
   const amount=reduced.matches?(distance<.5?1:0):1-smooth(distance/.48);
   const space=reduced.matches?amount:1-smooth(distance/.72);
-  document.body.style.setProperty('--strip-height',`calc((80px + var(--safe-bottom)) * ${space})`);
+  document.body.style.setProperty('--strip-height',`calc((var(--strip-rest-height,80px) + var(--safe-bottom)) * ${space})`);
   strip.style.opacity=String(amount);
   strip.style.transform=`translateY(${reduced.matches?0:(1-amount)*18}px)`;
   strip.style.visibility=amount<=.0001?'hidden':'visible';

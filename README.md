@@ -1,5 +1,5 @@
-# Pendi · Design preview
+# Pendi · Client preview
 
-Public client review of the in-progress website. Reservations and staff services are not live. Contact information, prices and policies remain draft content.
+Public review of the website design. Reservations, employee login and email delivery are not live. Submitted preview details are not transmitted or saved. Contact details, opening hours, prices and policies remain initial draft content pending client approval.
 
-Published static preview only; private plans, staff wireframes, original working assets and local backups are excluded.
+Only static public pages and their referenced assets are published. Private plans, accounts, databases, server code, credentials and backups are excluded.

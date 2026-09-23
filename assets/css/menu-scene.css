@@ -40,8 +40,7 @@
 .scene-drinks :is(.scene-copy,.scene-note,.scene-stack)::-webkit-scrollbar { display:none; }
 
 /* Flat menu entrance: no tilted cover, spine, stacked pages or cast shadow. */
-.scene-drinks.menu-depth-preview .menu-cover,
-.scene-drinks.menu-depth-preview .menu-cover:hover {
+.scene-drinks.menu-depth-preview .menu-cover {
  transform:none; box-shadow:none; text-shadow:none;
  border:0; border-radius:0;
  background:transparent; padding:18px 0; transition:background-color .2s ease;

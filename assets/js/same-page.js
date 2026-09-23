@@ -35,10 +35,35 @@ grip?.addEventListener('pointerup',e=>{if(drag!==null&&e.clientY-drag>65)closeSh
 grip?.addEventListener('pointercancel',()=>{drag=null;});
 if(location.hash.startsWith('#legal-'))openSheet(location.hash.slice(7),null,false);
 document.querySelector('[data-pride-preview]')?.addEventListener('change',e=>document.dispatchEvent(new CustomEvent('pendi:pride-preview',{detail:e.target.checked})));
+const copyTimers=new WeakMap();
+const copyAnnouncement=document.createElement('p');
+copyAnnouncement.className='visually-hidden';
+copyAnnouncement.setAttribute('role','status');
+document.querySelector('[data-contact-info]')?.append(copyAnnouncement);
+document.querySelectorAll('[data-contact-info] [data-copy-value]').forEach(button=>{
+  button.querySelector('svg')?.classList.add('copy-original');
+  const check=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  check.setAttribute('viewBox','0 0 24 24');check.setAttribute('aria-hidden','true');
+  check.setAttribute('focusable','false');check.classList.add('copy-check');
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d','M5 12.5 9.5 17 19 7');check.append(path);button.append(check);
+});
 document.querySelector('[data-contact-info]')?.addEventListener('click',async e=>{
   const button=e.target.closest('[data-copy-value]');
-  if(!button||button.disabled||button.dataset.approved!=='true'||!button.dataset.copyValue.trim())return;
+  if(!button||button.disabled||button.hasAttribute('aria-busy')||button.dataset.approved!=='true'||!button.dataset.copyValue.trim())return;
   const status=document.querySelector('[data-copy-status]');
-  try{await navigator.clipboard.writeText(button.dataset.copyValue);status.textContent=status.dataset.copied;}
-  catch{status.textContent=status.dataset.error;}
+  button.setAttribute('aria-busy','true');
+  try{
+    await navigator.clipboard.writeText(button.dataset.copyValue);
+    status.textContent='';
+    clearTimeout(copyTimers.get(button));
+    button.classList.add('is-copied');
+    copyAnnouncement.textContent='';
+    requestAnimationFrame(()=>{copyAnnouncement.textContent=status.dataset.copied;});
+    copyTimers.set(button,setTimeout(()=>{button.classList.remove('is-copied');copyTimers.delete(button);},2000));
+  }catch{
+    clearTimeout(copyTimers.get(button));copyTimers.delete(button);
+    button.classList.remove('is-copied');copyAnnouncement.textContent='';
+    status.textContent=status.dataset.error;
+  }finally{button.removeAttribute('aria-busy');}
 });

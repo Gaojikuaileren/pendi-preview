@@ -33,7 +33,7 @@ body:has(.mobile-menu[open]) .menu-depth-controls { visibility:hidden; }
 .menu-depth-preview[data-menu-depth=space] .menu-cover-bottom { border-top:1px solid #ac916d66; padding-top:6px; }
 /* Let the established scene opacity fade the whole object at transitions;
    never independently chase a moving table or add continuous 3D movement. */
-@media (hover:hover) { .menu-depth-preview[data-menu-depth=space] .menu-cover:hover { transform:perspective(950px) rotateX(10deg) rotateY(-5deg) rotateZ(-2deg) translateY(-2px); } }
+/* The menu entrance is flat in every interaction state. */
 .menu-depth-preview.depth-large-type[data-menu-depth=space] .menu-ink-plane,
 .menu-depth-preview.depth-large-type[data-menu-depth=space] .menu-cover { transform:none; transition:none; }
 .menu-depth-preview.depth-large-type .scene-copy { padding:4px 4px 4px 0; }
@@ -80,3 +80,4 @@ body:has(.mobile-menu[open]) .menu-depth-controls { visibility:hidden; }
  .home-cup-preview .home-cup-controls { top:calc(var(--art-height) - 64px); left:var(--edge-left); right:var(--edge-right); width:auto; grid-template-columns:1fr 1fr; }
  .home-cup-controls > span { display:none; }
 }
+

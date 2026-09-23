@@ -15,7 +15,7 @@ export const SCENE_PROFILES = Object.freeze({
   home: [845, 885, 945, 860, 735],
   about: [510, 550, 575, 505, 445],
   drinks: [670, 730, 720, 620, 590],
-  reservation: [530, 475, 510, 580, 605],
+  reservation: [475, 495, 520, 495, 475],
   contact: [395, 470, 540, 510, 430],
 });
 
@@ -23,14 +23,14 @@ export const COMPACT_PROFILES = Object.freeze({
   home: SCENE_PROFILES.home,
   drinks: [545, 590, 595, 530, 480],
   about: [350, 385, 400, 350, 295],
-  reservation: [360, 300, 340, 410, 420],
+  reservation: [300, 320, 340, 320, 300],
   contact: [330, 380, 400, 360, 300],
 });
 export const WIDE_PROFILES = Object.freeze({
   home: [835, 880, 930, 800, 770],
   drinks: [140, 215, 180, 590, 800],
   about: [155, 225, 195, 610, 790],
-  reservation: [140, 205, 185, 580, 815],
+  reservation: [140, 175, 195, 175, 140],
   contact: [145, 230, 195, 620, 830],
 });
 
@@ -49,15 +49,18 @@ export function waveY(u, seconds, layer = 0, settings = WAVE_SETTINGS, blend = {
   const profiles = settings.profiles || SCENE_PROFILES;
   // Lift the left edge smoothly below the header on short landscape screens;
   // don't clamp the curve into a flat line with a sharp corner.
-  const height = (profile) => profileHeight(u, profile) + Math.max(0, (settings.topLimit || 0) - profile[0]) * (1 - u);
-  const from = height(profiles[blend.from] || profiles.home);
-  const to = height(profiles[blend.to] || profiles.home);
+  const height = (profile,scene) => profileHeight(u, profile) + Math.max(0, (settings.topLimit || 0) - profile[0]) * (scene==='reservation'?1:(1-u));
+  const from = height(profiles[blend.from] || profiles.home,blend.from);
+  const to = height(profiles[blend.to] || profiles.home,blend.to);
   const basin = from + (to - from) * blend.mix;
   const phase = seconds * settings.speed;
   const drift = Math.sin(u * Math.PI * 2 - phase + layer * 1.2);
   const ripple = Math.sin(u * Math.PI * 4 + phase * 0.7 + layer * 0.8);
   const transition = Math.sin(blend.mix * Math.PI);
-  return basin + settings.amplitude * (1 + transition * 2.5) * (drift + ripple * 0.35) - layer * settings.backOffset;
+  const symmetry=(blend.from==='reservation'?1-blend.mix:0)+(blend.to==='reservation'?blend.mix:0);
+  const mirrorDrift=Math.sin((1-u)*Math.PI*2-phase+layer*1.2),mirrorRipple=Math.sin((1-u)*Math.PI*4+phase*.7+layer*.8);
+  const motion=(drift+ripple*.35)*(1-symmetry*.5)+(mirrorDrift+mirrorRipple*.35)*symmetry*.5;
+  return basin + settings.amplitude * (1 + transition * 2.5) * motion - layer * settings.backOffset;
 }
 
 export function wavePath(seconds, layer = 0, settings = WAVE_SETTINGS, blend) {

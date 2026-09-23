@@ -39,7 +39,8 @@ export function mountFlavourMotion(){
  return card=>{
   stop();if(active)observer.unobserve(active);active=card;paths=[];points=[];visible=false;
   if(!card)return;
-  const svg=card.querySelector('.specimen-terrain'),dots=[...svg.querySelectorAll('circle')];
+  const svg=card.querySelector('.specimen-terrain');if(!svg)return;
+  const dots=[...svg.querySelectorAll('circle')];
   if(dots.length!==5)return;
   points=[[0,88],...dots.map(n=>[+n.getAttribute('cx'),+n.getAttribute('cy')]),[320,88]];
   paths=[...svg.querySelectorAll('path')].map((node,i)=>({node,d:node.getAttribute('d'),fill:node.classList.contains('terrain-fill'),scale:i===0?1:i/4}));

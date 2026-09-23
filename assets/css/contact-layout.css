@@ -1,0 +1,30 @@
+/* Contact-only reading hierarchy: arrival first, direct contact second.
+   Keep existing controls, translated nodes and modal hooks in place. */
+.scene-contact .in-place-copy > .eyebrow { font-size:10px; letter-spacing:.16em; margin-bottom:6px; color:#7d6852; }
+.scene-contact .in-place-copy > h2 { display:grid; grid-template-columns:minmax(0,1fr) 48px; align-items:center; gap:12px; font:500 32px/1.05 var(--serif); margin:0 0 10px; }
+.scene-contact #contact-heading > span { display:block; overflow-wrap:anywhere; }
+.scene-contact .contact-card-open { width:48px; height:48px; margin:0; padding:13px; border:0; background:#30251d; color:var(--cream); box-shadow:0 3px 9px #30251d14; transition:background-color 200ms,transform 200ms; }
+.scene-contact .contact-card-open:hover,.scene-contact .contact-card-open:focus-visible { background:#584432; }
+.scene-contact .contact-card-open:active { transform:scale(.95); }
+.scene-contact .contact-lines > div { display:block; position:relative; min-height:48px; padding:5px 62px 5px 0; border:0; }
+.scene-contact .contact-lines dt { font:400 11px/1.35 var(--sans); letter-spacing:.035em; color:#7d6852; margin:0 0 1px; }
+.scene-contact .contact-lines dd { display:block; font:400 16px/1.45 var(--sans); margin:0; }
+.scene-contact .contact-lines > div:first-child dd { font-size:19px; line-height:1.3; }
+.scene-contact .contact-lines > div:nth-child(3) { margin-top:6px; padding-top:10px; border-top:1px solid #ab94784d; }
+.scene-contact .contact-lines .contact-icon { position:absolute; right:2px; top:50%; transform:translateY(-50%); border:0; border-radius:14px; background:#a38b6514; transition:background-color 200ms; }
+.scene-contact .contact-lines > div:nth-child(3) .contact-icon { top:calc(50% + 4px); }
+.scene-contact .contact-lines .contact-icon:hover:not(:disabled),.scene-contact .contact-lines .contact-icon:focus-visible { background:#a38b6536; }
+.scene-contact .contact-lines .contact-icon:disabled { background:transparent; opacity:.45; }
+.scene-contact [data-copy-status]:not(:empty) { margin-top:8px; font-size:12px; }
+@media (max-height:720px) {
+ .scene-contact .in-place-copy > h2 { font-size:32px; margin-bottom:12px; }
+ .scene-contact #contact-heading > span { max-width:none; }
+ .scene-contact .in-place-copy > .eyebrow { margin-bottom:6px; }
+}
+@media (prefers-reduced-motion:reduce) { .scene-contact .contact-card-open,.scene-contact .contact-lines .contact-icon { transition:none; } }
+/* Success stays inside the copy button; its footprint never changes. */
+.contact-icon .copy-original { opacity:1; transform:scale(1); transition:opacity 160ms ease,transform 160ms ease; }
+.contact-icon .copy-check { position:absolute; left:50%; top:50%; opacity:0; transform:translate(-50%,-50%) scale(.8); transition:opacity 160ms ease,transform 160ms ease; }
+.contact-icon.is-copied .copy-original { opacity:0; transform:scale(.8); }
+.contact-icon.is-copied .copy-check { opacity:1; transform:translate(-50%,-50%) scale(1); }
+@media (prefers-reduced-motion:reduce) { .contact-icon .copy-original,.contact-icon .copy-check { transition:none; } }

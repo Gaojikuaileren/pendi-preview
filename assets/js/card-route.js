@@ -51,6 +51,7 @@ async function arrive(){
   const back=document.createElement('div');back.className='card-route-back';back.append(ink);
   const front=document.createElement('div');front.className='card-route-front';
   const preview=target.cloneNode(true);preview.inert=true;preview.removeAttribute('id');preview.removeAttribute('tabindex');preview.style.visibility='visible';preview.classList.remove('is-active','is-settling');
+  preview.style.setProperty('--card-scale',getComputedStyle(target).getPropertyValue('--card-scale')||'1');
   preview.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
   preview.querySelectorAll('[data-l10n]').forEach(n=>n.removeAttribute('data-l10n'));
   front.append(preview);flip.append(back,front);card.append(flip);card.classList.add('has-flip');

@@ -1,4 +1,4 @@
-import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=dd1931f9b3a7';
+import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=2dc20be597d9';
 export function mountIntegratedWave(container,button){
  const svg=container.querySelector('svg'),front=container.querySelector('[data-wave-front]'),back=container.querySelector('[data-wave-back]');
  if(!svg||!front||!back||!button)return null;
@@ -7,7 +7,7 @@ export function mountIntegratedWave(container,button){
  const bands=[],lines=[];for(let i=0;i<6;i++){const band=make('path'),line=make('path',{fill:'none','stroke-width':'1','vector-effect':'non-scaling-stroke'});svg.append(band,line);bands.push(band);lines.push(line);}
  const arcs=Array.from({length:3},()=>{const p=make('path',{fill:'none','stroke-width':'.8','vector-effect':'non-scaling-stroke'});subjects.append(p);return p;});
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),daily=['#805b3f','#a17a51','#b89465','#c6a77c','#d1b995','#dbccaf'],rainbow=['#b83e4c','#d87735','#dfb643','#488b69','#477fa3','#82639d'];
- const portrait={...SCENE_PROFILES,home:[835,870,865,800,725],drinks:[650,708,674,601,592],reservation:[265,285,300,270,245],contact:[415,465,475,425,395]};
+ const portrait={...SCENE_PROFILES,home:[835,870,865,800,725],drinks:[650,708,674,601,592],reservation:[250,275,295,275,250],contact:[415,465,475,425,395]};
  let profiles=portrait,topLimit=0,blend={from:'home',to:'home',mix:0},elapsed=0,frame=null,last=null,lastDraw=0,paused=false,visible=true,colorMix=0,pride=container.dataset.prideMode==='true',anchors=null;
  const lerp=(a,b,t)=>a+(b-a)*t;
  const color=(a,b,t)=>'#'+[1,3,5].map(i=>Math.round(lerp(parseInt(a.slice(i,i+2),16),parseInt(b.slice(i,i+2),16),t)).toString(16).padStart(2,'0')).join('');
@@ -29,24 +29,48 @@ export function mountIntegratedWave(container,button){
  function canRun(){return visible&&!document.hidden&&!reduced.matches&&(!paused||Math.abs(colorMix-Number(pride))>.001);}
  function tick(now){frame=null;if(!canRun())return;const dt=last===null?0:Math.min(now-last,80);last=now;if(!paused)elapsed+=dt;const target=Number(pride);colorMix+=Math.sign(target-colorMix)*Math.min(Math.abs(target-colorMix),dt/1400);if(now-lastDraw>32){draw();lastDraw=now;}frame=requestAnimationFrame(tick);}
  function sync(){button.disabled=reduced.matches;button.setAttribute('aria-label',reduced.matches?button.dataset.reduced:paused?button.dataset.play:button.dataset.pause);button.classList.toggle('is-paused',reduced.matches||paused);if(frame!==null)cancelAnimationFrame(frame);frame=null;last=null;if(reduced.matches)colorMix=Number(pride);draw();if(canRun())frame=requestAnimationFrame(tick);}
- function resize(){const layout=getComputedStyle(document.body).getPropertyValue('--wave-layout').trim();profiles=layout==='wide'?WIDE_PROFILES:layout==='compact'?{...COMPACT_PROFILES,reservation:[220,250,260,230,210],contact:[265,285,300,275,250]}:portrait;
-   // Reference canvas: book left, sensory text right, menu title left below.
-   // Keep the other scenes and deferred screen-size compositions intact.
-   if(matchMedia('(min-width:375px) and (max-width:430px) and (min-height:601px) and (orientation:portrait)').matches)profiles={...profiles,drinks:[550,450,485,565,505]};
-   topLimit=layout==='wide'?72/Math.max(container.clientHeight,1)*1000:0;container.dataset.waveLayout=layout;
+ function resize(){const layout=getComputedStyle(document.body).getPropertyValue('--wave-layout').trim();profiles=layout==='wide'?WIDE_PROFILES:layout==='compact'?{...COMPACT_PROFILES,reservation:[215,240,255,240,215],contact:[265,285,300,275,250]}:portrait;
+   // Portrait canvases: book left, sensory text right, menu title left below.
+   if(matchMedia('(min-height:521px) and (max-aspect-ratio:1/1)').matches)profiles={...profiles,drinks:[550,450,485,565,505]};
+   if(layout==='wide'&&matchMedia('(max-height:600px)').matches)profiles={...profiles,drinks:[140,215,350,760,820]};
+   topLimit=layout==='wide'?(innerHeight<=360?64:72)/Math.max(container.clientHeight,1)*1000:0;container.dataset.waveLayout=layout;
    const film=document.querySelector('[data-scroll-video]'),vr=film?.getBoundingClientRect(),wr=container.getBoundingClientRect();anchors=null;
    if(vr?.width&&wr.width){const scale=Math.max(vr.width/512,vr.height/768),ref=874/768;const point=(x,y)=>{const sx=(x+(512*ref-402)/2)/ref,sy=y/ref;return{x:(vr.left-wr.left+sx*scale-(512*scale-vr.width)/2)/wr.width*1440,y:(vr.top-wr.top+sy*scale-(768*scale-vr.height)*(layout==='wide'||innerWidth>=500?0:.5))/wr.height*1000,sx:scale/ref/wr.width*1440,sy:scale/ref/wr.height*1000};};anchors={home:point(330,520),drinks:point(98,296)};}
    // Keep reading areas below the complete contour envelope, including its
    // widest morph phase. A fixed envelope prevents text bobbing with waves.
-   for(const [id,selector]of [['about','.scene-copy'],['contact','.scene-copy'],['drinks','.scene-note']]){
+   for(const [id,selector]of [['about','.scene-copy'],['contact','.scene-copy'],['drinks','.scene-note'],...(layout==='wide'?[['reservation','.scene-copy']]:[])]){
      const scene=document.getElementById(id),copy=scene?.querySelector(selector);if(!copy)continue;
+     if(id==='contact')scene.classList.toggle('contact-large-type',parseFloat(getComputedStyle(copy.querySelector('h2')).fontSize)>48);
+     const minTop=Math.max(layout==='wide'?0:112,(document.querySelector('.site-header')?.getBoundingClientRect().bottom||0)+(id==='reservation'?16:8));
      const box=copy.getBoundingClientRect(),left=Math.max(0,(box.left-wr.left)/wr.width),right=Math.min(1,(box.right-wr.left)/wr.width);let bottom=0;
      for(let i=0;i<=48;i++){const u=left+(right-left)*i/48;bottom=Math.max(bottom,waveY(u,0,0,{...WAVE_SETTINGS,profiles,topLimit,amplitude:0},{from:id,to:id,mix:0})+64);}
-     scene.style.setProperty('--paper-safe-top',`${Math.max(112,bottom/1000*wr.height+16).toFixed(1)}px`);
+     if((['contact','about','reservation'].includes(id)||(id==='drinks'&&matchMedia('(max-aspect-ratio:1/1) and (min-height:521px)').matches))&&wr.height>0){
+       // Contact is a single panel, including enlarged text. Grow its paper
+       // area before considering any overflow; never shrink the text itself.
+       const safe=bottom/1000*wr.height+16;
+       const safeBottom=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom'))||0;
+       const breathingRoom=id==='drinks'?104:['about','reservation'].includes(id)?safeBottom+32:24;
+       const needed=Math.max(minTop,wr.height-copy.scrollHeight-breathingRoom);
+       let lift=Math.max(0,safe-needed)/wr.height*1000;
+       for(let pass=0;pass<10&&lift>.1;pass++){
+         const previousBottom=bottom;
+         profiles={...profiles,[id]:profiles[id].map(v=>v-lift)};
+         // waveY also protects the header: remeasure the final curve rather
+         // than assuming a lift can move it past that constraint.
+         bottom=0;for(let i=0;i<=48;i++){const u=left+(right-left)*i/48;bottom=Math.max(bottom,waveY(u,0,0,{...WAVE_SETTINGS,profiles,topLimit,amplitude:0},{from:id,to:id,mix:0})+64);}
+         if(previousBottom-bottom<.1)break;
+         lift=Math.max(0,bottom/1000*wr.height+16-needed)/wr.height*1000;
+       }
+     }
+     scene.style.setProperty('--paper-safe-top',`${Math.max(minTop,bottom/1000*wr.height+16).toFixed(1)}px`);
+     if(id==='drinks')scene.style.setProperty('--menu-cover-height',`${copy.offsetHeight}px`);
    }
    draw();}
  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;sync();});observer.observe(container);
  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(container);
+ resizeObserver.observe(document.querySelector('.site-header'));
+ for(const copy of document.querySelectorAll('#contact .scene-copy,#about .scene-copy,#reservation .scene-copy,#drinks .scene-note')){resizeObserver.observe(copy);for(const child of copy.children)resizeObserver.observe(child);}
+ document.fonts.ready.then(resize);document.addEventListener('pendi:language',resize);
  button.addEventListener('click',()=>{paused=!paused;sync();});reduced.addEventListener('change',sync);document.addEventListener('visibilitychange',sync);
  document.querySelector('.mobile-menu')?.addEventListener('toggle',draw);
  document.addEventListener('pendi:pride-preview',event=>{pride=event.detail===true;sync();});
