@@ -1,4 +1,4 @@
-import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots} from './booking-rules.js?v=2dc20be597d9';
+import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots} from './booking-rules.js?v=ca1c440043db';
 // Interaction sample only: production must revalidate with its own rules and clock.
 export function mountBookingDials(root,{t}) {
  const form=root.querySelector('form'),fields=form.querySelector('.fields'),reduced=matchMedia('(prefers-reduced-motion:reduce)');

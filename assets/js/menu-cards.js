@@ -1,4 +1,4 @@
-import {mountFlavourMotion} from './flavour-motion.js?v=2dc20be597d9';
+import {mountFlavourMotion} from './flavour-motion.js?v=ca1c440043db';
 export function mountMenuCards(){
  if(!document.body.classList.contains('page-drinks'))return;
  const stack=document.querySelector('.specimen-slots');if(!stack)return;

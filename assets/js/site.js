@@ -1,17 +1,17 @@
-import {mountKeyboardCanvas} from './keyboard-canvas.js?v=2dc20be597d9';
-import { mountIntegratedWave } from './wave-interaction.js?v=2dc20be597d9';
-import { mountDeck } from './deck.js?v=2dc20be597d9';
-import { mountMenuMotion } from './menu-motion.js?v=2dc20be597d9';
-import { mountLanguageSwitch } from './language.js?v=2dc20be597d9';
-import { mountHomeEntrance } from './home-entry.js?v=2dc20be597d9';
-import { mountCardRoute } from './card-route.js?v=2dc20be597d9';
-import { mountMenuCards } from './menu-cards.js?v=2dc20be597d9';
-import { mountDeviceTilt } from './device-tilt.js?v=2dc20be597d9';
-import {mountSceneReading} from './scene-reading.js?v=2dc20be597d9';
-import {mountLocalAdminEntry} from './admin-entry.js?v=2dc20be597d9';
-import './same-page.js?v=2dc20be597d9';
-import './opening-hours.js?v=2dc20be597d9';
-import './contact-cards.js?v=2dc20be597d9';
+import {mountKeyboardCanvas} from './keyboard-canvas.js?v=ca1c440043db';
+import { mountIntegratedWave } from './wave-interaction.js?v=ca1c440043db';
+import { mountDeck } from './deck.js?v=ca1c440043db';
+import { mountMenuMotion } from './menu-motion.js?v=ca1c440043db';
+import { mountLanguageSwitch } from './language.js?v=ca1c440043db';
+import { mountHomeEntrance } from './home-entry.js?v=ca1c440043db';
+import { mountCardRoute } from './card-route.js?v=ca1c440043db';
+import { mountMenuCards } from './menu-cards.js?v=ca1c440043db';
+import { mountDeviceTilt } from './device-tilt.js?v=ca1c440043db';
+import {mountSceneReading} from './scene-reading.js?v=ca1c440043db';
+import {mountLocalAdminEntry} from './admin-entry.js?v=ca1c440043db';
+import './same-page.js?v=ca1c440043db';
+import './opening-hours.js?v=ca1c440043db';
+import './contact-cards.js?v=ca1c440043db';
 
 mountKeyboardCanvas();
 const wave = document.querySelector('[data-wave]');
@@ -21,7 +21,7 @@ if (deck) {mountDeck(deck, controller);mountSceneReading(deck);}
 
 // Approved Phase 1 design is the default. Comparison controls stay opt-in.
 if(deck) {
-  const designReady=import('./menu-depth-preview.js?v=2dc20be597d9').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
+  const designReady=import('./menu-depth-preview.js?v=ca1c440043db').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
   mountHomeEntrance(designReady);
 }
 

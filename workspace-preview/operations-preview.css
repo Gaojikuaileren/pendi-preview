@@ -1,0 +1,17 @@
+.preview-roster-content { min-width: 0; }
+.preview-helper-row { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem; padding: .85rem 0; border-bottom: 1px solid rgb(186 160 121 / 20%); }
+.preview-helper-row > strong { flex: 1 1 120px; }
+.preview-helper-row > small { color: #b7a994; }
+.preview-activity-list { width: 100%; min-width: 0; overflow-x: auto; }
+[data-preview-armed="true"] { box-shadow: 0 0 0 2px #ba856b; }
+.preview-roster-content .roster-day-shifts { min-height: 3rem; }
+.preview-roster-content .roster-attendance-times span,
+.preview-roster-content .roster-note,
+[data-reservations] .reservation-email,
+[data-staff] .staff-email { overflow-wrap: anywhere; }
+.preview-roster-content .roster-opening { min-height: 2.8rem; }
+@media (max-width: 600px) {
+ .preview-roster-content .roster-attendance-row { grid-template-columns: minmax(0, 1fr) auto; }
+ .preview-roster-content .roster-attendance-times { grid-column: 1; }
+ .preview-roster-content .roster-attendance-row > button { grid-column: 2; grid-row: 1 / 3; }
+}

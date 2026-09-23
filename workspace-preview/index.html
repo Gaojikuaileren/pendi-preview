@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Pendi · Verwaltungsvorschau</title>
+  <link rel="stylesheet" href="../assets/css/admin-local.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-menu.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-business.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-reservations.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-actions.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-site.css?v=ca1c440043db">
+  <link rel="stylesheet" href="../assets/css/admin-roster.css?v=ca1c440043db">
+  <link rel="stylesheet" href="preview.css?v=ca1c440043db">
+  <link rel="stylesheet" href="menu-preview.css?v=ca1c440043db">
+  <link rel="stylesheet" href="operations-preview.css?v=ca1c440043db">
+  <script type="module" src="runtime.js?v=ca1c440043db"></script>
+</head>
+<body data-admin-preview="true">
+  <aside class="preview-bar" aria-label="Preview">
+    <div><strong data-preview-title>Interaktive Vorschau</strong><span data-preview-note>Beispieldaten · Nur in diesem Browser gespeichert · Kein E-Mail-Versand</span></div>
+    <button type="button" class="secondary" data-preview-reset>Zurücksetzen</button>
+  </aside>
+  <div id="preview-shell" aria-busy="true"><p class="preview-loading">Pendi…</p></div>
+  <p class="preview-toast" role="status" aria-live="polite" hidden></p>
+  <dialog class="preview-reset-dialog" aria-labelledby="preview-reset-title">
+    <h2 id="preview-reset-title">Vorschau zurücksetzen?</h2><p data-preview-reset-note>Nur Ihre Änderungen an dieser Vorschau werden gelöscht.</p>
+    <div><button type="button" class="secondary" data-preview-cancel>Abbrechen</button><button type="button" data-preview-confirm>Zurücksetzen</button></div>
+  </dialog>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import {createContactCard} from './contact-card-art.js?v=2dc20be597d9';
+import {createContactCard} from './contact-card-art.js?v=ca1c440043db';
 const openers=[...document.querySelectorAll('[data-contact-card-open]')];
 if(openers.length){
  let opener=openers[0];

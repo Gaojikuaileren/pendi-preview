@@ -1,8 +1,8 @@
-import {businessSettings,refreshBusinessSettings} from './business-config.js?v=2dc20be597d9';
-import {mountBookingDials} from './booking-dials.js?v=2dc20be597d9';
-import {t} from './language.js?v=2dc20be597d9';
-import {mailQuotaReached} from './booking-mail-quota.js?v=2dc20be597d9';
-import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=2dc20be597d9';
+import {businessSettings,refreshBusinessSettings} from './business-config.js?v=ca1c440043db';
+import {mountBookingDials} from './booking-dials.js?v=ca1c440043db';
+import {t} from './language.js?v=ca1c440043db';
+import {mailQuotaReached} from './booking-mail-quota.js?v=ca1c440043db';
+import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=ca1c440043db';
 // Stage 2 content on the approved Stage 1 flow. Local-only; no service or storage.
 const isBooking = document.body.classList.contains('page-reservation');
 const de = document.documentElement.lang === 'de';
