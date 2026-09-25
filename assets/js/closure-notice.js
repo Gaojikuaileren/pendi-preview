@@ -1,4 +1,4 @@
-import {businessSettings} from './business-config.js?v=ca1c440043db';
+import {businessSettings} from './business-config.js?v=ec35d2debdae';
 
 export function berlinDate(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 export function closureRanges(dates,today=berlinDate()){

@@ -1,6 +1,6 @@
-import {mountMenu} from './menu.js?v=ca1c440043db';
-import {mountOperations} from './operations.js?v=ca1c440043db';
-import {mountStaffPresentation} from './staff-layout.js?v=ca1c440043db';
+import {mountMenu} from './menu.js?v=ec35d2debdae';
+import {mountOperations} from './operations.js?v=ec35d2debdae';
+import {mountStaffPresentation} from './staff-layout.js?v=ec35d2debdae';
 
 const STORAGE='pendi-admin-preview-v1',entry=new URL('./',import.meta.url),site=new URL('../',entry);
 const shell=document.querySelector('#preview-shell'),toast=document.querySelector('.preview-toast'),resetDialog=document.querySelector('.preview-reset-dialog');

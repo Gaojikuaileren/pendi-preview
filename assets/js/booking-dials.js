@@ -1,4 +1,4 @@
-import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots} from './booking-rules.js?v=ca1c440043db';
+import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots,bookingClockKey} from './booking-rules.js?v=ec35d2debdae';
 // Interaction sample only: production must revalidate with its own rules and clock.
 export function mountBookingDials(root,{t}) {
  const form=root.querySelector('form'),fields=form.querySelector('.fields'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
@@ -33,11 +33,13 @@ export function mountBookingDials(root,{t}) {
  };
  const arc=(id,radius,from,to)=>Array.from({length:25},(_,i)=>point(id,radius,from+(to-from)*i/24).join(' '));
  // Fine intermediate contours and stronger index contours suggest a terrain map.
- const contour=id=>[0,.3,.66,1].map((level,n)=>'<path class="dial-contour" style="stroke-width:'+([1.05,.55,.75,.9][n])+';opacity:'+([.68,.46,.52,.58][n])+'" d="M'+Array.from({length:181},(_,i)=>point(id,48+22*level,i*2).join(' ')).join('L')+'Z"/>').join('');
+ const contour=id=>[0,.3,.66,1].map((level,n)=>'<path class="dial-contour" d="M'+Array.from({length:181},(_,i)=>point(id,48+22*level,i*2).join(' ')).join('L')+'Z"/>').join('');
  // The twelve logical sectors retain availability tint, without radial dividers.
  const segments=id=>Array.from({length:12},(_,i)=>{const a=i*30-15,b=a+30,outer=arc(id,70,a,b),inner=arc(id,48,b,a);return `<g data-segment="${i}"><path class="dial-sector" d="M${outer.join('L')}L${inner.join('L')}Z"/></g>`;}).join('');
  const configs=[['date',t('Datum','Date')],['time',t('Uhrzeit','Time')],['guests',t('Personen','Guests')]];
  ui.innerHTML=configs.map(([id,label])=>`<div class="dial-field" data-dial-field="${id}"><span class="dial-label" id="dial-label-${id}">${label}</span><div class="basin-dial" data-dial="${id}" role="slider" tabindex="0" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End" aria-labelledby="dial-label-${id}" aria-describedby="dial-help"><svg viewBox="0 0 160 160" aria-hidden="true">${segments(id)}${contour(id)}<g class="dial-needle"><circle cx="0" cy="0" r="2.5"/></g></svg><span class="dial-value" data-dial-value></span><span class="dial-unit" data-dial-unit></span></div></div>`).join('');
+ // Set trusted style properties directly; HTML style attributes are blocked by CSP.
+ ui.querySelectorAll('.dial-contour').forEach((node,index)=>{node.style.strokeWidth=[1.05,.55,.75,.9][index%4];node.style.opacity=[.68,.46,.52,.58][index%4];});
  const hint=document.createElement('p');hint.id='dial-help';hint.className='dial-help';ui.after(hint);
  const helpCopy=document.createElement('span');helpCopy.className='dial-help-copy';hint.append(helpCopy);
  const coach=document.createElement('span');coach.className='dial-coach';coach.setAttribute('role','status');coach.innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 12a11 11 0 0 1 18-6m-5-1 6 1-1 6M12 27l-3-7q-1-3 2-3l3 3V10q0-3 3-3t3 3v7l4-1q3 0 3 3l-2 9"/></svg><span></span>';hint.append(coach);
@@ -90,9 +92,8 @@ export function mountBookingDials(root,{t}) {
  root.bookingSelectionAvailable=draft=>Number(draft.guests)>=1&&Number(draft.guests)<=config.maxGuests&&previewSlots(draft.serviceDate).some(slot=>slot.enabled&&slot.date===draft.date&&slot.time===draft.time);
  root.bookingAlternatives=draft=>previewSlots(draft.serviceDate).filter(s=>s.enabled&&`${s.date}T${s.time}`>`${draft.date}T${draft.time}`).slice(0,3);
  let lastClockKey='';
- const refreshClock=()=>{if(document.hidden||root.dataset.step!=='choose')return;const now=berlinNow(),[h,m,s]=now.time.split(':').map(Number),key=now.date+':'+Math.ceil((h*3600+m*60+s)/1800);if(key===lastClockKey)return;lastClockKey=key;if(now.date!==first){first=now.date;selected.date=0;}render();};
+ const refreshClock=()=>{if(document.hidden||root.dataset.step!=='choose')return;const instant=new Date(),now=berlinNow(instant),key=bookingClockKey(instant);if(key===lastClockKey)return;lastClockKey=key;if(now.date!==first){first=now.date;selected.date=0;}render();};
  document.addEventListener('visibilitychange',refreshClock);
- document.addEventListener('pendi:business-settings',()=>{lastClockKey='';refreshClock();});
  document.addEventListener('pendi:business-settings',()=>{lastClockKey='';refreshClock();});
  // One-second tick only while choosing this scene: expired half-hours grey immediately.
  setInterval(()=>{if(document.body.dataset.sceneActive==='reservation')refreshClock();},1000);
