@@ -1,4 +1,4 @@
-import {businessSettings} from './business-config.js?v=1fdeb4acf428';
+import {businessSettings} from './business-config.js?v=920e45e93621';
 // Local presentation data only; replace with validated, authorised backend data in phase 5.
 // null = unconfirmed day, false = closed, true = open. ISO weekdays: Monday 1–Sunday 7.
 // Opening hours are separate from reservation admission/capacity rules.

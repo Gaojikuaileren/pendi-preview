@@ -1,5 +1,5 @@
 // Sensory copy samples, not claims about the actual menu or ingredients.
-import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=920e45e93621';
 const thoughts={
  de:['samtig','frisch','herb','würzig','rauchig','weich'],
  en:['velvety','fresh','bitter','spiced','smoky','soft']

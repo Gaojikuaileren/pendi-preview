@@ -1,5 +1,5 @@
 // Only the active, visible card breathes. Sampled flavour anchors never move.
-import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=920e45e93621';
 export function mountFlavourMotion(){
  const reduced=reducedMotion;
  let active=null,visible=false,frame=0,began=0,paths=[],points=[];

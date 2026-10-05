@@ -33,7 +33,7 @@ body.page-drinks .site-header { position:fixed; inset:0 0 auto; z-index:10; heig
 .specimen-clues { border-top:1px dotted #aa936c70; margin-top:10px; }
 .specimen-clues summary { display:flex; align-items:center; justify-content:space-between; gap:12px; list-style:none; cursor:pointer; min-height:44px; font-size:12px; }
 .specimen-clues summary::-webkit-details-marker { display:none; }
-.specimen-plus { font-size:23px; font-weight:200; }
+.specimen-plus { width:23px; height:23px; flex:none; }
 .specimen-clues[open] .specimen-plus { transform:rotate(45deg); }
 .specimen-clues p { font-size:14px; line-height:1.8; padding:2px 0 12px; margin:0; }
 .specimen-end { font-size:12px; line-height:1.7; margin:36px 0 8px; }

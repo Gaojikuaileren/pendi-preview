@@ -1,6 +1,6 @@
 // Update translated copy in place, preserving the film, waves, focus and draft.
 // Stable template markers bind to the server-rendered alternate language.
-import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=920e45e93621';
 const pairs = new Map();
 export function t(de, en) {
   pairs.set(de, en);

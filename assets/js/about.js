@@ -1,6 +1,6 @@
-import {cardVisual} from './card-media.js?v=1fdeb4acf428';
-import {mountAboutReading} from './about-reading.js?v=1fdeb4acf428';
-import './ui-icons.js?v=1fdeb4acf428';
+import {cardVisual} from './card-media.js?v=920e45e93621';
+import {mountAboutReading} from './about-reading.js?v=920e45e93621';
+import './ui-icons.js?v=920e45e93621';
 const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
 const iso=date=>date.toISOString().slice(0,10);
 const civil=value=>new Date(value+'T12:00:00Z');

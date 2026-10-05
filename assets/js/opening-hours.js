@@ -1,7 +1,7 @@
-import {closurePlans,closureDateLabel,renderClosurePlans,berlinDate} from './closure-notice.js?v=1fdeb4acf428';
-import {businessSettings} from './business-config.js?v=1fdeb4acf428';
-import {OPENING_HOURS} from './opening-hours-config.js?v=1fdeb4acf428';
-import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import {closurePlans,closureDateLabel,renderClosurePlans,berlinDate} from './closure-notice.js?v=920e45e93621';
+import {businessSettings} from './business-config.js?v=920e45e93621';
+import {OPENING_HOURS} from './opening-hours-config.js?v=920e45e93621';
+import {reducedMotion} from './motion-policy.js?v=920e45e93621';
 
 const trigger=document.querySelector('[data-hours-open]');
 if(trigger){

@@ -1,6 +1,6 @@
 // Original station photographs and local repairs are baked into this one MP4.
 // Never play it: seek the source timeline, including the original anchor frames.
-import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=920e45e93621';
 export function mountScrollVideo(video, {onFrame} = {}) {
   if (!video) return null;
   const reduced = reducedMotion;

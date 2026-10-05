@@ -1,4 +1,4 @@
-import {t} from './language.js?v=1fdeb4acf428';
+import {t} from './language.js?v=920e45e93621';
 // Legacy scene overflow uses explicit buttons. About has its own column reader.
 export function mountSceneReading(deck){
  const regions=[...deck.querySelectorAll('.scene-copy,.scene-note,.scene-stack')].filter(n=>!n.matches('#drinks .scene-copy,#drinks .scene-note')&&!n.closest('#contact,#about'));
