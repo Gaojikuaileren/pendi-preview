@@ -1,23 +1,37 @@
-import {businessSettings,refreshBusinessSettings} from './business-config.js?v=ec35d2debdae';
-import {mountBookingDials} from './booking-dials.js?v=ec35d2debdae';
-import {t} from './language.js?v=ec35d2debdae';
-import {mailQuotaReached} from './booking-mail-quota.js?v=ec35d2debdae';
-import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=ec35d2debdae';
+import {businessSettings,refreshBusinessSettings} from './business-config.js?v=bfa97af8442c';
+import {mountBookingDials} from './booking-dials.js?v=bfa97af8442c';
+import {t} from './language.js?v=bfa97af8442c';
+import {mailQuotaReached} from './booking-mail-quota.js?v=bfa97af8442c';
+import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 // Stage 2 content on the approved Stage 1 flow. Local-only; no service or storage.
 const isBooking = document.body.classList.contains('page-reservation');
 const de = document.documentElement.lang === 'de';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const button = (label, action, primary=false) => `<button type="button" data-action="${action}" class="${primary?'primary':''}">${label}</button>`;
+// The server marks production: 'closed' until online booking is accepted, then 'live'.
+// Production never shows the design demo; the standalone page has no live form of its own.
+// While closed, the home dials stay and end in a phone/email handover (no contact form).
+const transport=document.body.dataset.bookingTransport;
 const inlineBooking=document.querySelector('[data-inline-booking]');
-if(inlineBooking)mountBooking(inlineBooking);
+if(inlineBooking)mountBooking(inlineBooking,{closed:transport==='closed'});
 if (isBooking) {
   const root = document.createElement('section'); root.className='prototype';
   document.querySelector('.detail-page > .notice').after(root);
-  document.querySelector('.detail-page').classList.add('prototype-ready');
-  mountBooking(root);
+  if(transport==='closed'||transport==='live')mountBookingContact(root,transport==='live');
+  else{document.querySelector('.detail-page').classList.add('prototype-ready');mountBooking(root);}
 }
 
-function mountBooking(root) {
+function mountBookingContact(root,live) {
+  const phone=document.body.dataset.contactPhone||'',email=document.body.dataset.contactEmail||'',dial=phone.replace(/[^+0-9]/g,'');
+  const links=[live?`<a class="proto-link primary" href="${de?'/pendi-preview/#reservation':'/pendi-preview/en/#reservation'}">${t('Online reservieren','Book online')}</a>`:'',
+    dial.replace('+','').length>=5?`<a class="proto-link" href="tel:${esc(dial)}">${esc(phone)}</a>`:'',
+    /^[^@\s]+@[^@\s]+$/.test(email)?`<a class="proto-link" href="mailto:${esc(email)}">${esc(email)}</a>`:''].join('');
+  root.dataset.contentId='BOOK-CONTACT';root.classList.add('booking-contact');
+  root.innerHTML=`<p>${live?t('Online reservieren Sie auf unserer Startseite. Gern auch telefonisch oder per E-Mail.','Book online on our home page, or reach us by phone or email.'):t('Reservierungen nehmen wir telefonisch oder per E-Mail entgegen.','We take reservations by phone or email.')}</p><div class="actions">${links}</div>`;
+}
+
+function mountBooking(root,{closed=false}={}) {
   const embedded=root.hasAttribute('data-inline-booking');
   const designMode=new URLSearchParams(location.search).get('design')==='1';
   root.innerHTML=`<div class="demo-banner"><strong>${t('Nur eine Simulation','Simulation only')}</strong><br>${t('Bitte keine persönlichen Daten eingeben. Nichts wird gespeichert oder versendet. Alle Zeiten und Regeln sind Beispiele.','Do not enter personal details. Nothing is saved or sent. All times and rules are examples.')}</div>
@@ -35,6 +49,12 @@ function mountBooking(root) {
   `;
   const form=root.querySelector('form'), result=root.querySelector('[data-result]');
   if(embedded)mountBookingDials(root,{t});
+  // Closed production: two steps, choose and then call or write. The second step reuses the
+  // dials' 'email' marker so the step indicator follows the result view without changes there.
+  if(closed&&embedded){
+    root.querySelector('.steps').innerHTML=[['choose',t('Wählen','Choose')],['email',t('Anrufen oder schreiben','Call or write')]].map(([id,label],i)=>`<span data-booking-step="${id}"${i?'':' aria-current="step"'}><span class="booking-step-number">0${i+1}</span> ${label}</span>`).join('');
+    form.querySelector('[type=submit]').textContent=t('Weiter','Continue');
+  }
   let draft, selectedTime, selectedDate, request=0, pending=false;
   const contactForm=document.createElement('form');
   contactForm.dataset.bookingContact='';contactForm.noValidate=true;contactForm.hidden=true;
@@ -74,7 +94,7 @@ function mountBooking(root) {
   const fieldMotions=new WeakMap();
   function shakeInvalid(field){
     fieldMotions.get(field)?.cancel();
-    if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+    if(reducedMotion.matches)return;
     const motion=field.animate([{transform:'translateX(0)'},{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(-3px)'},{transform:'translateX(2px)'},{transform:'translateX(0)'}],{duration:360,easing:'ease-in-out'});
     fieldMotions.set(field,motion);
   }
@@ -116,16 +136,29 @@ function mountBooking(root) {
     result.hidden=false;result.innerHTML=`${embedded&&!designMode?'':`<p class="meta">${t('SIMULIERT · KEINE ECHTE RESERVIERUNG','SIMULATED · NO REAL RESERVATION')}</p>`}<h2>${heading}</h2>${summary()}<div class="result-copy">${body}</div><div class="actions">${actions}</div>`;result.focus();
   };
   const edit=()=>button(t('Angaben ändern','Edit details'),'edit');
+  // Closed production: hand the chosen visit to phone or a prepared email. Nothing is stored or sent.
+  const handover=()=>{
+    const phone=document.body.dataset.contactPhone||'',email=document.body.dataset.contactEmail||'',dial=phone.replace(/[^+0-9]/g,'');
+    const day=new Intl.DateTimeFormat(de?'de-DE':'en-GB',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric',timeZone:'UTC'}).format(new Date(draft.date+'T12:00:00Z'));
+    const visit=`${day} · ${draft.time} · ${draft.guests} ${t('Personen','guests')}`;
+    const subject=`${t('Reservierungsanfrage','Reservation request')} · ${day} · ${draft.time}`;
+    const body=[t('Hallo Pendi-Team,','Hello Pendi team,'),'',t('ich möchte gern einen Tisch reservieren:','I would like to book a table:'),`${t('Datum','Date')}: ${day}`,`${t('Uhrzeit','Time')}: ${draft.time}`,`${t('Personen','Guests')}: ${draft.guests}`,'',`${t('Name','Name')}: `,`${t('Telefon','Phone')}: `].join('\n');
+    const links=[dial.replace('+','').length>=5?`<a class="proto-link primary" href="tel:${esc(dial)}">${t('Anrufen','Call')} · ${esc(phone)}</a>`:'',
+      /^[^@\s]+@[^@\s]+$/.test(email)?`<a class="proto-link" href="mailto:${esc(email)}?subject=${encodeURIComponent(subject)}&amp;body=${encodeURIComponent(body)}">${t('E-Mail schreiben','Write an email')}</a>`:''].join('');
+    form.hidden=true;contactForm.hidden=true;root.dataset.step='result';result.dataset.contentId='BOOK-CLOSED-HANDOVER';result.hidden=false;
+    result.innerHTML=`<h2>${t('Online-Reservierung noch nicht geöffnet','Online booking is not open yet')}</h2><div class="summary compact-summary"><strong>${esc(visit)}</strong></div><div class="result-copy">${t('Bitte reservieren Sie telefonisch oder per E-Mail. Ihre Auswahl ist in der E-Mail bereits eingetragen. Es wurde nichts gespeichert oder gesendet.','Please book by phone or email. Your selection is already filled into the email. Nothing has been saved or sent.')}</div><div class="actions">${links}${edit()}</div>`;
+    result.focus({preventScroll:true});
+  };
   const contact=()=>embedded?`<a class="proto-link" href="#contact">${t('Kontakt','Contact')}</a>`:`<p class="meta">${t('Telefonberatung: Nummer noch nicht freigegeben.','Phone assistance: number awaiting approval.')}</p><a class="proto-link" href="${embedded?'#contact':de?'/pendi-preview/#contact':'/pendi-preview/en/#contact'}">${t('Kontaktinformationen','Contact information')}</a>`;
   const detailedReview=()=>{result.dataset.contentId='BOOK-REVIEW';show(t('Ihr Besuch im Überblick','Review your visit'),`<p>${t('Prüfen Sie Ankunft, Abreise und Personenzahl. Erst eine dauerhaft gespeicherte Reservierung würde Plätze bestätigen. Ein Versandhinweis allein ist keine Buchungsbestätigung.','Check arrival, departure and party size. Seats would only be confirmed once the reservation is stored. An email sending notice alone does not confirm a booking.')}</p><div class="review-fields"><p><strong>${t('Name für die Reservierung','Booking name')}:</strong> Demo Guest</p><p><strong>${t('E-Mail für Rückmeldungen','Email for booking updates')}:</strong> guest@example.invalid</p><p class="meta">${t('Nur Beispieldaten, nicht bearbeitbar. Pflichtfelder, Telefonangabe, Datenschutzhinweise und Änderungs- oder Stornierungsregeln sind noch abzustimmen. Hier keine echten Kontaktdaten eingeben.','Read-only sample details. Required fields, phone details, privacy wording and change or cancellation rules are still to be agreed. Do not enter real contact details here.')}</p></div>`,button(t('Verbindlich anfragen · nur Demo','Submit request · demo only'),'submit',true)+edit());};
   const review=()=>{if(!embedded){detailedReview();return;}result.dataset.contentId='BOOK-REVIEW';show(t('Alles richtig?','Everything right?'),t('Prüfen Sie Datum, Uhrzeit und Personenzahl.','Check the date, time and party size.')+`<p class="booking-contact-summary">${esc(draft.contactName)}<br>${esc(draft.contactEmail)}</p>`,button(t('Reservierung anfragen','Request reservation'),'submit',true)+button(t('Kontaktdaten ändern','Edit contact details'),'contact-edit')+edit());};
   form.addEventListener('submit',e=>{
-    e.preventDefault();if(pending)return;if(embedded&&(businessSettings?.booking.paused||root.bookingSelectionAvailable?.(Object.fromEntries(new FormData(form)))===false)){draft=Object.fromEntries(new FormData(form));businessAllowed();return;}const messages=[];
+    e.preventDefault();if(pending)return;if(embedded&&!closed&&(businessSettings?.booking.paused||root.bookingSelectionAvailable?.(Object.fromEntries(new FormData(form)))===false)){draft=Object.fromEntries(new FormData(form));businessAllowed();return;}const messages=[];
     for(const name of ['date','time']) {const field=form.elements[name],error=root.querySelector(`#${name}-error`);const invalid=!field.value||!field.validity.valid;field.setAttribute('aria-invalid',String(invalid));error.hidden=!invalid;error.textContent=invalid?(name==='date'?t('Bitte wählen Sie ein vollständiges, gültiges Ankunftsdatum. Ihre anderen Angaben bleiben erhalten.','Choose a complete, valid arrival date. Your other details are kept.'):t('Bitte wählen Sie eine gültige Ankunftszeit, damit wir den gesamten Aufenthalt anzeigen können.','Choose a valid arrival time so the full visit can be shown.')):'';if(invalid)messages.push(error.textContent);}
     if(embedded)for(const name of ['date','time']){const dial=root.querySelector(`[data-dial=${name}]`);dial.setAttribute('aria-invalid',form.elements[name].getAttribute('aria-invalid'));dial.setAttribute('aria-describedby',messages.length?'dial-help booking-errors':'dial-help');}
     const errors=root.querySelector('[data-errors]');errors.id='booking-errors';errors.hidden=!messages.length;
     if(messages.length){errors.innerHTML=`<strong>${t('Bitte prüfen Sie Ihre Angaben','Please check your details')}</strong><ul>${messages.map(m=>`<li>${esc(m)}</li>`).join('')}</ul>`;errors.focus();return;}
-    draft=Object.fromEntries(new FormData(form));selectedTime=null;selectedDate=null;if(embedded)details();else{form.hidden=true;review();}
+    draft=Object.fromEntries(new FormData(form));selectedTime=null;selectedDate=null;if(closed&&embedded)handover();else if(embedded)details();else{form.hidden=true;review();}
   });
   const outcome=()=>{
     const scenario=root.querySelector('[data-scenario]').value;

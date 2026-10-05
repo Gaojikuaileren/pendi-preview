@@ -4,8 +4,9 @@
 const cover=[{x:100.5,y:107.3},{x:238.9,y:113.7},{x:224.9,y:254.2},{x:59.7,y:246.7}];
 // r4: the tabletop settles from the lower right, then departs to the lower
 // right toward the next scene. Follow decoded video progress, not wheel speed.
-export function syncMenuTableMotion(scene,position,reduced=false){
+export function syncMenuTableMotion(scene,position,reduced=false,ink=1){
  if(!scene)return;
+ position=position-[...scene.parentElement.children].filter(n=>n.matches('[data-scene]')).indexOf(scene)+1;
  const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
  const entry=smooth((position-.78)/.22),exit=smooth((position-1)/.22);
  const scale=Math.min(1.2,scene.clientWidth/402);
@@ -13,7 +14,7 @@ export function syncMenuTableMotion(scene,position,reduced=false){
  const y=reduced?0:(position<=1?110*(1-entry):90*exit)*scale;
  const opacity=reduced?(Math.round(position)===1?1:0):position<=1?entry:1-exit;
  scene.style.setProperty('--menu-type-x',`${x}px`);scene.style.setProperty('--menu-type-y',`${y}px`);
- scene.style.setProperty('--menu-type-opacity',String(opacity));scene.dataset.tableFrame=position.toFixed(4);
+ scene.style.setProperty('--menu-type-opacity',String(opacity*ink));scene.dataset.tableFrame=position.toFixed(4);
  const travel=position<=1?1-entry:exit;
  scene.style.setProperty('--menu-pile-x',`${reduced?0:(scene.clientWidth+160)*travel}px`);
  scene.style.setProperty('--menu-pile-y',`${reduced?0:120*travel}px`);

@@ -21,7 +21,6 @@
 .menu-pile-card[data-pile-front] { left:calc(50% - 76px); right:auto; top:4px; transform:rotate(-5deg); }
 .menu-pile-card { transition:background-color 360ms ease-in-out,color 360ms ease-in-out,border-color 360ms ease-in-out,box-shadow 360ms ease-in-out; }
 .menu-card-pile:not(.is-opening) .menu-pile-card { background:#bcb19e; color:#99876b; border-color:#a89a8266; box-shadow:0 6px 12px #55462d22; }
-@media (prefers-reduced-motion:reduce) { .menu-pile-card { transition:none; } }
 .menu-pile-card .pile-number { font:8px/1.4 var(--sans); letter-spacing:.1em; }
 .menu-pile-card > svg { display:block; width:100%; height:50px; }
 .menu-pile-card .pile-name { font:26px/1 var(--serif); margin:4px 0; color:#e6dac3; }
@@ -34,7 +33,7 @@
  .scene-drinks:not(.depth-large-type) > .menu-card-pile { display:block; position:absolute; z-index:1; left:16px; right:16px; bottom:-64px; height:180px;
  transform:translate(var(--menu-pile-x,0px),calc(var(--scene-counter,0px) + var(--menu-pile-y,0px))); opacity:var(--menu-type-opacity,0); }
 }
-@font-face { font-family:'Pendi Sensory'; src:url('/pendi-preview/assets/fonts/cormorant-garamond-italic.ttf') format('truetype'); font-style:italic; font-weight:300 700; font-display:swap; }
+@font-face { font-family:'Pendi Sensory'; src:url('/pendi-preview/assets/fonts/cormorant-garamond-italic-latin.woff2') format('woff2'); font-style:italic; font-weight:300 700; font-display:swap; }
 [data-subject-scene=drinks] { visibility:hidden; }
 .scene-drinks :is(.scene-copy,.scene-note,.scene-stack) { scrollbar-width:none; }
 .scene-drinks :is(.scene-copy,.scene-note,.scene-stack)::-webkit-scrollbar { display:none; }

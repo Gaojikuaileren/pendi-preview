@@ -21,10 +21,12 @@
  .scene-contact #contact-heading > span { max-width:none; }
  .scene-contact .in-place-copy > .eyebrow { margin-bottom:6px; }
 }
-@media (prefers-reduced-motion:reduce) { .scene-contact .contact-card-open,.scene-contact .contact-lines .contact-icon { transition:none; } }
 /* Success stays inside the copy button; its footprint never changes. */
 .contact-icon .copy-original { opacity:1; transform:scale(1); transition:opacity 160ms ease,transform 160ms ease; }
 .contact-icon .copy-check { position:absolute; left:50%; top:50%; opacity:0; transform:translate(-50%,-50%) scale(.8); transition:opacity 160ms ease,transform 160ms ease; }
 .contact-icon.is-copied .copy-original { opacity:0; transform:scale(.8); }
 .contact-icon.is-copied .copy-check { opacity:1; transform:translate(-50%,-50%) scale(1); }
-@media (prefers-reduced-motion:reduce) { .contact-icon .copy-original,.contact-icon .copy-check { transition:none; } }
+
+/* Tap to call / write (2026-10-02): same type as before, a quiet underline signals the link. */
+.contact-value { color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.22em; text-decoration-color:color-mix(in srgb,currentColor 45%,transparent); }
+.contact-value:hover, .contact-value:focus-visible { text-decoration-color:currentColor; }

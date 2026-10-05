@@ -1,5 +1,6 @@
 // The basin silhouette stays in place; two travelling sine waves add movement.
 // Time is measured in seconds and all dimensions use the SVG viewBox.
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export const WAVE_SETTINGS = Object.freeze({
   width: 1440,
   height: 1000,
@@ -77,7 +78,6 @@ export function mountWave(container, button) {
   const back = container.querySelector('[data-wave-back]');
   if (!front || !back || !button) return null;
 
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let motionReduced = reducedMotion.matches;
   let userPaused = false;
   let inView = true;

@@ -7,14 +7,24 @@
 .contact-card-switch { display:grid; grid-template-columns:1fr 1fr; padding:4px; gap:4px; border:1px solid #ad937655; border-radius:28px; margin-bottom:22px; }
 .contact-card-switch button { min-height:44px; padding:8px; border:0; border-radius:24px; background:transparent; color:#75614b; transition:background-color 240ms,color 240ms; }
 .contact-card-switch [aria-pressed=true] { background:#2c211a; color:var(--cream); }
-.contact-card-art { width:100%; aspect-ratio:1200/760; flex:none; margin-inline:auto; background:#b2a08733; border-radius:9px; overflow:hidden; box-shadow:0 10px 24px #35241722; }
-.contact-card-art canvas { display:block; width:100%; height:auto; aspect-ratio:1200/760; }
+.contact-card-art {position:relative;width:100%;height:250px;flex:none;margin-inline:auto;filter:drop-shadow(0 10px 16px #35241733)}
+.contact-card-layer {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;min-width:0}
+.contact-card-layer,.contact-card-note {opacity:0;visibility:hidden;transition:opacity 260ms ease,visibility 0s 260ms}
+.contact-card-layer.is-active,.contact-card-note.is-active {opacity:1;visibility:visible;transition-delay:0s}
+.contact-card-layer[hidden],.contact-card-note[hidden] {display:none!important}
+.contact-card-layer .business-card-blank {width:min(100%,386px);max-height:100%}
+.business-card-image {display:block;max-width:100%;max-height:100%;object-fit:contain;width:auto;height:auto}
+.business-card-blank {display:block;width:100%;aspect-ratio:85/55;background:linear-gradient(125deg,#eee5d7,#dacbb4);border:1px solid #b2a08777;border-radius:2px}
+.contact-card-actions[hidden],.contact-card-switch[hidden],.contact-card-switch button[hidden] {display:none}
 .contact-card-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:24px; }
+.contact-card-actions.is-unavailable {visibility:hidden;pointer-events:none}
 .contact-card-actions button { display:flex; align-items:center; justify-content:center; gap:8px; min-height:48px; padding:10px 6px; border:1px solid #a68d70; border-radius:26px; color:var(--ink); background:transparent; font-size:13px; }
 .contact-card-actions button:disabled { opacity:.4; cursor:wait; }
 .contact-card-actions button:hover:not(:disabled),.contact-card-actions button:focus-visible { background:#b49a7130; }
-.contact-card-status { min-height:18px; margin-top:12px; font:12px/1.5 var(--sans); color:#745e45; }
-.contact-card-note { margin:18px 4px 0; color:#6b5846; font:14px/1.6 var(--sans); }
+.contact-card-status { min-height:36px; margin:12px 0 0; font:12px/1.5 var(--sans); color:#745e45; }
+.contact-card-notes {display:grid;margin:18px 4px 0;min-width:0}
+.contact-card-note {grid-area:1/1;margin:0;min-width:0;overflow-wrap:anywhere;color:#6b5846;font:14px/1.6 var(--sans)}
+.motion-paused .contact-card-layer,.motion-paused .contact-card-note {transition:none}
 @media (min-width:600px) and (orientation:landscape) and (max-height:600px), (min-width:1000px) {
  .contact-cards[open] { display:grid; width:min(880px,calc(100% - 24px)); grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px 20px; padding:18px; }
  .contact-cards .hours-heading { grid-column:1/-1; margin:0; }
@@ -22,8 +32,7 @@
  .contact-cards .contact-card-switch { grid-column:2; grid-row:2; align-self:start; margin:0; }
  .contact-cards .contact-card-switch button { padding:8px 4px; font-size:13px; }
  .contact-cards .contact-card-art { grid-column:1; grid-row:2/6; align-self:start; }
- .contact-cards .contact-card-note { grid-column:2; grid-row:3; margin:0; }
+ .contact-cards .contact-card-notes { grid-column:2; grid-row:3; margin:0; }
  .contact-cards .contact-card-actions { grid-column:2; grid-row:4; margin:0; gap:10px; }
  .contact-cards .contact-card-status { grid-column:2; grid-row:5; margin:0; }
 }
-@media (prefers-reduced-motion:reduce) { .contact-card-switch button { transition:none; } }

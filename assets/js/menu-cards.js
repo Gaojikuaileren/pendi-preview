@@ -1,13 +1,17 @@
-import {mountFlavourMotion} from './flavour-motion.js?v=ec35d2debdae';
+import {mountFlavourMotion} from './flavour-motion.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export function mountMenuCards(){
  if(!document.body.classList.contains('page-drinks'))return;
  const stack=document.querySelector('.specimen-slots');if(!stack)return;
  const header=document.querySelector('.site-header'),categories=document.querySelector('.menu-category-bar');
+ // Translate only the legacy default label; never rename customer categories.
+ const categoryLabels=()=>{for(const link of categories.querySelectorAll('[data-menu-category="main"]'))if(link.textContent.trim().toLowerCase()==='main'||link.dataset.defaultCategoryLabel){link.dataset.defaultCategoryLabel='true';link.textContent=document.documentElement.lang==='en'?'All drinks':'Alle Drinks';}};
+ categoryLabels();document.addEventListener('pendi:language',categoryLabels);
  const sideNavigation=()=>getComputedStyle(document.body).getPropertyValue('--menu-navigation-layout').trim()==='side';
  const measure=()=>{const side=sideNavigation();document.body.style.setProperty('--menu-header-height',(side?0:header.getBoundingClientRect().height)+'px');document.body.style.setProperty('--menu-category-height',(side?0:categories.getBoundingClientRect().height)+'px');};
  const navigationSize=new ResizeObserver(measure);navigationSize.observe(header);navigationSize.observe(categories);measure();
  const terrainFocus=[mountFlavourMotion(),mountFlavourMotion()];
- const reduced=matchMedia('(prefers-reduced-motion:reduce)'),motions=new Map();
+ const reduced=reducedMotion,motions=new Map();
  function move(card,picked){
   if(!card)return;
   const start=getComputedStyle(card).transform;

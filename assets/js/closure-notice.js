@@ -1,4 +1,5 @@
-import {businessSettings} from './business-config.js?v=ec35d2debdae';
+import {businessSettings} from './business-config.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 
 export function berlinDate(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 export function closureRanges(dates,today=berlinDate()){
@@ -42,7 +43,7 @@ if(document.querySelector('[data-hours-open]')){
    dialog=document.createElement('dialog');dialog.id='closure-notice';dialog.className='hours-dialog closure-notice';dialog.setAttribute('aria-labelledby','closure-title');
    dialog.innerHTML='<header class="hours-heading"><div><p class="hours-eyebrow">PENDI · DÜSSELDORF</p><h2 id="closure-title"></h2></div><button class="hours-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><p class="closure-dates"></p><p class="closure-reason"></p><button class="closure-ack" type="button" autofocus></button>';
    document.body.append(dialog);
-   const close=()=>{if(!dialog.open||dialog.classList.contains('is-closing'))return;dialog.classList.add('is-closing');setTimeout(()=>{dialog.close();dialog.classList.remove('is-closing');},matchMedia('(prefers-reduced-motion:reduce)').matches?0:180);};
+   const close=()=>{if(!dialog.open||dialog.classList.contains('is-closing'))return;dialog.classList.add('is-closing');setTimeout(()=>{dialog.close();dialog.classList.remove('is-closing');},reducedMotion.matches?0:180);};
    dialog.querySelectorAll('button').forEach(button=>button.addEventListener('click',close));dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
   }
   dialog.querySelector('h2').textContent=t('Eine kleine Pause.','A short pause.');

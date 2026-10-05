@@ -29,7 +29,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
    overflow:hidden is still programmatically scrollable; nested reading areas,
    reservation fields and the separate drinks document retain native scrolling. */
 .page-home.experience-ready { position:fixed; inset:0; width:100%; height:var(--view-height); overscroll-behavior:none; }
-.experience-ready .scene-deck { overflow:hidden; scroll-snap-type:none; scroll-behavior:auto; }
+.experience-ready .scene-deck { overflow:hidden; scroll-snap-type:none; scroll-behavior:auto; overflow-anchor:none; }
 .experience-ready :is(.scene-copy,.scene-note,.scene-stack) { overscroll-behavior-y:none; }
 .ui-arrow { display:inline-block; width:24px; height:24px; flex:none; vertical-align:middle; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 .scene { height: var(--view-height); min-height: var(--view-height); }

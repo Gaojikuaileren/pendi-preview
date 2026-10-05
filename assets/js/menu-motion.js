@@ -1,7 +1,8 @@
 // Manual navigation and passive swipe hints have independent state.
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export function mountMenuMotion(menu) {
  const summary=menu.querySelector('summary'),panel=menu.querySelector('.menu-panel');
- const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const reduced=reducedMotion;
  let manualOpen=menu.open,hintVisible=false,visible=menu.open,animation=null,timer=null;
  function finish(){menu.dataset.menuState=visible?'open':'closed';menu.open=visible;if(!visible){animation?.cancel();animation=null;}}
  function render(){

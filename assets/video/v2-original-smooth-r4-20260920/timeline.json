@@ -26,11 +26,13 @@
   "seekFrameOffsetSeconds": 0.020833333333333332,
   "scenes": [
     "home",
+    "reservation",
     "drinks",
     "about",
-    "reservation",
     "contact"
   ],
+  "sourceScenes": ["home", "drinks", "about", "reservation", "contact"],
+  "pageOrderNote": "2026-10-04: content reordered with owner approval; original MP4 and frame anchors unchanged until live-action replacement.",
   "holdsInSource": false,
   "presentation": "One MP4 for transitions and stationary originals; no external station images",
   "repairRadiusFrames": 6

@@ -1,9 +1,10 @@
-import {projectHomeGlass} from './spatial-anchors.js?v=ec35d2debdae';
+import {projectHomeGlass} from './spatial-anchors.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 // One continuous 2D text belt. A single RAF owns phase, speed and reveal.
 export function mountHomeCupPreview({onMode,t,comparison=false}) {
  const home=document.getElementById('home'),source=home?.querySelector('.hero-subline span'),film=document.querySelector('[data-scroll-video]');
  if(!home||!source||!film)return null;
- const company=home.querySelector('.hero-subline span:nth-child(2)'),intro=home.querySelector('.hero-intro'),pause=document.querySelector('[data-motion-toggle]'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const company=home.querySelector('.hero-subline span:nth-child(2)'),intro=home.querySelector('.hero-intro'),pause=document.querySelector('[data-motion-toggle]'),reduced=reducedMotion;
  let originalCompany=company.textContent;
  let phrase=[source.textContent,originalCompany].map(s=>s.trim().replace(/[.!]+$/,'')).join(' · ')+' · ';
  home.classList.add('home-cup-preview');[source,company,intro].forEach(n=>n.classList.add('cup-orbit-source'));
@@ -12,7 +13,7 @@ export function mountHomeCupPreview({onMode,t,comparison=false}) {
  let chars=[...group.dataset.text].map(char=>{const n=make('g',{'data-glyph':char});group.append(n);return{n,char};});
  const raster=document.createElement('canvas');raster.className='cup-raster';raster.setAttribute('aria-hidden','true');home.append(raster);const paint=raster.getContext('2d');let rasterX=0,rasterY=0;
  const measure=document.createElement('canvas').getContext('2d');
- let points=[],length=0,eligible=false,phase=0,frame=null,last=null,speed=1,reveal=0,arrivalAge=Infinity,armed=false,lastStation=null;
+ let points=[],length=0,eligible=false,phase=0,frame=null,last=null,speed=1,reveal=0,arrivalAge=Infinity,armed=false;
  const alpha=()=>Math.max(0,Math.min(1,Number(home.style.getPropertyValue('--scene-opacity')||1)));
  const paused=()=>pause?.classList.contains('is-paused');
  function point(distance){
@@ -49,12 +50,13 @@ export function mountHomeCupPreview({onMode,t,comparison=false}) {
  }
  function sync(){
   const station=film.dataset.station;
-  if(station==='0'&&lastStation!=='0'&&(!armed||alpha()>.99)){
-   // Never reset phase on entering a station or rebuilding geometry.
-   if(!armed){armed=true;arrivalAge=0;reveal=0;speed=4;}
-  }
-  lastStation=station;
   if(alpha()===0||film.dataset.displayMode!=='video'){armed=false;reveal=0;arrivalAge=Infinity;}
+  else if(station==='0'&&!armed){
+   // A direct jump may decode frame 0 while its ink is still invisible.
+   // Arm on the first visible home update, not only on the station edge.
+   // Keep phase intact and do not rearm on repeated style/metadata writes.
+   armed=true;arrivalAge=0;reveal=0;speed=4;
+  }
   if(shouldRun()){if(frame===null){last=null;frame=requestAnimationFrame(tick);}}
   else if(frame!==null){cancelAnimationFrame(frame);frame=null;last=null;}
   draw();

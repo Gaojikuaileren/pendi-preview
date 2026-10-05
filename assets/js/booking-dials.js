@@ -1,7 +1,8 @@
-import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots,bookingClockKey} from './booking-rules.js?v=ec35d2debdae';
+import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots,bookingClockKey} from './booking-rules.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 // Interaction sample only: production must revalidate with its own rules and clock.
 export function mountBookingDials(root,{t}) {
- const form=root.querySelector('form'),fields=form.querySelector('.fields'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const form=root.querySelector('form'),fields=form.querySelector('.fields'),reduced=reducedMotion;
  root.classList.add('dial-booking');root.dataset.step='choose';
  root.querySelector('.scenario').hidden=new URLSearchParams(location.search).get('design')!=='1';
  root.querySelector(':scope > .proto-link')?.remove();root.querySelector('.scenario [data-action=overnight]')?.remove();

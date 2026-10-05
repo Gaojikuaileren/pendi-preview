@@ -26,7 +26,6 @@
  .scene-reservation .dial-selection { padding:8px 0; margin-bottom:6px; }
  .scene-reservation .dial-adjust { margin-top:4px; }
 }
-@media (prefers-reduced-motion:reduce) { .scene-reservation .dial-needle,.scene-reservation .dial-contour,.scene-reservation .dial-adjust button,.dial-booking .steps > span { transition:none; } }
 /* Twelve logical sectors. Inactive ranges remain tinted and unselectable. */
 .scene-reservation .dial-sector { fill:#b7976324; transition:fill 220ms; }
 .scene-reservation .dial-tick { fill:#6d5135; font:13px var(--sans); text-anchor:middle; dominant-baseline:central; pointer-events:none; }
@@ -66,7 +65,6 @@
 .is-coaching .dial-coach svg { animation:dial-coach-turn 2.4s ease-in-out infinite; }
 @keyframes dial-coach-turn { 0%,100% { transform:rotate(-14deg); } 50% { transform:rotate(14deg); } }
 @media (max-height:720px) { .scene-reservation .scene-copy:has([data-step=details]) > h2 { display:none; } }
-@media (prefers-reduced-motion:reduce) { .dial-help-copy,.dial-coach { transition:none; } .is-coaching .dial-coach svg { animation:none; } }
 /* Individual contour terrain replaces the circular numbered rings. */
 .scene-reservation .dial-needle { transform:translate(var(--needle-x),var(--needle-y)); transform-origin:0 0; }
 .scene-reservation .dial-contour { pointer-events:none; }

@@ -1,4 +1,5 @@
 // Sensory copy samples, not claims about the actual menu or ingredients.
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 const thoughts={
  de:['samtig','frisch','herb','würzig','rauchig','weich'],
  en:['velvety','fresh','bitter','spiced','smoky','soft']
@@ -6,10 +7,12 @@ const thoughts={
 const endings=['...','?','...?'];
 export function mountMenuTypewriter(scene){
  const heading=scene.querySelector('.menu-descriptor'),pause=document.querySelector('[data-motion-toggle]'),film=document.querySelector('[data-scroll-video]'),flip=document.querySelector('.language-flip');
- const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const reduced=reducedMotion;
+ const station=String([...document.querySelectorAll('[data-deck] > [data-scene]')].indexOf(scene));
  heading.dataset.menuTypewriter='';heading.classList.add('menu-typewriter');
  const ink=document.createElement('span');ink.className='menu-type-ink';ink.setAttribute('aria-hidden','true');heading.replaceChildren(ink);
  let index=-1,ending='',bag=[],count=0,phase='typing',elapsed=0,last=null,frame=null,clock=0;
+ let mediaFallback=false,fallbackTimer=null;
  const letters=[];
  const phrases=()=>document.querySelector('[data-menu-words]')?.dataset.words?.split('\n').filter(Boolean)||thoughts[document.documentElement.lang==='en'?'en':'de'];
  const phrase=()=>phrases()[index]+ending;
@@ -41,8 +44,8 @@ export function mountMenuTypewriter(scene){
   // A constant ink-height sample prevents the shadow jumping with each glyph.
   heading.dataset.projectionSample=phrases().join(' ')+' ...?';
  }
- const staticMode=()=>reduced.matches||pause?.classList.contains('is-paused')||scene.classList.contains('depth-large-type');
- const active=()=>!document.hidden&&film?.dataset.station==='1'&&!staticMode()&&!flip?.hasAttribute('aria-busy');
+ const staticMode=()=>reduced.matches||pause?.classList.contains('is-paused')||scene.classList.contains('depth-large-type')||!film||film.dataset.displayMode==='error'||mediaFallback;
+ const active=()=>!document.hidden&&film?.dataset.station===station&&!staticMode()&&!flip?.hasAttribute('aria-busy');
  function tick(now){
   frame=null;if(!active()){last=null;return;}
   const delta=last===null?0:Math.min(64,now-last);elapsed+=delta;clock+=delta;last=now;
@@ -59,12 +62,21 @@ export function mountMenuTypewriter(scene){
   frame=requestAnimationFrame(tick);
  }
  function sync(){
-  if(frame!==null)cancelAnimationFrame(frame);frame=null;last=null;
+  if(film?.dataset.station===station){
+   mediaFallback=false;clearTimeout(fallbackTimer);fallbackTimer=null;
+  }else if(!staticMode()&&fallbackTimer===null){
+   // A failed/stalled video must not leave the heading empty indefinitely.
+   fallbackTimer=setTimeout(()=>{fallbackTimer=null;mediaFallback=true;sync();},3000);
+  }
+  const running=active();
+  // Observers can report unrelated or repeated class writes. Do not restart
+  // the running clock unless animation actually becomes inactive.
+  if(!running){if(frame!==null)cancelAnimationFrame(frame);frame=null;last=null;}
   if(staticMode()){count=[...phrase()].length;phase='hold';elapsed=0;ink.style.opacity='1';show(phrase());}
-  if(active())frame=requestAnimationFrame(tick);
+  if(running&&frame===null)frame=requestAnimationFrame(tick);
  }
  labels();show('');
- new MutationObserver(sync).observe(film,{attributes:true,attributeFilter:['data-station']});
+ if(film)new MutationObserver(sync).observe(film,{attributes:true,attributeFilter:['data-station','data-display-mode']});
  if(pause)new MutationObserver(sync).observe(pause,{attributes:true,attributeFilter:['class']});
  if(flip)new MutationObserver(sync).observe(flip,{attributes:true,attributeFilter:['aria-busy']});
  new MutationObserver(sync).observe(scene,{attributes:true,attributeFilter:['class']});

@@ -48,7 +48,6 @@ body.page-drinks .site-header { position:fixed; inset:0 0 auto; z-index:10; heig
 .route-ink p { text-align:center; font:400 42px/1 var(--serif); margin:0; }
 html[data-card-arrival]::after { content:''; position:fixed; inset:0; z-index:7999; background:#302e28; pointer-events:none; }
 @media (min-width:700px) { .specimen-slots { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (prefers-reduced-motion:reduce) { .card-route-veil { display:none; } html[data-card-arrival]::after { display:none; } }
 
 /* Loose sheets: overlap consumes trailing blank paper, not reading controls. */
 .page-drinks .detail-page { padding-inline:28px; }
@@ -87,7 +86,6 @@ html[data-card-arrival]::after { content:''; position:fixed; inset:0; z-index:79
 html[data-card-arrival]::after { background:#eee5d3; }
 @media (min-width:700px) { .specimen-slots { max-width:480px; margin-inline:auto; } }
 @media (max-width:350px) { .specimen-card { --turn:0deg!important; --shift:0px!important; padding-inline:16px; } .page-drinks .detail-page { padding-inline:20px; } }
-@media (prefers-reduced-motion:reduce) { .specimen-card { transition:none; } }
 
 /* Physical-menu palette, fixed reading window and picked-up loose cards. */
 .page-drinks { --ink:#e6dac3; background:#211f1b; color:#e6dac3; }
@@ -130,7 +128,6 @@ body.page-drinks .site-header { background:#211f1b; color:#e6dac3; }
 @keyframes specimen-story-in { from { opacity:0; translate:0 5px; } to { opacity:1; translate:0 0; } }
 .card-route-flight { color:#b5a17e; background:#34312b; border-color:#8e785547; }
 html[data-card-arrival]::after { background:#34312b; }
-@media (prefers-reduced-motion:reduce) { .specimen-plate { transition:none; } .specimen-clues[open] .specimen-story { animation:none; } }
 
 /* Denser pile; preserve the title band and overlap only trailing paper. */
 .specimen-card { padding:18px 20px 104px; --story-top:45px; --story-height:100px; }
@@ -146,7 +143,6 @@ html[data-card-arrival]::after { background:#34312b; }
 .specimen-story { top:auto; bottom:12px; height:84px; background:transparent; padding:2px 6px 4px 0; }
 .specimen-clues .specimen-thought { font-size:18px; line-height:1.45; margin-bottom:8px; }
 .specimen-clues[open] .specimen-story { animation:specimen-story-in 340ms 70ms ease both; }
-@media (prefers-reduced-motion:reduce) { .specimen-clues[open] .specimen-story { animation:none; } }
 .specimen-card::before { content:''; position:absolute; inset:7px; z-index:-1; border:0; border-radius:0; background:url('/pendi-preview/assets/images/menu-tarot-frame.svg') center / 100% 100% no-repeat; opacity:.65; pointer-events:none; }
 .specimen-card::before { transition:opacity 850ms cubic-bezier(.4,0,.2,1); }
 .specimen-card.is-active::before { opacity:.82; }
@@ -187,14 +183,10 @@ html:has(> body.page-drinks) { scrollbar-width:thin!important; scrollbar-color:#
  html:has(> body.page-drinks)::-webkit-scrollbar-corner { background:transparent; }
  html:has(> body.page-drinks)::-webkit-scrollbar-button { display:none; width:0; height:0; }
 }
-@media (prefers-reduced-motion:reduce) { .specimen-plus,.specimen-card,.specimen-card::before,.cards-interactive .specimen-card { transition:none; } }
 /* Independent translation preserves the table projection and card pickup. */
 .page-home #drinks:not(.depth-large-type) .menu-ink-plane { translate:var(--device-text-x,0px) 0; }
 .page-home #home .button { translate:var(--device-home-x,0px) 0; }
 .page-drinks .specimen-slots > .specimen-card[data-tilt-visible] { translate:var(--device-card-x,0px) 0; }
-@media (prefers-reduced-motion:reduce) {
- .page-home #home .button,.page-home #drinks .menu-ink-plane,.page-drinks .specimen-slots > .specimen-card[data-tilt-visible] { translate:none; }
-}
 
 /* Authenticated menu uploads use the same fixed illustration slot. */
 .specimen-plate > .specimen-custom-icon{display:block;width:100%;height:100%;object-fit:contain}

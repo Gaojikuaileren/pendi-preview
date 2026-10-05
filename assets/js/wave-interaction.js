@@ -1,4 +1,5 @@
-import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=ec35d2debdae';
+import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export function mountIntegratedWave(container,button){
  const svg=container.querySelector('svg'),front=container.querySelector('[data-wave-front]'),back=container.querySelector('[data-wave-back]');
  if(!svg||!front||!back||!button)return null;
@@ -6,7 +7,7 @@ export function mountIntegratedWave(container,button){
  const subjects=make('g',{'aria-hidden':'true'});svg.prepend(subjects);
  const bands=[],lines=[];for(let i=0;i<6;i++){const band=make('path'),line=make('path',{fill:'none','stroke-width':'1','vector-effect':'non-scaling-stroke'});svg.append(band,line);bands.push(band);lines.push(line);}
  const arcs=Array.from({length:3},()=>{const p=make('path',{fill:'none','stroke-width':'.8','vector-effect':'non-scaling-stroke'});subjects.append(p);return p;});
- const reduced=matchMedia('(prefers-reduced-motion: reduce)'),daily=['#805b3f','#a17a51','#b89465','#c6a77c','#d1b995','#dbccaf'],rainbow=['#b83e4c','#d87735','#dfb643','#488b69','#477fa3','#82639d'];
+ const reduced=reducedMotion,daily=['#805b3f','#a17a51','#b89465','#c6a77c','#d1b995','#dbccaf'],rainbow=['#b83e4c','#d87735','#dfb643','#488b69','#477fa3','#82639d'];
  const portrait={...SCENE_PROFILES,home:[835,870,865,800,725],drinks:[650,708,674,601,592],reservation:[250,275,295,275,250],contact:[415,465,475,425,395]};
  let profiles=portrait,topLimit=0,blend={from:'home',to:'home',mix:0},elapsed=0,frame=null,last=null,lastDraw=0,paused=false,visible=true,colorMix=0,pride=container.dataset.prideMode==='true',anchors=null;
  const lerp=(a,b,t)=>a+(b-a)*t;
@@ -33,15 +34,25 @@ export function mountIntegratedWave(container,button){
    // Portrait canvases: book left, sensory text right, menu title left below.
    if(matchMedia('(min-height:521px) and (max-aspect-ratio:1/1)').matches)profiles={...profiles,drinks:[550,450,485,565,505]};
    if(layout==='wide'&&matchMedia('(max-height:600px)').matches)profiles={...profiles,drinks:[140,215,350,760,820]};
+   // The short portrait form / equal-width tabs start just below the header.
+   // Keep the entire contour envelope above that ink, not behind its heading.
+   if(matchMedia('(min-width:360px) and (max-aspect-ratio:1/1) and (max-height:560px)').matches){
+     const h=Math.max(container.clientHeight,1),safeTop=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top'))||0;
+     const form=(safeTop+72)/h*1000,about=(safeTop+70)/h*1000;
+     profiles={...profiles,reservation:[form-8,form,form+5,form,form-8],...(innerWidth>=400?{about:[about-8,about,about+5,about,about-8]}:{})};
+   }
    topLimit=layout==='wide'?(innerHeight<=360?64:72)/Math.max(container.clientHeight,1)*1000:0;container.dataset.waveLayout=layout;
    const film=document.querySelector('[data-scroll-video]'),vr=film?.getBoundingClientRect(),wr=container.getBoundingClientRect();anchors=null;
-   if(vr?.width&&wr.width){const scale=Math.max(vr.width/512,vr.height/768),ref=874/768;const point=(x,y)=>{const sx=(x+(512*ref-402)/2)/ref,sy=y/ref;return{x:(vr.left-wr.left+sx*scale-(512*scale-vr.width)/2)/wr.width*1440,y:(vr.top-wr.top+sy*scale-(768*scale-vr.height)*(layout==='wide'||innerWidth>=500?0:.5))/wr.height*1000,sx:scale/ref/wr.width*1440,sy:scale/ref/wr.height*1000};};anchors={home:point(330,520),drinks:point(98,296)};}
+   if(vr?.width&&wr.width){const scale=Math.max(vr.width/512,vr.height/768),ref=874/768,position=getComputedStyle(film).objectPosition.split(' ').map(v=>parseFloat(v)/100);const point=(x,y)=>{const sx=(x+(512*ref-402)/2)/ref,sy=y/ref;return{x:(vr.left-wr.left+sx*scale-(512*scale-vr.width)*(position[0]??.5))/wr.width*1440,y:(vr.top-wr.top+sy*scale-(768*scale-vr.height)*(position[1]??.5))/wr.height*1000,sx:scale/ref/wr.width*1440,sy:scale/ref/wr.height*1000};};anchors={home:point(330,520),drinks:point(98,296)};}
    // Keep reading areas below the complete contour envelope, including its
    // widest morph phase. A fixed envelope prevents text bobbing with waves.
    for(const [id,selector]of [['about','.scene-copy'],['contact','.scene-copy'],['drinks','.scene-note'],...(layout==='wide'?[['reservation','.scene-copy']]:[])]){
      const scene=document.getElementById(id),copy=scene?.querySelector(selector);if(!copy)continue;
      if(id==='contact')scene.classList.toggle('contact-large-type',parseFloat(getComputedStyle(copy.querySelector('h2')).fontSize)>48);
-     const minTop=Math.max(layout==='wide'?0:112,(document.querySelector('.site-header')?.getBoundingClientRect().bottom||0)+(id==='reservation'?16:8));
+     // Reserve an identifiable artwork before asking the copy to scroll.
+     // This budget is continuous; browser-toolbar movement must not snap it.
+     const artMinimum=id==='about'&&layout!=='wide'?Math.max(80,Math.min(200,wr.height*.3-48)):0;
+     const minTop=Math.max(layout==='wide'?0:112,(document.querySelector('.site-header')?.getBoundingClientRect().bottom||0)+(id==='reservation'?16:8)+artMinimum+(artMinimum?16:0));
      const box=copy.getBoundingClientRect(),left=Math.max(0,(box.left-wr.left)/wr.width),right=Math.min(1,(box.right-wr.left)/wr.width);let bottom=0;
      for(let i=0;i<=48;i++){const u=left+(right-left)*i/48;bottom=Math.max(bottom,waveY(u,0,0,{...WAVE_SETTINGS,profiles,topLimit,amplitude:0},{from:id,to:id,mix:0})+64);}
      if((['contact','about','reservation'].includes(id)||(id==='drinks'&&matchMedia('(max-aspect-ratio:1/1) and (min-height:521px)').matches))&&wr.height>0){

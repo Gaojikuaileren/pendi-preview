@@ -1,5 +1,6 @@
 // Update translated copy in place, preserving the film, waves, focus and draft.
 // Stable template markers bind to the server-rendered alternate language.
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 const pairs = new Map();
 export function t(de, en) {
   pairs.set(de, en);
@@ -54,7 +55,7 @@ export function mountLanguageSwitch(link) {
   let status=document.querySelector('[data-scene-status]');
   if(!status){status=document.createElement('p');status.className='visually-hidden';status.setAttribute('role','status');document.body.append(status);}
   let busy=false,queued=null;
-  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  const reduced=reducedMotion;
   async function change(url, push=true) {
     if(busy){queued={url,push};return;}
     busy=true;link.setAttribute('aria-busy','true');

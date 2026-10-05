@@ -159,10 +159,6 @@ body:not(.page-home) .site-header { background: var(--night); }
   .hero-subline { font-size: 10px; letter-spacing: .17em; }
   .button { padding-inline: 20px; font-size: 13px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { transition: none !important; }
-}
 
 /* Five full-screen scenes share one art-directed, morphing wave surface. */
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -290,6 +286,13 @@ body:not(.page-home) .site-header { background: var(--night); }
   .scene-copy .eyebrow { margin-bottom: 12px; }
   .scene-copy .body-copy { margin-top: 14px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .scene-deck { scroll-behavior: auto; }
+
+/* Stone texture on the dark home ground: the same images as coming-soon.css, built with
+   web/tools/build-background-texture.php (bump ?v= in both files). It sits above the film
+   layer but never over the film: film-texture.js publishes where the film starts, and the
+   texture fades out before that line. Until the film is ready the whole ground carries it. */
+.page-home .experience::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background: url('/pendi-preview/assets/images/texture/night-stone-landscape.webp?v=red-rock-3') 50% 50% / cover no-repeat; opacity: .12; mix-blend-mode: screen; }
+.page-home .experience[data-film-ready]::before { -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--film-left, 0px) - var(--film-fade, 0px)), transparent var(--film-left, 0px)); mask-image: linear-gradient(90deg, #000 calc(var(--film-left, 0px) - var(--film-fade, 0px)), transparent var(--film-left, 0px)); }
+@media (max-aspect-ratio: 1/1) {
+  .page-home .experience::before { background-image: url('/pendi-preview/assets/images/texture/night-stone-portrait.webp?v=red-rock-3'); }
 }

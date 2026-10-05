@@ -1,5 +1,9 @@
 /* Approved Phase 1 integration: content stays in its scene. */
 .scene-deck[data-transitioning] { scroll-snap-type: none; scroll-behavior: auto; }
+.scene-video-curtain {position:absolute;inset:0;z-index:2;background:#000;opacity:0;pointer-events:none;}
+.scene-deck[data-transition-mode=direct] .about-floating {transition:none;}
+.scroll-video[data-jump-seek] {transition:opacity 320ms ease;}
+@media (prefers-reduced-motion:reduce) { .scroll-video[data-jump-seek] {transition:none;} }
 .page-home { --film-strip-height: calc(124px + var(--safe-bottom)); }
 .page-home .scroll-video { height: calc(100% - var(--film-strip-height)); bottom: var(--film-strip-height); }
 .page-home:is([data-scene-active=drinks],[data-scene-active=about],[data-scene-active=reservation]) { --strip-base: 66px; }
@@ -60,7 +64,6 @@
  .scene .in-place-copy { left: var(--edge-left); right: 48%; --copy-top: max(130px,calc(var(--art-height) * .19)); }
 }
 @media (max-width:359px) { .scene .in-place-copy { padding-inline:12px; } }
-@media (prefers-reduced-motion:reduce) { .policy-sheet[open] { animation: none; } .prototype .time-options button { transition: none; } }
 
 /* One-screen contact composition; full text can still reflow within the safe
    region for large type or short windows. Never clip text to pass a fit check. */
@@ -82,3 +85,5 @@
 .scene-drinks .scene-note .text-link { margin-top: 0; }
 .scene-about .scene-copy .eyebrow { margin-bottom: 10px; }
 .scene-about .scene-copy .body-copy { margin-top: 12px; }
+/* Legal texts and booking rules are plain text with line breaks (editable in Website settings). */
+#impressum p, #privacy p, #sheet-impressum p, #sheet-privacy p, #reservation-rules p, #sheet-reservation-rules p, .page-impressum .body-copy, .page-privacy .body-copy, .editorial-about p, .editorial-contact p, .page-about .body-copy, .page-contact .body-copy { white-space: pre-line; overflow-wrap: anywhere; }

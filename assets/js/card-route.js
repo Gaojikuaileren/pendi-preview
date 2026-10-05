@@ -1,4 +1,5 @@
-const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+const reduced=reducedMotion;
 const ease='cubic-bezier(.22,1,.36,1)';
 let busy=false,veil=null,running=[],recoveryTimer=null;
 const trackers=new Set();

@@ -1,7 +1,8 @@
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export function mountHomeEntrance(designReady){
  const root=document.documentElement;
  if(root.dataset.homeEntry!=='pending')return;
- const film=document.querySelector('[data-scroll-video]'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const film=document.querySelector('[data-scroll-video]'),reduced=reducedMotion;
  let animations=[],observer,disposed=false,designLoaded=false,fontsLoaded=false;
  const inputEvents=['pointerdown','touchstart','wheel','keydown'];
  function finish(){

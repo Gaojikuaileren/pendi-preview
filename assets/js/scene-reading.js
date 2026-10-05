@@ -1,7 +1,7 @@
-import {t} from './language.js?v=ec35d2debdae';
-// Overflow is read with explicit buttons; a vertical gesture always belongs to the deck.
+import {t} from './language.js?v=bfa97af8442c';
+// Legacy scene overflow uses explicit buttons. About has its own column reader.
 export function mountSceneReading(deck){
- const regions=[...deck.querySelectorAll('.scene-copy,.scene-note,.scene-stack')].filter(n=>!n.matches('#drinks .scene-copy,#drinks .scene-note')&&!n.closest('#contact'));
+ const regions=[...deck.querySelectorAll('.scene-copy,.scene-note,.scene-stack')].filter(n=>!n.matches('#drinks .scene-copy,#drinks .scene-note')&&!n.closest('#contact,#about'));
  const entries=regions.map(region=>{
   const controls=document.createElement('nav');controls.className='scene-reading-controls';controls.hidden=true;
   const before=document.createElement('button'),status=document.createElement('span'),after=document.createElement('button');
@@ -25,5 +25,7 @@ export function mountSceneReading(deck){
  const observer=new ResizeObserver(schedule);observer.observe(deck);for(const {region}of entries)for(const child of region.children)observer.observe(child);
  const changes=new MutationObserver(records=>{if(records.some(r=>!r.target.parentElement?.closest('[data-menu-typewriter],.menu-typewriter,.scene-reading-controls')))schedule();});
  for(const {region}of entries)changes.observe(region,{childList:true,subtree:true,characterData:true});
- document.addEventListener('pendi:language',schedule);document.fonts.ready.then(schedule);schedule();
+ document.addEventListener('pendi:language',schedule);
+ document.addEventListener('pendi:about',()=>{for(const entry of entries)if(entry.region.closest('#about'))entry.show(0);schedule();});
+ document.fonts.ready.then(schedule);schedule();
 }

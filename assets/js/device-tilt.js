@@ -1,8 +1,9 @@
 // Optional decoration only. Never request permission or collect/send sensor data.
+import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
 export function mountDeviceTilt(){
  const body=document.body,home=body.classList.contains('page-home');
  if(!home&&!body.classList.contains('page-drinks'))return;
- const reduced=matchMedia('(prefers-reduced-motion:reduce)'),coarse=matchMedia('(pointer:coarse)');
+ const reduced=reducedMotion,coarse=matchMedia('(pointer:coarse)');
  const film=document.querySelector('[data-scroll-video]'),pause=document.querySelector('[data-motion-toggle]');
  const connection=navigator.connection,visibleCards=new Set();
  let epoch=0,frame=0,timeout=0,stale=0,probeDone=null,ready=false,listening=false,unavailable=false,battery=null,batteryPromise=null;
@@ -11,7 +12,7 @@ export function mountDeviceTilt(){
  function reset(){for(const name of ['--device-text-x','--device-card-x','--device-home-x'])body.style.removeProperty(name);current=target=0;}
  function stop(reason){epoch++;ready=false;cancelAnimationFrame(frame);frame=0;probeDone?.(false);probeDone=null;clearTimeout(timeout);clearTimeout(stale);window.removeEventListener('deviceorientation',orient);listening=false;neutral=null;samples=[];reset();status(reason);}
  const powerBlocked=()=>connection?.saveData||(battery&&(!battery.charging&&battery.level<=.25));
- function eligible(){return !document.hidden&&!reduced.matches&&!pause?.classList.contains('is-paused')&&!powerBlocked()&&!document.querySelector('.card-route-veil')&&!document.documentElement.hasAttribute('data-card-arrival')&&(home?['0','1'].includes(film?.dataset.station)&&!document.querySelector('[data-deck]')?.dataset.transitioning&&!document.querySelector('#drinks.depth-large-type'):visibleCards.size>0);}
+ function eligible(){return !document.hidden&&!reduced.matches&&!pause?.classList.contains('is-paused')&&!powerBlocked()&&!document.querySelector('.card-route-veil')&&!document.documentElement.hasAttribute('data-card-arrival')&&(home?['home','drinks'].includes(document.body.dataset.sceneActive)&&!document.querySelector('[data-deck]')?.dataset.transitioning&&!document.querySelector('#drinks.depth-large-type'):visibleCards.size>0);}
  function render(now){
   frame=0;if(!ready||!eligible()){sync();return;}
   const dt=lastFrame?now-lastFrame:16;lastFrame=now;

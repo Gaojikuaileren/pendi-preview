@@ -41,3 +41,10 @@
 .page-drinks .specimen-category-break + .specimen-card{margin-top:0}
 @container (min-width:780px){.page-drinks .specimen-category-break + .specimen-card + .specimen-card{margin-top:18px}}
 .specimen-card[data-card-color]:not([data-card-color=""]){color:var(--card-ink)}.specimen-card[data-card-color]:not([data-card-color=""]) :is(.specimen-index,.specimen-notes,.flavour-axes,.specimen-price,.specimen-thought,.specimen-ingredients,.specimen-clues summary){color:var(--card-ink)}
+@media(max-width:599px) and (orientation:portrait){
+ .specimen-intro{padding:4px 0 16px}
+ .specimen-intro .eyebrow{margin-bottom:8px}
+ .page-drinks .specimen-intro h1{font-size:46px;margin-bottom:8px}
+ .specimen-whisper{font-size:18px}
+ .specimen-count{margin-top:10px;padding-top:8px}
+}
