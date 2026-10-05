@@ -1,5 +1,5 @@
-import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=bfa97af8442c';
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {WAVE_SETTINGS,SCENE_PROFILES,COMPACT_PROFILES,WIDE_PROFILES,waveY} from './wave.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 export function mountIntegratedWave(container,button){
  const svg=container.querySelector('svg'),front=container.querySelector('[data-wave-front]'),back=container.querySelector('[data-wave-back]');
  if(!svg||!front||!back||!button)return null;

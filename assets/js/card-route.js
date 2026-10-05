@@ -1,4 +1,4 @@
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 const reduced=reducedMotion;
 const ease='cubic-bezier(.22,1,.36,1)';
 let busy=false,veil=null,running=[],recoveryTimer=null;

@@ -1,6 +1,6 @@
 // The basin silhouette stays in place; two travelling sine waves add movement.
 // Time is measured in seconds and all dimensions use the SVG viewBox.
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 export const WAVE_SETTINGS = Object.freeze({
   width: 1440,
   height: 1000,

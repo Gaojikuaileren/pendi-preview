@@ -1,5 +1,6 @@
-import {cardVisual} from './card-media.js?v=bfa97af8442c';
-import {mountAboutReading} from './about-reading.js?v=bfa97af8442c';
+import {cardVisual} from './card-media.js?v=1fdeb4acf428';
+import {mountAboutReading} from './about-reading.js?v=1fdeb4acf428';
+import './ui-icons.js?v=1fdeb4acf428';
 const make=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
 const iso=date=>date.toISOString().slice(0,10);
 const civil=value=>new Date(value+'T12:00:00Z');
@@ -40,7 +41,7 @@ export function mountAbout(){
  });
  const dialog=make('dialog','exhibition-dialog');dialog.id='exhibition-calendar';dialog.setAttribute('aria-labelledby','exhibition-dialog-title');document.body.append(dialog);
  const heading=make('div','exhibition-dialog-heading'),title=make('h2');title.id='exhibition-dialog-title';
- const close=button('×',requestClose,'exhibition-close');heading.append(title,close);const body=make('div','exhibition-dialog-body');dialog.append(heading,body);
+ const close=button('',requestClose,'exhibition-close');close.append(window.pendiUIIcon('close'));heading.append(title,close);const body=make('div','exhibition-dialog-body');dialog.append(heading,body);
  const motions=new Map();
  function fadeSwap(host,content,direction=1){
   motions.get(host)?.();const old=host.firstElementChild;
@@ -68,7 +69,7 @@ export function mountAbout(){
   const tools=make('div','exhibition-month-tools'),label=make('h3');label.id='exhibition-month';label.setAttribute('aria-live','polite');
   const frame=make('div','exhibition-month-frame');
   function move(delta){const date=civil(month+'-01');date.setUTCMonth(date.getUTCMonth()+delta);const next=iso(date);if(next<'2000-01-01'||next>'2099-12-31')return;month=next.slice(0,7);paint(delta);}
-  const prev=button('←',()=>move(-1)),next=button('→',()=>move(1));prev.dataset.prev='';next.dataset.next='';prev.setAttribute('aria-label',text.previous);next.setAttribute('aria-label',text.next);tools.append(prev,label,next);view.append(tools,frame);
+  const prev=button('',()=>move(-1)),next=button('',()=>move(1));prev.append(window.pendiUIIcon('back'));next.append(window.pendiUIIcon('forward'));prev.dataset.prev='';next.dataset.next='';prev.setAttribute('aria-label',text.previous);next.setAttribute('aria-label',text.next);tools.append(prev,label,next);view.append(tools,frame);
   const footer=make('div','exhibition-calendar-footer');footer.append(make('span','exhibition-legend',text.legend),button(text.today,()=>{month=today.slice(0,7);paint(1);},'about-link'));view.append(footer);
   function paint(direction=1){
    label.textContent=new Intl.DateTimeFormat(locale(),{month:'long',year:'numeric',timeZone:'UTC'}).format(civil(month+'-01'));prev.disabled=month==='2000-01';next.disabled=month==='2099-12';
@@ -99,7 +100,7 @@ export function mountAbout(){
   const excerpt=[...(event.copy.summary?.trim()||event.copy.description).replace(/\s+/gu,' ').trim()];content.append(make('p','exhibition-excerpt',excerpt.slice(0,excerpt.length>160?159:160).join('')+(excerpt.length>160?'…':'')));
   // Only the exhibition's own URL; empty input has no button or fallback link.
   const artistUrl=typeof event.artistUrl==='string'?event.artistUrl.trim():'';
-  if(artistUrl){try{const url=new URL(artistUrl);if(url.protocol==='https:'&&!url.username&&!url.password){const link=make('a','about-link exhibition-artist-link',text.artistWebsite+' ↗');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label',text.artistWebsite+' · '+text.newTab);content.append(link);}}catch{}}
+  if(artistUrl){try{const url=new URL(artistUrl);if(url.protocol==='https:'&&!url.username&&!url.password){const link=make('a','about-link exhibition-artist-link',text.artistWebsite);link.append(window.pendiUIIcon('external'));link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label',text.artistWebsite+' · '+text.newTab);content.append(link);}}catch{}}
   return content;
  }
  function render(){
@@ -116,6 +117,7 @@ export function mountAbout(){
   if(current)p.append(feature(current));else{const empty=make('div','exhibition-empty');empty.append(make('h3','',text.emptyTitle),make('p','',text.space),make('p','',text.inviteBody));p.append(empty);}
   const invite=make('div','about-invite'),inquiry=make('button','about-inquiry',text.inviteAction);
   inquiry.type='button';inquiry.dataset.contactCardOpen='contact';inquiry.setAttribute('aria-haspopup','dialog');inquiry.setAttribute('aria-controls','contact-cards');
+  inquiry.append(window.pendiUIIcon('external'));
   invite.append(make('p','',text.invite),inquiry);p.append(invite);
   for(const [i,key,email]of [[1,'collab',config.email],[2,'jobs',config.jobsEmail]]){
    panels[i].append(make('h3','about-topic-title',text[key+'Title']),make('p','about-topic-body',text[key+'Body']));

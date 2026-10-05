@@ -1,5 +1,5 @@
 // Optional decoration only. Never request permission or collect/send sensor data.
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 export function mountDeviceTilt(){
  const body=document.body,home=body.classList.contains('page-home');
  if(!home&&!body.classList.contains('page-drinks'))return;

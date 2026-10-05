@@ -1,5 +1,5 @@
-import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots,bookingClockKey} from './booking-rules.js?v=bfa97af8442c';
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {BOOKING_PREVIEW as config,addDay,berlinNow,previewSlots,bookingClockKey} from './booking-rules.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 // Interaction sample only: production must revalidate with its own rules and clock.
 export function mountBookingDials(root,{t}) {
  const form=root.querySelector('form'),fields=form.querySelector('.fields'),reduced=reducedMotion;

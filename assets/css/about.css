@@ -43,7 +43,9 @@
 .about-invite {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;border-top:1px solid #63533a30;padding-top:8px}
 .about-invite>p {font-size:11px;margin:0;line-height:1.5;min-width:0}
 .about-inquiry {display:flex;align-items:center;justify-content:space-between;gap:20px;width:auto;min-width:110px;flex:0 0 auto;min-height:44px;padding:8px 12px;border:1px solid #584633;border-radius:5px;background:#4e3e2c;color:#f0e6d2;font:inherit;font-size:12px;line-height:1.5;text-decoration:none;cursor:pointer}
-.about-inquiry::after {content:'↗';font-size:20px}
+.about-inquiry .ui-icon {flex:none;width:20px;height:20px;pointer-events:none}
+.exhibition-artist-link .ui-icon {width:14px;height:14px;margin-left:5px;flex:none}
+.exhibition-close,.exhibition-month-tools button {display:grid;place-items:center}
 .about-link {display:inline-flex;align-items:center;min-height:44px;color:inherit;background:none;border:0;border-radius:0;padding:5px 0;text-align:left;text-decoration:underline;text-underline-offset:4px;font:inherit;font-size:12px;line-height:1.5;cursor:pointer}
 .about-topic-title {font-family:var(--font-display,Georgia,serif);font-weight:400;font-size:30px;line-height:1.15;margin:20px 0 22px;max-width:18ch}
 .about-topic-body {font-size:14px;line-height:1.7;margin:0 0 28px;max-width:42ch}

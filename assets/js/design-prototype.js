@@ -1,9 +1,10 @@
-import {businessSettings,refreshBusinessSettings} from './business-config.js?v=bfa97af8442c';
-import {mountBookingDials} from './booking-dials.js?v=bfa97af8442c';
-import {t} from './language.js?v=bfa97af8442c';
-import {mailQuotaReached} from './booking-mail-quota.js?v=bfa97af8442c';
-import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=bfa97af8442c';
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {businessSettings,refreshBusinessSettings} from './business-config.js?v=1fdeb4acf428';
+import {mountBookingDials} from './booking-dials.js?v=1fdeb4acf428';
+import {t} from './language.js?v=1fdeb4acf428';
+import {mailQuotaReached} from './booking-mail-quota.js?v=1fdeb4acf428';
+import {bookingTransportEnabled,submitBooking} from './booking-client.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
+import './ui-icons.js?v=1fdeb4acf428';
 // Stage 2 content on the approved Stage 1 flow. Local-only; no service or storage.
 const isBooking = document.body.classList.contains('page-reservation');
 const de = document.documentElement.lang === 'de';
@@ -35,7 +36,7 @@ function mountBooking(root,{closed=false}={}) {
   const embedded=root.hasAttribute('data-inline-booking');
   const designMode=new URLSearchParams(location.search).get('design')==='1';
   root.innerHTML=`<div class="demo-banner"><strong>${t('Nur eine Simulation','Simulation only')}</strong><br>${t('Bitte keine persönlichen Daten eingeben. Nichts wird gespeichert oder versendet. Alle Zeiten und Regeln sind Beispiele.','Do not enter personal details. Nothing is saved or sent. All times and rules are examples.')}</div>
-  <p class="steps">01 ${t('Besuch','Visit')} → 02 ${t('Prüfen','Review')} → 03 ${t('Ergebnis','Result')}</p>
+  <p class="steps">01 ${t('Besuch','Visit')} ${window.pendiUIIcon('forward').outerHTML} 02 ${t('Prüfen','Review')} ${window.pendiUIIcon('forward').outerHTML} 03 ${t('Ergebnis','Result')}</p>
   <form data-booking novalidate data-content-id="BOOK-FIELDS"><div data-errors class="error-summary" tabindex="-1" role="alert" hidden></div><div class="fields">
     <label for="booking-date">${t('Datum · Beispiel','Date · example')}<input id="booking-date" name="date" type="date" required value="2026-10-16" aria-describedby="date-help date-error"><span id="date-help" class="field-help">${t('Wählen Sie den Tag Ihrer Ankunft. Das Beispieldatum ist keine Aussage über Öffnungszeiten oder buchbare Tage.','Choose the day you would arrive. The sample date does not indicate opening days or availability.')}</span><span id="date-error" class="field-error visually-hidden" hidden></span></label>
     <label for="booking-time">${t('Ankunft','Arrival')}<input id="booking-time" name="time" type="time" required value="19:00" aria-describedby="time-help time-error"><span id="time-help" class="field-help">${t('Alle angezeigten Zeiten beziehen sich auf Europe/Berlin. Bei einem Aufenthalt über Mitternacht steht das Abreisedatum in der Übersicht.','Times are shown for Europe/Berlin. If a visit crosses midnight, the summary includes the departure date.')}</span><span id="time-error" class="field-error visually-hidden" hidden></span></label>

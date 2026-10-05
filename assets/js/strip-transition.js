@@ -1,5 +1,5 @@
 // Tie the strip to deck progress so interrupted/reversed paging stays continuous.
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 export function mountStripTransition(deck,lastScene){
  const strip=document.querySelector('.experience-strip');
  if(!strip)return ()=>{};

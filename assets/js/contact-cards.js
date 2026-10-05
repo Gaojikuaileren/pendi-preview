@@ -1,5 +1,5 @@
-import {cardSource,cardVisual} from './card-media.js?v=bfa97af8442c';
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {cardSource,cardVisual} from './card-media.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 const openers=[...document.querySelectorAll('[data-contact-card-open]')];
 if(openers.length){
  let opener=openers[0];

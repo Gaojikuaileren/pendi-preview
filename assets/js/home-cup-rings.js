@@ -1,5 +1,5 @@
-import {projectHomeGlass} from './spatial-anchors.js?v=bfa97af8442c';
-import {reducedMotion} from './motion-policy.js?v=bfa97af8442c';
+import {projectHomeGlass} from './spatial-anchors.js?v=1fdeb4acf428';
+import {reducedMotion} from './motion-policy.js?v=1fdeb4acf428';
 // One continuous 2D text belt. A single RAF owns phase, speed and reveal.
 export function mountHomeCupPreview({onMode,t,comparison=false}) {
  const home=document.getElementById('home'),source=home?.querySelector('.hero-subline span'),film=document.querySelector('[data-scroll-video]');
