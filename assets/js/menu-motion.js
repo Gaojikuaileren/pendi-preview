@@ -1,5 +1,5 @@
 // Manual navigation and passive swipe hints have independent state.
-import {reducedMotion} from './motion-policy.js?v=920e45e93621';
+import {reducedMotion} from './motion-policy.js?v=e36b16075409';
 export function mountMenuMotion(menu) {
  const summary=menu.querySelector('summary'),panel=menu.querySelector('.menu-panel');
  const reduced=reducedMotion;

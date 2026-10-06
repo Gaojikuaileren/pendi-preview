@@ -1,10 +1,11 @@
-import {mountScrollVideo} from './scroll-video.js?v=920e45e93621';
-import {syncMenuTableMotion} from './menu-table-plane.js?v=920e45e93621';
-import {mountStripTransition} from './strip-transition.js?v=920e45e93621';
-import {reducedMotion} from './motion-policy.js?v=920e45e93621';
+import {mountScrollVideo} from './scroll-video.js?v=e36b16075409';
+import {syncMenuTableMotion} from './menu-table-plane.js?v=e36b16075409';
+import {mountStripTransition} from './strip-transition.js?v=e36b16075409';
+import {reducedMotion} from './motion-policy.js?v=e36b16075409';
 // One paging owner: scripted transitions. No-JS keeps native scrolling; enhanced scenes use explicit reading controls.
 export function mountDeck(deck, wave) {
   const scenes = [...deck.querySelectorAll('[data-scene]')];
+  if(!scenes.length)return;
   const links = [...document.querySelectorAll('.scene-pagination a')];
   const reduced = reducedMotion;
   const curtain=document.querySelector('.scene-video-curtain');
@@ -21,13 +22,19 @@ export function mountDeck(deck, wave) {
   let layoutHeight = deck.clientHeight;
   let transitionFrame=null;
   let queuedFragment=null,lastPosition=0;
+  const boundedPosition=value=>Number.isFinite(value)?Math.max(0,Math.min(scenes.length-1,value)):index;
   const stopTransition=()=>{if(transitionFrame!==null)cancelAnimationFrame(transitionFrame);transitionFrame=null;jump=null;if(curtain)curtain.style.opacity='0';delete deck.dataset.transitioning;delete deck.dataset.transitionMode;deck.removeAttribute('aria-busy');};
   const go = (next, {navigation=false}={}) => {
     // Repeated flicks must not restart easing or change the destination mid-flight.
     if(transitionFrame!==null)return false;
+    if(!Number.isFinite(next))return false;
+    next=Math.max(0,Math.min(scenes.length-1,Math.round(next)));
+    // A collapsed/loading layout has no valid progress denominator. Keep the
+    // latest requested station, without starting a transition from Infinity.
+    if(deck.clientHeight<=0){queuedFragment=next;return true;}
     stopTransition();
     index = Math.max(0, Math.min(scenes.length - 1, next));
-    const start=deck.scrollTop/layoutHeight,destination=index,target=scenes[index].offsetTop;
+    const start=boundedPosition(layoutHeight>0?deck.scrollTop/layoutHeight:lastPosition),destination=index,target=scenes[index].offsetTop;
     if(Math.abs(destination-start)<.0001)return true;
     const direct=navigation&&Math.abs(destination-Math.round(start))>1;
     if(isReduced){if(direct){film?.seekStation(destination);wave?.setBlend(scenes[destination].dataset.scene,scenes[destination].dataset.scene,0);}deck.scrollTo({top:target,behavior:'instant'});update();return true;}
@@ -37,6 +44,7 @@ export function mountDeck(deck, wave) {
       index=jump.from;deck.dataset.transitioning='true';deck.dataset.transitionMode='direct';deck.setAttribute('aria-busy','true');
       const began=performance.now(),fadeOut=320,fadeIn=500;
       const animate=now=>{
+        if(deck.clientHeight<=0){transitionFrame=requestAnimationFrame(animate);return;}
         if(isReduced){index=destination;film?.seekStation(destination);deck.scrollTo({top:scenes[destination].offsetTop,behavior:'instant'});stopTransition();wave?.setBlend(scenes[destination].dataset.scene,scenes[destination].dataset.scene,0);update();return;}
         if(!jump.switched){
           const p=smooth((now-began)/fadeOut);jump.mix=p*.5;jump.ink=1-p;if(curtain)curtain.style.opacity=String(p);
@@ -53,16 +61,19 @@ export function mountDeck(deck, wave) {
       transitionFrame=requestAnimationFrame(animate);update();return true;
     }
     deck.dataset.transitioning='true';const began=performance.now(),duration=1200;
-    const animate=now=>{const p=Math.min(1,(now-began)/duration),ease=p*p*(3-2*p);deck.scrollTo({top:(start+(destination-start)*ease)*deck.clientHeight,behavior:'instant'});if(p<1)transitionFrame=requestAnimationFrame(animate);else{stopTransition();update();}};
+    const animate=now=>{if(deck.clientHeight<=0){transitionFrame=requestAnimationFrame(animate);return;}const p=Math.min(1,(now-began)/duration),ease=p*p*(3-2*p);deck.scrollTo({top:(start+(destination-start)*ease)*deck.clientHeight,behavior:'instant'});if(p<1)transitionFrame=requestAnimationFrame(animate);else{stopTransition();update();}};
     transitionFrame=requestAnimationFrame(animate);
     return true;
   };
   const update = () => {
     updateFrame = null;
+    // ResizeObserver can report zero while a viewport/layout is switching.
+    // Preserve the last measured height and station until it becomes visible.
+    if(deck.clientHeight<=0)return;
     // Read the previous station before interpreting a scroll offset against a
     // new height. Safari's toolbar, rotation and a fold can resize mid-scroll.
     if (deck.clientHeight !== layoutHeight) {
-      const progress=deck.scrollTop/layoutHeight;
+      const progress=boundedPosition(layoutHeight>0?deck.scrollTop/layoutHeight:lastPosition);
       layoutHeight = deck.clientHeight;
       deck.scrollTo({top: jump?scenes[jump.switched?jump.to:jump.from].offsetTop:transitionFrame!==null?progress*layoutHeight:scenes[index].offsetTop, behavior:'instant'});
     }
@@ -94,6 +105,7 @@ export function mountDeck(deck, wave) {
     if(!jump)film?.setProgress(from+mix);
     clearTimeout(settleTimer);
     settleTimer = setTimeout(() => {
+      if(deck.clientHeight<=0)return;
       // Fragment navigation/font/safe-area layout can move an overflow-hidden
       // scroller by a few pixels after mount. Idle scenes must be exact anchors.
       if(transitionFrame===null&&Math.abs(deck.scrollTop-scenes[index].offsetTop)>.5){

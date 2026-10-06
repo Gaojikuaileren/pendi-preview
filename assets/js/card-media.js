@@ -1,6 +1,6 @@
 export function cardSource(kind){
  if(kind==='collab')kind='contact';
- try{const src=JSON.parse(document.querySelector('[data-card-settings]')?.dataset.images||'{}')[kind];return /^\/assets\/images\/business-cards\/[a-f0-9]{64}\.png$/.test(src||'')?src:'';}catch{return '';}
+ try{const src=JSON.parse(document.querySelector('[data-card-settings]')?.dataset.images||'{}')[kind],match=/^\/assets\/images\/business-cards\/([a-f0-9]{64})\.png$/.exec(src||'');return match?new URL('../images/business-cards/'+match[1]+'.png',import.meta.url).pathname:'';}catch{return '';}
 }
 export function cardVisual(kind,alt){
  const src=cardSource(kind),node=document.createElement(src?'img':'span');

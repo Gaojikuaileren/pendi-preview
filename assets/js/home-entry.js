@@ -1,4 +1,4 @@
-import {reducedMotion} from './motion-policy.js?v=920e45e93621';
+import {reducedMotion} from './motion-policy.js?v=e36b16075409';
 export function mountHomeEntrance(designReady){
  const root=document.documentElement;
  if(root.dataset.homeEntry!=='pending')return;

@@ -1,5 +1,5 @@
-import {businessSettings} from './business-config.js?v=920e45e93621';
-import {reducedMotion} from './motion-policy.js?v=920e45e93621';
+import {businessSettings} from './business-config.js?v=e36b16075409';
+import {reducedMotion} from './motion-policy.js?v=e36b16075409';
 
 export function berlinDate(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 export function closureRanges(dates,today=berlinDate()){

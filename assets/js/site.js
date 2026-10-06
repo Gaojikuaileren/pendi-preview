@@ -1,19 +1,19 @@
-import {mountKeyboardCanvas} from './keyboard-canvas.js?v=920e45e93621';
-import { mountIntegratedWave } from './wave-interaction.js?v=920e45e93621';
-import { mountDeck } from './deck.js?v=920e45e93621';
-import { mountMenuMotion } from './menu-motion.js?v=920e45e93621';
-import { mountLanguageSwitch } from './language.js?v=920e45e93621';
-import { mountHomeEntrance } from './home-entry.js?v=920e45e93621';
-import { mountCardRoute } from './card-route.js?v=920e45e93621';
-import { mountMenuCards } from './menu-cards.js?v=920e45e93621';
-import { mountDeviceTilt } from './device-tilt.js?v=920e45e93621';
-import {mountSceneReading} from './scene-reading.js?v=920e45e93621';
-import {mountLocalAdminEntry} from './admin-entry.js?v=920e45e93621';
-import {mountFilmTexture} from './film-texture.js?v=920e45e93621';
-import './same-page.js?v=920e45e93621';
-import './opening-hours.js?v=920e45e93621';
-import './contact-cards.js?v=920e45e93621';
-import {mountAbout} from './about.js?v=920e45e93621';
+import {mountKeyboardCanvas} from './keyboard-canvas.js?v=e36b16075409';
+import { mountIntegratedWave } from './wave-interaction.js?v=e36b16075409';
+import { mountDeck } from './deck.js?v=e36b16075409';
+import { mountMenuMotion } from './menu-motion.js?v=e36b16075409';
+import { mountLanguageSwitch } from './language.js?v=e36b16075409';
+import { mountHomeEntrance } from './home-entry.js?v=e36b16075409';
+import { mountCardRoute } from './card-route.js?v=e36b16075409';
+import { mountMenuCards } from './menu-cards.js?v=e36b16075409';
+import { mountDeviceTilt } from './device-tilt.js?v=e36b16075409';
+import {mountSceneReading} from './scene-reading.js?v=e36b16075409';
+import {mountLocalAdminEntry} from './admin-entry.js?v=e36b16075409';
+import {mountFilmTexture} from './film-texture.js?v=e36b16075409';
+import './same-page.js?v=e36b16075409';
+import './opening-hours.js?v=e36b16075409';
+import './contact-cards.js?v=e36b16075409';
+import {mountAbout} from './about.js?v=e36b16075409';
 
 mountKeyboardCanvas();
 const wave = document.querySelector('[data-wave]');
@@ -23,7 +23,7 @@ if (deck) {mountAbout();mountDeck(deck, controller);mountSceneReading(deck);}
 
 // Approved Phase 1 design is the default. Comparison controls stay opt-in.
 if(deck) {
-  const designReady=import('./menu-depth-preview.js?v=920e45e93621').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
+  const designReady=import('./menu-depth-preview.js?v=e36b16075409').then(({mountMenuDepthPreview})=>mountMenuDepthPreview());
   mountHomeEntrance(designReady);
 }
 

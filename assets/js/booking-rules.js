@@ -1,4 +1,4 @@
-import {businessSettings} from './business-config.js?v=920e45e93621';
+import {businessSettings} from './business-config.js?v=e36b16075409';
 // Local design configuration only. No live capacity, backend or trusted server clock.
 export const BOOKING_PREVIEW = {advanceDays:7,startMinutes:1200,endMinutes:1440,stepMinutes:30,maxGuests:8,segments:12};
 export function validateConfig(c) {
