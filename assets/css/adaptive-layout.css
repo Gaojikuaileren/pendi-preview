@@ -461,3 +461,12 @@
 @media (min-width:480px) and (min-aspect-ratio:2/1) and (max-height:360px), (min-width:480px) and (max-width:639px) and (min-aspect-ratio:1/1) {
  .page-home .site-header .mobile-menu .menu-panel.scene-pagination {width:min(560px,calc(100vw - var(--menu-anchor-right,var(--edge-right)) - var(--edge-left)));}
 }
+/* Tablet and laptop landscape (2026-11-12). An iPad in Chrome (about 1194×696 below the toolbar) or a
+   1280×720 laptop also matches the phone-landscape query, which sets the button beside the heading at
+   the top of the stone. These canvases have room for the hero of larger screens: heading, line and
+   button stacked, lower on the stone. */
+@media (min-width:1000px) and (min-aspect-ratio:1/1) and (min-height:600px) and (max-height:720px) {
+ .scene-home.home-cup-preview[data-cup-mode=space] .hero-content { display:flex; flex-direction:column; align-items:flex-start; right:46%; top:max(calc(var(--safe-top) + 120px),calc(var(--art-height)*.24)); max-height:calc(var(--art-height) - max(var(--safe-top) + 120px,var(--art-height)*.24) - 16px); }
+ .scene-home.home-cup-preview[data-cup-mode=space] h1 { font-size:clamp(56px,5.6vw,72px); }
+ .scene-home.home-cup-preview[data-cup-mode=space] .hero-content > .button { margin-top:24px; min-width:218px; max-width:none; white-space:nowrap; align-self:flex-start; }
+}
