@@ -170,7 +170,9 @@ body:not(.page-home) .site-header { background: var(--night); }
 .page-home .language-switch { font-size: 11px; letter-spacing: .10em; }
 .experience { height: 100svh; position: relative; background: var(--night); isolation: isolate; }
 .experience-backdrop { position: absolute; inset: 0; z-index: -2; isolation: isolate; }
-.scroll-video { position: absolute; inset: 0 0 var(--strip-height); width: 100%; height: calc(100% - var(--strip-height)); object-fit: cover; object-position: 50% 50%; opacity: 0; pointer-events: none; }
+/* Not 0 while loading (2026-11-12): WebKit refuses to start a fully transparent video, as it
+   does for hidden ones, so the film never loaded on iPhones. 1% over the dark ground is not visible. */
+.scroll-video { position: absolute; inset: 0 0 var(--strip-height); width: 100%; height: calc(100% - var(--strip-height)); object-fit: cover; object-position: 50% 50%; opacity: .01; pointer-events: none; }
 .scroll-video.is-ready { opacity: 1; }
 .experience-backdrop .hero-shade { z-index: 1; }
 .experience-ready .scene-copy, .experience-ready .scene-note, .experience-ready .scene-cup, .experience-ready .scroll-cue { transform: translateY(calc(var(--scene-counter, 0px) + var(--scene-drift, 0px))); opacity: var(--scene-opacity, 1); will-change: transform, opacity; }

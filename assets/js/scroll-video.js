@@ -18,6 +18,18 @@ export function mountScrollVideo(video, {onFrame} = {}) {
   if (debug) Object.assign(debug.style, {position: 'fixed', zIndex: 99, left: '8px', right: '8px', bottom: '8px', maxHeight: '45vh', overflow: 'auto', margin: 0, padding: '8px', font: '11px/1.35 monospace', color: '#fff', background: '#000c', whiteSpace: 'pre-wrap', pointerEvents: 'none'});
   const log = message => { if (debug) debug.textContent = `${(performance.now() / 1000).toFixed(2)} ${message} · rs ${video.readyState} ns ${video.networkState} t ${video.currentTime.toFixed(3)}${video.seeking ? ' seeking' : ''}${video.paused ? '' : ' playing'}${visible ? ' visible' : ''}\n${debug.textContent}`.slice(0, 6000); };
   if (debug) for (const type of ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'seeking', 'seeked', 'play', 'playing', 'pause', 'waiting', 'stalled', 'suspend', 'emptied', 'error']) video.addEventListener(type, () => log(type));
+  // The film's own station frames (2026-11-12), shown as its poster when the browser
+  // refuses to load or play the video at all (an iPhone that rejects every muted
+  // play): the imagery stays, only the motion between stations is missing. A later
+  // permitted play still brings the moving film back.
+  const stills = ['/pendi-preview/assets/images/film-stills/station-0.webp', '/pendi-preview/assets/images/film-stills/station-1.webp', '/pendi-preview/assets/images/film-stills/station-2.webp', '/pendi-preview/assets/images/film-stills/station-3.webp', '/pendi-preview/assets/images/film-stills/station-4.webp'];
+  let blocked = false;
+  function showStills() {
+    if (blocked || visible || failed) return;
+    blocked = true; log('stills');
+    stills.forEach(src => { new Image().src = src; });
+    render();
+  }
   const atAnchor = () => Math.abs(progress - Math.round(progress)) < 0.00001;
   // currentTime may be rounded by the browser. Accept the target frame, not a
   // microsecond match; the seek target still lies inside the original frame.
@@ -35,28 +47,30 @@ export function mountScrollVideo(video, {onFrame} = {}) {
   if(video.requestVideoFrameCallback){const decoded=(now,meta)=>{decodedTime=meta.mediaTime;delivered(meta.mediaTime);render();video.requestVideoFrameCallback(decoded);};video.requestVideoFrameCallback(decoded);}
 
   function render() {
+    const still = blocked && !visible && !failed;
     // With no decoded frames, keep the readable paper aligned to the scene.
-    if(failed)onFrame?.(progress);
+    if(failed||still)onFrame?.(progress);
     const caughtUp = anchors.length > 0 && arrived();
-    if(pendingStation!==null&&(caughtUp||failed)){
+    if(pendingStation!==null&&(caughtUp||failed||still)){
       pendingStation=null;
       onFrame?.(progress);
     }
     // Don't flash home on a deep link; retain the decoded frame during seeks.
     if (caughtUp && !visible) { visible = true; clearTimeout(watchdog); disarm(); log('shown'); }
-    video.classList.toggle('is-ready', visible && !failed && pendingStation===null);
-    setState('displayMode', failed ? 'error' : visible && pendingStation===null ? 'video' : 'loading');
+    if (still) { const src = stills[Math.min(stills.length - 1, Math.round(progress))]; if (video.getAttribute('poster') !== src) video.setAttribute('poster', src); }
+    video.classList.toggle('is-ready', still || (visible && !failed && pendingStation===null));
+    setState('displayMode', failed ? 'error' : still ? 'still' : visible && pendingStation===null ? 'video' : 'loading');
     const feedback = document.querySelector('[data-media-feedback]');
     if (feedback) {
-      const mode = video.dataset.displayMode;
-      const copy = mode === 'video' ? '' : feedback.dataset[mode];
+      const mode = video.dataset.displayMode, shown = mode === 'video' || mode === 'still';
+      const copy = shown ? '' : feedback.dataset[mode];
       if (feedback.textContent !== copy) feedback.textContent = copy;
       // A deliberate station seek is part of navigation, not an initial load.
       // Keep the boxed status out of the fade; persistent failures reappear
       // when the transition ends and render() runs for the destination.
-      feedback.hidden = mode === 'video' || document.querySelector('[data-deck]')?.dataset.transitionMode==='direct';
+      feedback.hidden = shown || document.querySelector('[data-deck]')?.dataset.transitionMode==='direct';
     }
-    setState('station', !failed && caughtUp && (atAnchor() || reduced.matches) ? String(Math.round(progress)) : '');
+    setState('station', !failed && (caughtUp || still) && (atAnchor() || reduced.matches) ? String(Math.round(progress)) : '');
   }
   // iOS can hold back frames: it may load nothing, not even the metadata, until
   // playback is requested, or leave a seek pending until data arrives. A muted
@@ -89,6 +103,7 @@ export function mountScrollVideo(video, {onFrame} = {}) {
       log('play rejected ' + (error?.name || error));
       if (error?.name !== 'NotAllowedError') { resume(); return; }
       settled = true; clearTimeout(timer); priming = false;
+      if (video.readyState < 2) showStills();
     });
   }
   function flush() {
@@ -161,6 +176,6 @@ export function mountScrollVideo(video, {onFrame} = {}) {
       video.dataset.jumpSeek='true';
       update();
     },
-    isSettled() {return failed||(pendingStation===null&&arrived());},
+    isSettled() {return failed||(blocked&&!visible)||(pendingStation===null&&arrived());},
   };
 }
