@@ -11,7 +11,13 @@ export function mountScrollVideo(video, {onFrame} = {}) {
   let pendingStation = null;
   // The last seek target and how often it was requested; a target accepted after
   // repeated seeks; and the decoder priming state (see prime()).
-  let seekTarget = null, seekCount = 0, accepted = null, priming = false, primes = 0;
+  let seekTarget = null, seekCount = 0, accepted = null, priming = false, primes = 0, watchdog = 0;
+  // ?video-debug lists the media events and states on the page, for checks on real
+  // phones and tablets (iOS WebKit cannot be run on the development machine).
+  const debug = new URLSearchParams(location.search).has('video-debug') ? document.body.appendChild(document.createElement('pre')) : null;
+  if (debug) Object.assign(debug.style, {position: 'fixed', zIndex: 99, left: '8px', right: '8px', bottom: '8px', maxHeight: '45vh', overflow: 'auto', margin: 0, padding: '8px', font: '11px/1.35 monospace', color: '#fff', background: '#000c', whiteSpace: 'pre-wrap', pointerEvents: 'none'});
+  const log = message => { if (debug) debug.textContent = `${(performance.now() / 1000).toFixed(2)} ${message} · rs ${video.readyState} ns ${video.networkState} t ${video.currentTime.toFixed(3)}${video.seeking ? ' seeking' : ''}${video.paused ? '' : ' playing'}${visible ? ' visible' : ''}\n${debug.textContent}`.slice(0, 6000); };
+  if (debug) for (const type of ['loadstart', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'seeking', 'seeked', 'play', 'playing', 'pause', 'waiting', 'stalled', 'suspend', 'emptied', 'error']) video.addEventListener(type, () => log(type));
   const atAnchor = () => Math.abs(progress - Math.round(progress)) < 0.00001;
   // currentTime may be rounded by the browser. Accept the target frame, not a
   // microsecond match; the seek target still lies inside the original frame.
@@ -37,7 +43,7 @@ export function mountScrollVideo(video, {onFrame} = {}) {
       onFrame?.(progress);
     }
     // Don't flash home on a deep link; retain the decoded frame during seeks.
-    if (caughtUp) visible = true;
+    if (caughtUp && !visible) { visible = true; clearTimeout(watchdog); disarm(); log('shown'); }
     video.classList.toggle('is-ready', visible && !failed && pendingStation===null);
     setState('displayMode', failed ? 'error' : visible && pendingStation===null ? 'video' : 'loading');
     const feedback = document.querySelector('[data-media-feedback]');
@@ -52,23 +58,37 @@ export function mountScrollVideo(video, {onFrame} = {}) {
     }
     setState('station', !failed && caughtUp && (atAnchor() || reduced.matches) ? String(Math.round(progress)) : '');
   }
-  // iOS can hold back frames even after a seek. A muted inline play() that is
-  // paused at once makes it decode; nothing shows, because the film appears only
-  // when the target frame has arrived. If playback needs permission (Low Power
-  // Mode), the next touch, click or key press tries again.
+  // iOS can hold back frames: it may load nothing, not even the metadata, until
+  // playback is requested, or leave a seek pending until data arrives. A muted
+  // inline play() that is paused at once makes it load and decode; nothing shows,
+  // because the film appears only when the target frame has arrived. It runs when
+  // a seek brought no frame, when there is still no frame 1.5 and 4 seconds after
+  // loading starts, and on every touch, click or key press until the film shows
+  // (playback can need a gesture, as in Low Power Mode).
   const unlockEvents = ['touchend', 'pointerup', 'click', 'keydown'];
-  function unlock() { unlockEvents.forEach(type => window.removeEventListener(type, unlock, true)); prime(true); }
+  function unlock() { if (!visible) { log('gesture'); prime(true); } }
+  function arm() { unlockEvents.forEach(type => window.addEventListener(type, unlock, {capture: true, passive: true})); }
+  function disarm() { unlockEvents.forEach(type => window.removeEventListener(type, unlock, true)); }
+  function watch(delay) {
+    clearTimeout(watchdog);
+    watchdog = setTimeout(() => { if (failed || visible) return; log('no frame yet'); if (video.readyState < 2) prime(); if (delay < 4000) watch(4000); }, delay);
+  }
   function prime(fromGesture = false) {
     if (priming || failed || (!fromGesture && primes >= 3)) return;
     priming = true; primes++;
     video.muted = true; video.playsInline = true;
-    const resume = () => { priming = false; video.pause(); seekTarget = null; schedule(); };
+    log('prime' + (fromGesture ? ' (gesture)' : ''));
+    let settled = false, timer = 0;
+    const resume = () => { if (settled) return; settled = true; clearTimeout(timer); priming = false; video.pause(); seekTarget = null; schedule(); };
+    // A play() that neither starts nor fails (WebKit can hold it back) must not
+    // block the later tries: give up on it after two seconds.
+    timer = setTimeout(() => { log('play timeout'); resume(); }, 2000);
     let attempt;
     try { attempt = video.play(); } catch (error) { attempt = Promise.reject(error); }
-    Promise.resolve(attempt).then(resume, error => {
+    Promise.resolve(attempt).then(() => { log('play resolved'); resume(); }, error => {
+      log('play rejected ' + (error?.name || error));
       if (error?.name !== 'NotAllowedError') { resume(); return; }
-      priming = false;
-      unlockEvents.forEach(type => window.addEventListener(type, unlock, {capture: true, passive: true}));
+      settled = true; clearTimeout(timer); priming = false;
     });
   }
   function flush() {
@@ -123,6 +143,7 @@ export function mountScrollVideo(video, {onFrame} = {}) {
     if (!Number.isFinite(frameOffset) || frameOffset <= 0 || frameOffset >= 1 / fps) throw new Error('Invalid frame seek offset');
     anchors = data.anchors;
     if (!video.getAttribute('src')) { video.src = video.dataset.src; video.load(); }
+    arm(); watch(1500);
     update();
   }).catch(() => { failed = true; render(); });
   if (video.readyState >= 1) { ready = true; video.pause(); }
